@@ -177,11 +177,11 @@ numTokens = Get number of strings
 
 ##
 # Build up header variable based on user's choices in the form.
-header$ = "Filename,Label"
+header$ = "filename"
 
 # Add label for each linguistic variable parsed from token names.
 # In order to be as flexible as possible, this script simply labels
-# these variables 'Var1', 'Var2', etc.  After measurement, you can 
+# these variables 'var1', 'var2', etc.  After measurement, you can 
 # change these labels in the text file or in their statistical 
 # software to better reflect the data.  Alternatively, you can 
 # modify this section of the script.
@@ -190,8 +190,11 @@ select stringsListID
 sampleFileName$ = Get string... 1
 @splitstring: sampleFileName$, separator$
 for i from 1 to splitstring.strLen
-    header$ = "'header$',Var'i'"
+    header$ = "'header$',var'i'"
 endfor
+
+## Add interval label column
+header$ = "'header$','interval_label$'"
 
 ## Add header columns for point number and the absolute timepoint value
 header$ = "'header$',t,ms"
