@@ -300,7 +300,6 @@ for currentToken from startToken to numTokens
         select 'textGridID'
 		interval_label$ = Get label of interval... 'tier' 'current_interval'
 		echo <'current_interval' of 'num_intervals'> 'interval_label$'
-        pause
 		## only process non-empty intervals
 		if interval_label$ <> ""
 
