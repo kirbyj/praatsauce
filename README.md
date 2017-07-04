@@ -14,6 +14,13 @@ Shue
 
 ## Reuse and license
 
+## July 2017
+
+Maybe not under explicit development? getting close to VS but not there just yet.
+
+## Old/unknown below here
+
+
 ## Contents
 
 There are eight 'core' scripts:
