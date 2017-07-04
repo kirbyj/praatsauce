@@ -64,13 +64,13 @@ beginPause ("Select measurements")
     comment ("Spectral measure(s) to take")
     boolean ("formantMeasures", 1)
     boolean ("pitchTracking", 1)
-    boolean ("voicesauceMeasures", 0)
+    boolean ("voicesauceMeasures", 1)
     comment ("Note that VoiceSauce measures requires either an existing Formant object, or")
     comment ("selecting formantMeasures above.")
     comment ("Analysis window properties")
     positive ("windowLength", 0.025)
     positive ("windowPosition", 0.5)
-    positive ("maxAnalysisHz", 5000)
+    positive ("maxAnalysisHz", 5500)
     comment ("For scripts that display spectrograms, what window size?")
     positive ("spectrogramWindow", 0.005)
 endPause ("Continue", 1)
@@ -96,15 +96,17 @@ if formantMeasures
         comment ("are key parameters in the Burg formant estimation algorithm.")
         integer ("maxNumFormants", 5)
         positive ("preEmphFrom", 50)
-        #comment ("The tracking used to smooth formant contours after initial")
-        #comment ("estimates requires reference formant values (neutral vowel).")
-        #positive ("F1ref", 500)
-        #positive ("F2ref", 1500)
-        #positive ("F3ref", 2500)
+        comment ("Would you like to smooth the formant tracks?")
+        boolean ("formantTracking", 1)
+        comment ("If yes: the tracking used to smooth formant contours after initial")
+        comment ("estimates requires reference formant values (neutral vowel).")
+        positive ("F1ref", 500)
+        positive ("F2ref", 1500)
+        positive ("F3ref", 2500)
         comment ("Do you want to save the visual output as an EPS file?")
         boolean ("saveAsEPS", 0)
-        comment ("Do you want to use exisiting formant files and just re-measure from them?")
-        boolean ("useExistingFormants", 1)
+        comment ("Do you want to use existing formant files and just re-measure from them?")
+        boolean ("useExistingFormants", 0)
     endPause ("Continue", 1)
     
     printline -------
@@ -122,8 +124,8 @@ endif
 if pitchTracking
     beginPause ("Pitch tracking options")
     comment ("Lower and upper limits to estimated frequency?")
-    positive ("f0min", 50)
-    positive ("f0max", 500)
+    positive ("f0min", 40)
+    positive ("f0max", 600)
     endPause ("Continue", 1)
     
     printline -------
@@ -143,11 +145,11 @@ if voicesauceMeasures
         positive ("maxDisplayHz", 5000)
     endPause ("Continue", 1)
     
-    printline -------
-    printline Spectral Magnitude
-    printline -------
-    printline smoothingHz: <'smoothingHz'>
-    printline
+    #printline -------
+    #printline Spectral Magnitude
+    #printline -------
+    #printline smoothingHz: <'smoothingHz'>
+    #printline
 endif
 
 ##
@@ -341,7 +343,7 @@ for currentToken from startToken to numTokens
 		    if formantMeasures
 		        select 'soundID'
 		        plus 'textGridID'
-		        execute formantMeasures-notracking.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 1 'manualCheck' 'saveAsEPS' 'useExistingFormants' 'inputdir$' 'basename$' 'listenToSound' 'timeStep' 'maxNumFormants' 'maxAnalysisHz' 'preEmphFrom' 'spectrogramWindow' 'measure' 'timepoints' 'points'
+		        execute formantMeasures.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 1 'manualCheck' 'saveAsEPS' 'useExistingFormants' 'inputdir$' 'basename$' 'listenToSound' 'timeStep' 'maxNumFormants' 'maxAnalysisHz' 'preEmphFrom' 'f1ref' 'f2ref' 'f3ref' 'spectrogramWindow' 'measure' 'timepoints' 'points' 'formantTracking'
 		       	select Matrix FormantAverages
 		       	formantResultsID = selected("Matrix")
 		    

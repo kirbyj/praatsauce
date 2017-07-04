@@ -1,7 +1,17 @@
-### formantMeasures.praat
-# version 0.0.5
+# formantMeasures.praat
+# version 0.1
 #
-# copyright 2009-2010 Timothy Mills
+# from a script copyright 2009-2010 Timothy Mills <mills.timothy@gmail.com>
+# heavily modified 2011-2017 James Kirby <j.kirby@ed.ac.uk>
+#
+# It is designed to work as part of the "praatsauce" script suite,
+# which can be obtained from the author:
+#
+#   James Kirby <j.kirby@ed.ac.uk>
+#
+# This script is released under the GNU General Public License version 3.0 
+# The included file "gpl-3.0.txt" or the URL "http://www.gnu.org/licenses/gpl.html" 
+# contains the full text of the license.
 #
 # This script takes a Sound object and an associated TextGrid, and
 # determines the first three formant frequencies.  It can work in a 
@@ -9,29 +19,28 @@
 # tracking errors can be common.  Manual checking of the output is
 # recommended.
 #
-# This script is designed to work as a subscript of the master script 
-# "spectralTiltMaster.praat", which can be obtained from the author:
-#
-#	Timothy Mills <mills.timothy@gmail.com>
-#
-# This script is released under the GNU General Public License version 3.0 
-# (the same license that Praat is available under).  The included file
-# "gpl-3.0.txt" or the URL "http://www.gnu.org/licenses/gpl.html" contains
-# the full text of the license.
+# This script was heavily modified from the original in jan 2017 because it 
+# was returning very strange and inaccurate results. Part of the problem with 
+# the existing script structure is that it plows through all subjects with the 
+# same set of parameters - this will lead to erroneous measurements.
+# Ideally, you will process each subject on their own, so that you can tailor
+# parameters like maxFormantHz to gender/speaker.
 
 form Parameters for formant measurement
  comment TextGrid interval
  natural tier 1
  integer interval_number 2
- sentence interval_label v1
+ sentence interval_label v
  comment Window parameters
  positive windowPosition 0.5
  positive windowLength 0.025
  comment Output
  boolean outputToMatrix 1
  boolean manualCheck 0
- boolean saveAsEPS 0
- text inputdir /home/username/data/
+ boolean saveAsEPS 0 
+ boolean useExistingFormants 0
+ text inputdir /home/username/data/ 
+ text basename myFile
  boolean listenToSound 1
  comment Leave timeStep at 0 for auto.
  real timeStep 0
@@ -43,7 +52,9 @@ form Parameters for formant measurement
  positive f3ref 2500
  positive spectrogramWindow 0.005
  positive measure 2
- positive points 3
+ positive timepoints 3
+ positive timestep 1
+ boolean formantTracking 1
 endform
 
 ###
@@ -79,277 +90,292 @@ startTime = Get starting point... 'tier' 'intervalOfInterest'
 endTime = Get end point... 'tier' 'intervalOfInterest'
 ### (end time domain check)
 
-### repeat this procedure for each time point. 
-### it seems tedious but this is the only way to go.
-
-
-## Decide what times to measure at ##
-## For the midpoint, just measure at 50%
+###
+### Third, decide what times to measure at.
+###
+d = startTime
+## If equidistant points: compute based on number of points
 if measure = 1
-	points = 1
-	mid1 = (startTime + endTime) / 2
-## For the second measurement choice, we'll measure at 25%, 50%, and 75%
+    diff = (endTime - startTime) / (timepoints+1)
+## If absolute: take a measurement every timepoints/1000 points
 elsif measure = 2
-	points = 3
-	mid1 = startTime + (0.25 * (endTime - startTime))
-	mid2 = (startTime + endTime) / 2
-	mid3 = startTime + (0.75 * (endTime - startTime))
-## For equidistant points we have to calculate the times
-else
-	for point from 1 to points
-		## Ensure we are at least 12.5ms from the edges
-		mid'point' = (((point - 1)/(points - 1)) * ((endTime-0.0125) - (startTime+0.0125))) + (startTime + 0.0125)
-	endfor
+    diff = timestep / 1000
 endif
+for point from 1 to timepoints
+    mid'point' = d
+    d = d + diff
+endfor
+### (end time point selection)
 
-## Times have been stored
-
-## Build Matrix object (once)
-## each row represents a timepoint
-## each column represents a formant
+###
+### Fourth, build Matrix object to hold results
+### column 1 holds time of measurement
+### (relative to distance from startTime)
+### columns 2-4 hold Fe, F2, F3
+###
 if outputToMatrix
-	Create simple Matrix... FormantAverages points 3 0
+	Create simple Matrix... FormantAverages timepoints 4 0
 	matrixID = selected("Matrix")
 endif
+### (end of build Matrix object)
 
-# First, play sound (if requested)
+###
+### Interlude: play sound (if requested)
 if manualCheck
 	if listenToSound
 		select soundID
 		Play
 	endif
 endif
-## (end of manual check sound playback)
+### (end of manual check sound playback)
 
 ###
-# Create Formant objects (once)
+### Fifth, create Formant object (or use existing Formant object if present)
 ###
-select 'soundID'
-To Formant (burg)... 'timeStep' 'maxNumFormants' 'maxFormantHz' 'windowLength' 'preEmphFrom'
-formantID = selected("Formant")
-
-# Tracking cleans up the tracks a little.  The original Formant object is then discarded.
-minFormants = Get minimum number of formants
-if 'minFormants' = 2
-    Track... 2 'f1ref' 'f2ref' 'f3ref' 3850 4950 1 1 1
-else
-    Track... 3 'f1ref' 'f2ref' 'f3ref' 3850 4950 1 1 1
+if useExistingFormants = 1
+# Load existing Formant object if available
+    if fileReadable ("'inputdir$''basename$'.Formant")
+        Read from file... 'inputdir$''basename$'.Formant
+        formantID = selected("Formant")
+    else
+        ## If can't load, create
+        select 'soundID'
+        To Formant (burg)... timeStep maxNumFormants maxFormantHz windowLength preEmphFrom
+        formantID = selected("Formant")
+    endif
+## else create 
+else  
+    select 'soundID'
+    To Formant (burg)... timeStep maxNumFormants maxFormantHz windowLength preEmphFrom
+    formantID = selected("Formant")
 endif
-trackedFormantID = selected("Formant")
-select formantID
-Remove
+### (end of load/create Formant object)
+
+if formantTracking = 1
+	# Tracking cleans up the tracks a little.  The original Formant object is then discarded.
+	minFormants = Get minimum number of formants
+	if 'minFormants' = 2
+		Track... 2 f1ref f2ref f3ref 3850 4950 1 1 1
+	else
+		Track... 3 f1ref f2ref f3ref 3850 4950 1 1 1
+	endif
+	trackedFormantID = selected("Formant")
+	select formantID
+	Remove
+    formantID = trackedFormantID
+endif
+
+###
+# Display results, possibly
+###
+checked = 1
+repeat
+
+    # for display purposes, just use midpoint
+	midTime = (startTime + endTime) / 2
+	windowStart = midTime - (windowLength / 2)
+	windowEnd = midTime + (windowLength / 2)
+	
+	select 'formantID'
+	f1 = Get value at time... 1 midTime Hertz Linear
+	f2 = Get value at time... 2 midTime Hertz Linear
+	f3 = Get value at time... 3 midTime Hertz Linear
+
+    if (manualCheck or saveAsEPS)
+
+        # Generate output in picture window
+        select 'soundID'
+        To Spectrogram... 'spectrogramWindow' 'maxFormantHz' 0.0005 20 Gaussian
+        spectrogramID = selected("Spectrogram")
+        Erase all
+
+        Select outer viewport... 0 6 0 3
+        Paint... 'startTime' 'endTime' 0 'maxFormantHz' 100 yes 50 6 0 yes
+        Marks left... 6 yes yes no
+        Marks right... 6 yes yes no
+        Yellow
+        Line width... 3
+        select 'formantID'
+        Draw tracks... 'startTime' 'endTime' 'maxFormantHz' no
+        rf1 = round('f1')
+        rf2 = round('f2')
+        Text top... no Tracker output -- F1: 'rf1' Hz ***** F2: 'rf2' Hz
+
+        # Bracket window
+        windowStart$ = fixed$(windowStart,3)
+        windowEnd$ = fixed$(windowEnd,3)
+        Line width... 1
+        # This will mark the beginning and end of the window (blue lines)		
+        #One mark bottom... 'windowStart' no no no 'windowStart$'
+        #One mark bottom... 'windowEnd' no no no 'windowEnd$'
+        Blue
+        Draw line... 'windowStart' 0 'windowStart' 'maxFormantHz'
+        Draw line... 'windowEnd' 0 'windowEnd' 'maxFormantHz'
+        
+        # This will just mark the midpoint (red line)
+        Red
+        mid = midTime
+        midShort = 'mid:3'
+        One mark bottom... 'mid' no no no 'midShort'
+        Draw line... midTime 0 midTime 'maxFormantHz'
+
+        Black
+        Select outer viewport... 0 6 3 7
+        select 'soundID'
+        Extract part... 'windowStart' 'windowEnd' rectangular 1 yes
+        soundPartID = selected("Sound")
+        To Spectrum... yes
+        spectrumID = selected("Spectrum")
+        To Ltas (1-to-1)
+        ltasID = selected("Ltas")
+        minDB = Get minimum... 0 'maxFormantHz' None
+        maxDB = Get maximum... 0 'maxFormantHz' None
+        dBrange = maxDB-minDB
+        maxDB = maxDB + 0.1*dBrange
+        Draw... 0 'maxFormantHz' 'minDB' 'maxDB' yes  Curve
+        Red
+        f1Disp$ = fixed$(f1,0)
+        f2Disp$ = fixed$(f2,0)
+        f3Disp$ = fixed$(f3,0)
+        Draw line... 'f1' 'minDB' 'f1' 'maxDB'
+        One mark top... 'f1' no no no F1
+        One mark bottom... 'f1' no no no 'f1Disp$'
+        Draw line... 'f2' 'minDB' 'f2' 'maxDB'
+        One mark top... 'f2' no no no F2
+        One mark bottom... 'f2' no no no 'f2Disp$'
+        Draw line... 'f3' 'minDB' 'f3' 'maxDB'
+        One mark top... 'f3' no no no F3
+        One mark bottom... 'f3' no no no 'f3Disp$'
+        Black
+
+        # Find nearest peak within search ratio
+        searchRangeA1 = 'f1' * 0.2
+        searchRangeA2 = 'f2' * 0.1
+        searchRangeA3 = 'f3' * 0.1
+        lowerboundA1 = 'f1' - 'searchRangeA1'
+        upperboundA1 = 'f1' + 'searchRangeA1'
+        lowerboundA2 = 'f2' - 'searchRangeA2'
+        upperboundA2 = 'f2' + 'searchRangeA2'
+        lowerboundA3 = 'f3' - 'searchRangeA3'
+        upperboundA3 = 'f3' + 'searchRangeA3'
+        # Then query LTAS object to get the formant amplitudes.
+        # Also, record the frequency of the amplitude peak.  If this is far from the
+        # recorded formant frequency (f1Hz etc), there may be a problem.  The most 
+        # likely cause of such a discrepancy would be a non-stationary formant, 
+        # which violates one of the assumptions underpinning this measure.
+        select 'ltasID'
+        a1dB = Get maximum... 'lowerboundA1' 'upperboundA1' None
+        a1Hz = Get frequency of maximum... 'lowerboundA1' 'upperboundA1' None
+        a2dB = Get maximum... 'lowerboundA2' 'upperboundA2' None
+        a2Hz = Get frequency of maximum... 'lowerboundA2' 'upperboundA2' None
+        a3dB = Get maximum... 'lowerboundA3' 'upperboundA3' None
+        a3Hz = Get frequency of maximum... 'lowerboundA3' 'upperboundA3' None
+
+        # Display
+        Green
+        circleRadius = maxFormantHz / 100
+        Draw circle... 'a1Hz' 'a1dB' 'circleRadius'
+        a1dBlabel = a1dB + 0.05*dBrange
+        Text... 'a1Hz' Centre 'a1dBlabel' Half  A1
+        Draw circle... 'a2Hz' 'a2dB' 'circleRadius'
+        a2dBlabel = a2dB + 0.05*dBrange
+        Text... 'a2Hz' Centre 'a2dBlabel' Half  A2
+        Draw circle... 'a3Hz' 'a3dB' 'circleRadius'
+        a3dBlabel = a3dB + 0.05*dBrange
+        Text... 'a3Hz' Centre 'a3dBlabel' Half  A3
+        Black
+
+        if manualCheck
+
+            # Query for adjustments
+            beginPause ("Check results.")
+                 positive ("windowPosition", 'windowPosition')
+                 positive ("windowLength", 'windowLength')
+                 integer ("maxNumFormants", 'maxNumFormants')
+                 positive ("maxFormantHz", 'maxFormantHz')
+                 positive ("preEmphFrom", 'preEmphFrom')
+                 positive ("spectrogramWindow", 'spectrogramWindow')
+                 comment ("Hit <accept> to continue using shown analysis, or <adjust>")
+                 comment ("to remeasure current token using above parameters.")
+                 clicked = endPause("Accept","Adjust",1)
+                 if 'clicked' = 1
+                     # User has chosen "Accept"
+                     checked = 1
+                 else
+                 # User has chosen "Adjust"
+                    checked = 0
+                    select 'formantID'
+                    Remove
+                    select 'soundID'
+                    To Formant (burg)... timeStep maxNumFormants maxFormantHz windowLength preEmphFrom
+                    formantID = selected("Formant")
+                 endif
+        else
+            checked = 1
+        endif
+        # end of "if manualCheck"
+
+	    select 'spectrogramID'
+	    plus 'soundPartID'
+	    plus 'spectrumID'
+	    plus 'ltasID'
+	    Remove
+    endif
+
+until checked = 1
+
+if saveAsEPS
+    Select outer viewport... 0 6 0 7
+    Write to EPS file... 'inputdir$''name$'.Fmt.eps
+endif
 
 
-## For all of these times... ##
-for i from 1 to points
+## OK, now we've got a Formant object we can live with
+## Better save it to file
+select 'formantID'
+Write to text file... 'inputdir$''basename$'.Formant
 
-		checked = 1
+###
+### Finally: store measurements for each timepoint
+for i from 1 to timepoints
 
-        ## reason to build formant object at each timepoint is to allow user 
-        ## to do manual checks and modifications...
-        ## skipping for now 
-        #
-		## repeat until user is happy
-		#repeat
+	if outputToMatrix
+        select 'formantID'
+        f1 = Get value at time... 1 mid'i' Hertz Linear
+        f2 = Get value at time... 2 mid'i' Hertz Linear
+        f3 = Get value at time... 3 mid'i' Hertz Linear
 
-		# Determine window: we will take an average over this window, 
-		# centered at the point.
-		midTime = mid'i'
-		windowStart = midTime - (windowLength / 2)
-		windowEnd = midTime + (windowLength / 2)
-		 
-		select trackedFormantID
-		f1 = Get value at time... 1 mid'i' Hertz Linear
-		f2 = Get value at time... 2 mid'i' Hertz Linear
-		f3 = Get value at time... 3 mid'i' Hertz Linear
-		#f1 = Get mean... 1 'windowStart' 'windowEnd' Hertz
-		#f2 = Get mean... 2 'windowStart' 'windowEnd' Hertz
-		#f3 = Get mean... 3 'windowStart' 'windowEnd' Hertz
+        ## can't have undefineds in your Praat Matrices, sorry              
+        if f1 = undefined
+           f1 = 0
+        endif
+        if f2 = undefined
+           f2 = 0
+        endif
+        if f3 = undefined
+           f3 = 0
+        endif
 
-		###
-		# Display results
-		###
-		if (manualCheck or saveAsEPS)
+	    select 'matrixID'
 
-		# Generate output in picture window
-			select 'soundID'
-			To Spectrogram... 'spectrogramWindow' 'maxFormantHz' 0.002 20 Gaussian
-			spectrogramID = selected("Spectrogram")
-			Erase all
+        # find time of measurement, relative to startTime
+        #absPoint = mid'i' - startTime
+        #absPoint = round( (mid'i' - startTime)*1000 ) / 1000
+        
+        # set first col to ms time
+        #Set value... i 1 absPoint
+        # here we record absolute time in file like VoiceSauce does
+        Set value... i 1 mid'i'
 
-			Select outer viewport... 0 6 0 3
-			Paint... 'startTime' 'endTime' 0 'maxFormantHz' 100 yes 50 6 0 yes
-			Marks left... 6 yes yes no
-			Marks right... 6 yes yes no
-			Yellow
-			Line width... 3
-			select 'trackedFormantID'
-			#Speckle... 'startTime' 'endTime' 'maxFormantHz' 30 no
-			Draw tracks... 'startTime' 'endTime' 'maxFormantHz' no
-			rf1 = round('f1')
-			rf2 = round('f2')
-			Text top... no Tracker output -- F1: 'rf1' Hz ***** F2: 'rf2' Hz
-
-			# Bracket window
-			windowStart$ = fixed$(windowStart,3)
-			windowEnd$ = fixed$(windowEnd,3)
-			Line width... 1
-		  	# This will mark the beginning and end of the window (blue lines)		
-			#One mark bottom... 'windowStart' no no no 'windowStart$'
-			#One mark bottom... 'windowEnd' no no no 'windowEnd$'
-			Blue
-			Draw line... 'windowStart' 0 'windowStart' 'maxFormantHz'
-			Draw line... 'windowEnd' 0 'windowEnd' 'maxFormantHz'
-			
-			# This will just mark the midpoint (red line)
-			Red
-			mid = mid'i'
-			midShort = 'mid:3'
-			One mark bottom... 'mid' no no no 'midShort'
-			Draw line... mid'i' 0 mid'i' 'maxFormantHz'
-
-			Black
-			Select outer viewport... 0 6 3 7
-			select 'soundID'
-			Extract part... 'windowStart' 'windowEnd' rectangular 1 yes
-			soundPartID = selected("Sound")
-			To Spectrum... yes
-			spectrumID = selected("Spectrum")
-			To Ltas (1-to-1)
-			ltasID = selected("Ltas")
-			minDB = Get minimum... 0 'maxFormantHz' None
-			maxDB = Get maximum... 0 'maxFormantHz' None
-			dBrange = maxDB-minDB
-			maxDB = maxDB + 0.1*dBrange
-			Draw... 0 'maxFormantHz' 'minDB' 'maxDB' yes  Curve
-			Red
-			f1Disp$ = fixed$(f1,0)
-			f2Disp$ = fixed$(f2,0)
-			f3Disp$ = fixed$(f3,0)
-			Draw line... 'f1' 'minDB' 'f1' 'maxDB'
-			One mark top... 'f1' no no no F1
-			One mark bottom... 'f1' no no no 'f1Disp$'
-			Draw line... 'f2' 'minDB' 'f2' 'maxDB'
-			One mark top... 'f2' no no no F2
-			One mark bottom... 'f2' no no no 'f2Disp$'
-			Draw line... 'f3' 'minDB' 'f3' 'maxDB'
-			One mark top... 'f3' no no no F3
-			One mark bottom... 'f3' no no no 'f3Disp$'
-			Black
-
-			# Find nearest peak within search ratio
-			searchRangeA1 = 'f1' * 0.2
-			searchRangeA2 = 'f2' * 0.1
-			searchRangeA3 = 'f3' * 0.1
-			lowerboundA1 = 'f1' - 'searchRangeA1'
-			upperboundA1 = 'f1' + 'searchRangeA1'
-			lowerboundA2 = 'f2' - 'searchRangeA2'
-			upperboundA2 = 'f2' + 'searchRangeA2'
-			lowerboundA3 = 'f3' - 'searchRangeA3'
-			upperboundA3 = 'f3' + 'searchRangeA3'
-			# Then query LTAS object to get the formant amplitudes.
-		   	# Also, record the frequency of the amplitude peak.  If this is far from the
-			# recorded formant frequency (f1Hz etc), there may be a problem.  The most 
-			# likely cause of such a discrepancy would be a non-stationary formant, 
-			# which violates one of the assumptions underpinning this measure.
-			select 'ltasID'
-			a1dB = Get maximum... 'lowerboundA1' 'upperboundA1' None
-			a1Hz = Get frequency of maximum... 'lowerboundA1' 'upperboundA1' None
-			a2dB = Get maximum... 'lowerboundA2' 'upperboundA2' None
-			a2Hz = Get frequency of maximum... 'lowerboundA2' 'upperboundA2' None
-			a3dB = Get maximum... 'lowerboundA3' 'upperboundA3' None
-			a3Hz = Get frequency of maximum... 'lowerboundA3' 'upperboundA3' None
-
-			# Display
-			Green
-			circleRadius = maxFormantHz / 100
-			Draw circle... 'a1Hz' 'a1dB' 'circleRadius'
-			a1dBlabel = a1dB + 0.05*dBrange
-			Text... 'a1Hz' Centre 'a1dBlabel' Half  A1
-			Draw circle... 'a2Hz' 'a2dB' 'circleRadius'
-			a2dBlabel = a2dB + 0.05*dBrange
-			Text... 'a2Hz' Centre 'a2dBlabel' Half  A2
-			Draw circle... 'a3Hz' 'a3dB' 'circleRadius'
-			a3dBlabel = a3dB + 0.05*dBrange
-			Text... 'a3Hz' Centre 'a3dBlabel' Half  A3
-			Black
-
-		  	if manualCheck
-
-				   # Query for adjustments
-				   beginPause ("Check results.")
-						positive ("windowPosition", 'windowPosition')
-						positive ("windowLength", 'windowLength')
-						integer ("maxNumFormants", 'maxNumFormants')
-						positive ("maxFormantHz", 'maxFormantHz')
-						positive ("preEmphFrom", 'preEmphFrom')
-						positive ("spectrogramWindow", 'spectrogramWindow')
-						comment ("Hit <accept> to continue using shown analysis, or <adjust>")
-						comment ("to remeasure current token using above parameters.")
-				   		clicked = endPause("Accept","Adjust",1)
-				   		if 'clicked' = 1
-							# User has chosen "Accept"
-							checked = 1
-				   		else
-						# User has chosen "Adjust"
-							checked = 0
-							select 'trackedFormantID'
-							Remove
-				   		endif
-			else
-				checked = 1
-		  	endif
-		  	# end of "if manualCheck"
-
-			## 
-			# Record parameters in text file of same name as token.
-			#
-			select 'soundID'
-			tokenName$ = selected$("Sound")
-
-			newParameters$ = "'windowPosition''tab$''windowLength''tab$''maxNumFormants''tab$''maxFormantHz''tab$''preEmphFrom''tab$''spectrogramWindow'"
-
-			#filedelete 'inputdir$''tokenName$'.FmtParam.txt
-			#fileappend 'inputdir$''tokenName$'.FmtParam.txt 'newParameters$'
-
-			select 'spectrogramID'
-			plus 'soundPartID'
-			plus 'spectrumID'
-			plus 'ltasID'
-			Remove
-		 endif
-
-		until checked = 1
-
-		if saveAsEPS
-		 Select outer viewport... 0 6 0 7
-		 Write to EPS file... 'inputdir$''name$'.Fmt.eps
-		endif
-
-		if outputToMatrix
-		 select 'matrixID'
-         if f1 = undefined
-            f1 = 0
-         endif
-         if f2 = undefined
-            f2 = 0
-         endif
-         if f3 = undefined
-            f3 = 0
-         endif
-		 Set value... i 1 'f1'
-		 Set value... i 2 'f2'
-		 Set value... i 3 'f3'
-		else
-		 printline "'name$''tab$''f1''tab$''f2''tab$''f3'"
-		endif
-
-### End the 'for' loop over points
+        # finally record formants
+	    Set value... i 2 'f1'
+	    Set value... i 3 'f2'
+	    Set value... i 4 'f3'
+	else
+	    printline "'name$''tab$''f1''tab$''f2''tab$''f3'"
+	endif
+### End the 'for' loop over timepoints
 endfor
-
-
-### The master script saves the Formant object for use with certain 
-### spectral tilt measures.
 
 select 'soundID'
 plus 'textGridID'
