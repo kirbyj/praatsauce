@@ -21,7 +21,8 @@
 #
 # This script was heavily modified from the original in jan 2017 because it 
 # was returning very strange and inaccurate results. Part of the problem with 
-# the existing script structure is that it plows through all subjects with the # same set of parameters - this will lead to erroneous measurements.
+# the existing script structure is that it plows through all subjects with the 
+# same set of parameters - this will lead to erroneous measurements.
 # Ideally, you will process each subject on their own, so that you can tailor
 # parameters like maxFormantHz to gender/speaker.
 
@@ -52,7 +53,7 @@ form Parameters for formant measurement
  positive spectrogramWindow 0.005
  positive measure 2
  positive timepoints 3
- positive absLimit 100
+ positive timestep 1
 endform
 
 ###
@@ -95,13 +96,13 @@ d = startTime
 ## If equidistant points: compute based on number of points
 if measure = 1
     diff = (endTime - startTime) / (timepoints+1)
-    ## If absolute: take a measurement every absLimit/timepoints points until absTime
+## If absolute: take a measurement every timepoints/1000 points
 elsif measure = 2
-    diff = (absLimit / timepoints) / 1000
+    diff = timestep / 1000
 endif
 for point from 1 to timepoints
-    d = d + diff
     mid'point' = d
+    d = d + diff
 endfor
 ### (end time point selection)
 
@@ -110,6 +111,7 @@ endfor
 ### column 1 holds time of measurement
 ### (relative to distance from startTime)
 ### columns 2-4 hold F1, F2, F3
+###
 if outputToMatrix
 	Create simple Matrix... FormantAverages timepoints 4 0
 	matrixID = selected("Matrix")
@@ -343,10 +345,13 @@ for i from 1 to timepoints
 
         # find time of measurement, relative to startTime
         #absPoint = mid'i' - startTime
-        absPoint = round( (mid'i' - startTime)*1000 ) / 1000
-
+        #absPoint = round( (mid'i' - startTime)*1000 ) / 1000
+        
         # set first col to ms time
-        Set value... i 1 absPoint
+        #Set value... i 1 absPoint
+        # here we record absolute time in file like VoiceSauce does
+        Set value... i 1 mid'i'
+
         # finally record formants
 	    Set value... i 2 'f1'
 	    Set value... i 3 'f2'

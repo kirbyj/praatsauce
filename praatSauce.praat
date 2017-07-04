@@ -34,7 +34,7 @@ form Directory and measures
  comment If measuring in sessions, use this parameter to pick up where you left off.
  integer startToken 1
  comment Which tier do you want to analyse?
- natural tier 4
+ natural tier 2
  # TODO: add functionality to skip interval label(s)
  #sentence interval_label v
  #integer interval_number 0
@@ -47,14 +47,12 @@ form Directory and measures
  comment (e.g.0=none, 0.5 half, 1=all)
  real manualCheckFrequency 0
  comment At what points in the segment should we record measurements?
- optionmenu Measure: 1
+ optionmenu Measure: 2
     option n equidistant points
     option every n milliseconds
  comment If n equidistant points, how many? (e.g. 1, 3, 11...)
  comment If every n milliseconds, at what ms interval? (e.g. 5, 10...)
- natural Points 3 
- comment If every n milliseconds, at how many ms to stop measuring? (e.g. 100)
- natural absLimit 100
+ natural Points 1
 endform
 
 ###
@@ -304,8 +302,7 @@ for currentToken from startToken to numTokens
 		if interval_label$ <> ""
 
 			######################################
-			## Sub-loop: process a single interval	
-			######################################
+			## Sub-loop: process a single interval			######################################
 
 			## Add interval label column to header
 			header$ = "'header$','interval_label$'"
@@ -314,13 +311,12 @@ for currentToken from startToken to numTokens
 		    if measure = 1
 		       timepoints = points
 		    elsif measure = 2
-		       timepoints = absLimit/points
+               interval_start = Get start time of interval... 'tier' 'current_interval'
+               interval_end = Get end time of interval... 'tier' 'current_interval'
+		       timepoints = round(((interval_end - interval_start)*1000)/points)
 		    endif
 		    
-		    ## Now: write a line for each point (since our matrices will have this many rows in them).
-		    ##??????
-		    #
-		    # Report current token number, name, and lingVars$:
+		    ## Report current token number, name, and lingVars$:
 		    echo <'currentToken' of 'numTokens'> 'basename$':  'lingVars$'
 		    
 		    ## Manually check this token at random? 
@@ -342,7 +338,7 @@ for currentToken from startToken to numTokens
 		    if formantMeasures
 		        select 'soundID'
 		        plus 'textGridID'
-		        execute formantMeasures-notracking.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 1 'manualCheck' 'saveAsEPS' 'useExistingFormants' 'inputdir$' 'basename$' 'listenToSound' 'timeStep' 'maxNumFormants' 'maxAnalysisHz' 'preEmphFrom' 'spectrogramWindow' 'measure' 'timepoints' 'absLimit'
+		        execute formantMeasures-notracking.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 1 'manualCheck' 'saveAsEPS' 'useExistingFormants' 'inputdir$' 'basename$' 'listenToSound' 'timeStep' 'maxNumFormants' 'maxAnalysisHz' 'preEmphFrom' 'spectrogramWindow' 'measure' 'timepoints' 'points'
 		       	select Matrix FormantAverages
 		       	formantResultsID = selected("Matrix")
 		    
@@ -362,7 +358,7 @@ for currentToken from startToken to numTokens
 		        pitchID = selected("Pitch")
 		        plus soundID
 		        plus textGridID
-		        execute pitchTracking.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'manualCheck' 1 'measure' 'timepoints' 'absLimit'
+		        execute pitchTracking.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'manualCheck' 1 'measure' 'timepoints' 'points'
 		       
 		        ### Save output Matrix
 		        select Matrix PitchAverages
@@ -395,7 +391,7 @@ for currentToken from startToken to numTokens
 		        plus 'textGridID'
 		        plus 'formantID'
 		        plus 'pitchID'
-		        execute voicesauceMeasures.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 1 'spectralMagnitudeSaveAsEPS' 'inputdir$' 'manualCheck' 'maxDisplayHz' 'measure' 'timepoints' 'absLimit' 'f0min' 'f0max'
+		        execute voicesauceMeasures.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 1 'spectralMagnitudeSaveAsEPS' 'inputdir$' 'manualCheck' 'maxDisplayHz' 'measure' 'timepoints' 'points' 'f0min' 'f0max'
 		    
 		        ## Assign ID to output matrix
 		        select Matrix IseliMeasures
