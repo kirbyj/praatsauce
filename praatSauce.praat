@@ -176,7 +176,7 @@ numTokens = Get number of strings
 
 ##
 # Build up header variable based on user's choices in the form.
-header$ = "filename"
+header$ = "Filename"
 
 # Add label for each linguistic variable parsed from token names.
 # In order to be as flexible as possible, this script simply labels
@@ -195,10 +195,13 @@ if splitstring.strLen > 1
 endif
 
 ## Add interval label column
-header$ = "'header$',int_label"
+header$ = "'header$',Label"
+
+## Add header columns for interval start and end times
+header$ = "'header$',seg_Start,seg_End"
 
 ## Add header columns for point number and the absolute timepoint value
-header$ = "'header$',t,ms"
+header$ = "'header$',t,t_ms"
 
 ## Add header columns for selected measures
 if formantMeasures
@@ -208,7 +211,7 @@ if pitchTracking
  header$ = "'header$',f0"
 endif
 if voicesauceMeasures
- header$ = "'header$',H1,H2,H4,A1,A2,A3,H1adj,H2adj,H4adj,A1adj,A2adj,A3adj,H2k,H5k,CPP,CPPS,HNR,HNR05,HNR15,HNR25"
+ header$ = "'header$',H1u,H2u,H4u,A1u,A2u,A3u,H1c,H2c,H4c,A1c,A2c,A3c,H2ku,H5ku,CPP,CPPS,HNR05,HNR15,HNR25,HNR35"
 endif
 header$ = "'header$''newline$'"
 
@@ -409,7 +412,7 @@ for currentToken from startToken to numTokens
 		    
 		    for t from 1 to timepoints
 		    	# Begin building results string with file and linguistic info.
-		    	results$ = "'basename$','lingVars$''interval_label$','t'"
+		    	results$ = "'basename$','lingVars$''interval_label$','interval_start:6','interval_end:6','t'"
 		        # have we already written the ms time or do we still need to write it?
 		        msflag = 0
 		 
@@ -417,10 +420,10 @@ for currentToken from startToken to numTokens
 		            select 'formantResultsID'
 		            mspoint = Get value in cell... t 1
 					msflag = 1
-		       		results$ = "'results$','mspoint'"
+		       		results$ = "'results$','mspoint:6'"
 		     		for formant from 2 to 4
 		       		    currentFormant = Get value in cell... t 'formant'
-		       		    results$ = "'results$','currentFormant'"
+		       		    results$ = "'results$','currentFormant:3'"
 		     		endfor
 		        endif			
 		    
@@ -428,22 +431,22 @@ for currentToken from startToken to numTokens
 		            select 'pitchResultsID'
 		            if msflag = 0
 		                mspoint = Get value in cell... t 1
-		       		    results$ = "'results$','mspoint'"
+		       		    results$ = "'results$','mspoint:6'"
 		                msflag = 1
 		            endif
 		       	    currentPitch = Get value in cell... t 2 
-		       		results$ = "'results$','currentPitch'"
+		       		results$ = "'results$','currentPitch:3'"
 		        endif
 		    
 		        if voicesauceMeasures
 		            select 'iseliResultsID'
 		            if msflag = 0
 		                mspoint = Get value in cell... t 1
-		       		    results$ = "'results$','mspoint'"
+		       		    results$ = "'results$','mspoint:6'"
 		            endif
 		       	    for measurement from 2 to 21
 		       		    aMeasure = Get value in cell... t 'measurement'
-		       		    results$ = "'results$','aMeasure'"
+		       		    results$ = "'results$','aMeasure:3'"
 		       	    endfor	
 		        endif
 		    
