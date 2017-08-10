@@ -29,8 +29,9 @@ include splitstring.praat
 
 form Directory and measures
  comment Input directory and results file
- sentence inputdir /Users/jkirby/Desktop/cbt-test/
- sentence outputfile /Users/jkirby/Desktop/cbt-test/
+ sentence inputdir /Users/jkirby/Documents/Projects/sea/cbt/recs/cbt1/0001/
+ sentence textgriddir /Users/jkirby/Documents/Projects/sea/cbt/grids/cbt1/0001/
+ sentence outputfile /Users/jkirby/Documents/Projects/sea/cbt/recs/cbt1/0001/
  comment If measuring in sessions, use this parameter to pick up where you left off.
  integer startToken 1
  comment Which tier do you want to analyse?
@@ -171,7 +172,7 @@ filedelete 'outputfile$'
 clearinfo
 
 ## Get directory listing, sort, count
-Create Strings as file list... fileList 'inputdir$'*.TextGrid
+Create Strings as file list... fileList 'textgriddir$'*.TextGrid
 stringsListID = selected("Strings", 1)
 Sort
 numTokens = Get number of strings
@@ -282,7 +283,7 @@ for currentToken from startToken to numTokens
     endif
  
 	## Load TextGrid
-    Read from file... 'inputdir$''currentTextGridFile$'
+    Read from file... 'textgriddir$''currentTextGridFile$'
     textGridID = selected("TextGrid")
 
     ## Parse the token name into a series of linguistic variables.
