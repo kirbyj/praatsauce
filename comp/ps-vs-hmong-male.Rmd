@@ -1,11 +1,14 @@
 ---
-title: "PraatSauce/VoiceSauce comparison: White Hmong (male speaker)"
+title: 'PraatSauce/VoiceSauce comparison: White Hmong (male speaker)'
 author: "James Kirby"
 date: "31/01/2018"
-output: 
-    html_document:
-        toc: true
-        toc_depth: 3
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+  html_document:
+    toc: yes
+    toc_depth: 3
 ---
 
 ```{r setup, include=FALSE}
@@ -154,6 +157,7 @@ ggplot(subset(df, value > 0 & method == 'formula' & measure %in% c('strF0', 'pF0
 
 STRAIGHT appears to be capturing CF0 effects that most other estimators or not. This is an example of where pitch settings can be important: if the default PraatSauce pitch settings are used (40 Hz and 600 Hz), PraatSauce consistently fails to detect the initial F0 perturbations. 
 
+\newpage
 ### Formants
 
 #### Formants estimate using Praat
@@ -161,6 +165,7 @@ STRAIGHT appears to be capturing CF0 effects that most other estimators or not. 
 ggplot(subset(df, method == 'estimated' & measure %in% c('pF1', 'pF2', 'pF3')), aes(t_ms, value, colour=measure, linetype=script, group=interaction(method,measure,script))) + geom_line() + facet_wrap(~Filename, scales='free') 
 ```
 
+\newpage
 #### Formants estimated using Snack (VoiceSauce) vs. Praat (PraatSauce)
 ```{r, echo=FALSE}
 ggplot(subset(df, (script=='PraatSauce' & method == 'estimated' & measure %in% c('pF1', 'pF2', 'pF3')) | (script=='VoiceSauce' & method == 'estimated' & measure %in% c('sF1', 'sF2', 'sF3'))), aes(t_ms, value, colour=measure, linetype=script, group=interaction(method,measure, script))) + geom_line() + facet_wrap(~Filename, scales='free') + scale_color_manual(values=c(c(hue_pal()(3)), c(hue_pal()(3)))) 
@@ -168,6 +173,7 @@ ggplot(subset(df, (script=='PraatSauce' & method == 'estimated' & measure %in% c
 
 There are a few difference, especially at edges, some of which may be due to smoothing. However, it's not clear why the Praat-based estimates aren't identical: both scripts use the exact same command, with the same parameters, to estimate the formants (and bandwidths).
 
+\newpage
 ### Bandwidths
 
 #### PraatSauce estimated vs. formula bandwidths 
@@ -178,6 +184,7 @@ ggplot(subset(df, script=='PraatSauce' & measure %in% c('pB1', 'pB2', 'pB3')), a
 
 PraatSauce estimated bandwidths are huge...
 
+\newpage
 #### PraatSauce vs. VoiceSauce estimated bandwidths
 
 ```{r, echo=FALSE}
@@ -187,6 +194,7 @@ ggplot(subset(df, method == 'estimated' & measure %in% c('pB1', 'pB2', 'pB3')), 
 
 ... but VoiceSauce Praat-estimated bandwidths are frequently an order of magnitude huger.
 
+\newpage
 #### VoiceSauce Praat vs. Snack estimated bandwidths
 
 ```{r, echo=FALSE}
@@ -195,6 +203,7 @@ ggplot(subset(df, method == 'estimated' & script=='VoiceSauce' & measure %in% c(
 
 VoiceSauce's Snack estimates (if that's really what they are) look less erratic.
 
+\newpage
 ####  VoiceSauce Snack vs. PraatSauce estimated bandwidths 
 
 ```{r, echo=FALSE}
@@ -209,6 +218,7 @@ $$
 
 while PraatSauce uses Praat's estimates of formant bandwidths, which appear to be a fixed function based on the frequencies of the adjacent formants.
 
+\newpage
 ### Uncorrected amplitudes
 
 #### PraatSauce vs. VoiceSauce uncorrected H1, H2, H4
@@ -218,7 +228,7 @@ Note that the choice of bandwidth estimator is irrelevant here.
 ggplot(subset(df, method == 'formula' & measure %in% c('H1u', 'H2u', 'H4u')), aes(t_ms, value, colour=measure, linetype=script, group=interaction(method,measure,script))) + geom_line() + facet_wrap(~Filename, scales="free_x")
 ```
 
-
+\newpage
 #### PraatSauce vs. VoiceSauce uncorrected A1, A2, A3
 
 ```{r, echo=FALSE}
@@ -227,6 +237,7 @@ ggplot(subset(df, method == 'formula' & measure %in% c('A1u', 'A2u', 'A3u')), ae
 
 VoiceSauce estimates are consistently 20-25 dB lower than the PraatSauce estimates, and are sometimes negative, which seems...strange. This suggests to me they are being attenuated somewhere, though I have not been able to find the piece of code where this happens.
 
+\newpage
 ### Corrected amplitudes
 
 Here, choice of formant bandwidth estimator potentially matters.
@@ -237,12 +248,17 @@ In these plots, PraatSauce is using Praat and VoiceSauce is using Snack estimate
 
 ```{r, echo=FALSE}
 ggplot(subset(df, method=='estimated' & measure %in% c('H1c', 'H2c', 'H4c')), aes(t_ms, value, colour=measure, linetype=script, group=interaction(method,measure,script))) + geom_line() + facet_wrap(~Filename, scales="free_x") + ggtitle("Estimated bandwidths")
+```
 
+\newpage
+
+```{r, echo=FALSE}
 ggplot(subset(df, method == 'formula' & measure %in% c('H1c', 'H2c', 'H4c')), aes(t_ms, value, colour=measure, linetype=script, group=interaction(method,measure,script))) + geom_line() + facet_wrap(~Filename, scales="free_x") +ggtitle("Formula bandwidths")
 ```
 
 For VoiceSauce, using estimated bandwidths is virtually unnoticeable:
 
+\newpage
 #### VoiceSauce estimated vs. formula bandwidths, H1\*, H2\*, H4\*
 
 ```{r, echo=FALSE}
@@ -251,37 +267,41 @@ ggplot(subset(df, script=='VoiceSauce' & measure %in% c('H1c', 'H2c', 'H4c')), a
 
 For PraatSauce, using the formula bandwidths makes only very minor differences:
 
+\newpage
 #### PraatSauce estimated vs. formula bandwidths, H1\*, H2\*, H4\*
 
 ```{r, echo=FALSE}
 ggplot(subset(df, script=='PraatSauce' & measure %in% c('H1c', 'H2c', 'H4c')), aes(t_ms, value, colour=measure, linetype=method, group=interaction(method,measure,script))) + geom_line() + facet_wrap(~Filename, scales="free_x") 
 ```
 
-
+\newpage
 #### PraatSauce vs. VoiceSauce A1\*, A2\*, A3\*
 
 ```{r, echo=FALSE}
 ggplot(subset(df, method=='estimated' & measure %in% c('A1c', 'A2c', 'A3c')), aes(t_ms, value, colour=measure, linetype=script, group=interaction(method,measure,script))) + geom_line() + facet_wrap(~Filename, scales="free_x") + ggtitle("Estimated bandwidths")
 ```
 
+\newpage
 #### PraatSauce vs. VoiceSauce A1\*, A2\*, A3\*
 ```{r, echo=FALSE}
 ggplot(subset(df, method == 'formula' & measure %in% c('A1c', 'A2c', 'A3c')), aes(t_ms, value, colour=measure, linetype=script, group=interaction(method,measure,script))) + geom_line() + facet_wrap(~Filename, scales="free_x") + ggtitle("Formula bandwidths")
 ```
 
+\newpage
 #### VoiceSauce estimated vs. formula bandwidths, A1\*, A2\*, A3\*
 
 ```{r, echo=FALSE}
 ggplot(subset(df, script=='VoiceSauce' & measure %in% c('A1c', 'A2c', 'A3c')), aes(t_ms, value, colour=measure, linetype=method, group=interaction(method,measure,script))) + geom_line() + facet_wrap(~Filename, scales="free_x") 
 ```
 
-
+\newpage
 #### PraatSauce estimated vs. formula bandwidths, A1\*, A2\*, A3\*
 
 ```{r, echo=FALSE}
 ggplot(subset(df, script=='PraatSauce' & measure %in% c('A1c', 'A2c', 'A3c')), aes(t_ms, value, colour=measure, linetype=method, group=interaction(method,measure,script))) + geom_line() + facet_wrap(~Filename, scales="free_x") 
 ```
 
+\newpage
 #### PraatSauce corrected vs. uncorrected
 
 ```{r, echo=FALSE}
@@ -292,6 +312,7 @@ ggplot(subset(df, script=='PraatSauce' & method=='estimated' & measure %in% c('H
 ggplot(subset(df, script=='PraatSauce' & method=='estimated' & measure %in% c('A1u', 'A2u', 'A3u', 'A1c', 'A2c', 'A3c')), aes(t_ms, value, colour=measure, linetype=corrected, group=interaction(corrected,method,measure))) + geom_line() + facet_wrap(~Filename, scales="free_x") + scale_color_manual(values=c(c(hue_pal()(3)), c(hue_pal()(3)))) + ggtitle("Formula bandwidths")
 ```
 
+\newpage
 #### VoiceSauce corrected vs. uncorrected
 
 ```{r, echo=FALSE}
@@ -300,9 +321,8 @@ ggplot(subset(df, script=='VoiceSauce' & method=='estimated' & measure %in% c('H
 ggplot(subset(df, script=='VoiceSauce' & method=='estimated' & measure %in% c('A1u', 'A2u', 'A3u', 'A1c', 'A2c', 'A3c')), aes(t_ms, value, colour=measure, linetype=corrected, group=interaction(corrected,method,measure))) + geom_line() + facet_wrap(~Filename, scales="free_x") + scale_color_manual(values=c(c(hue_pal()(3)), c(hue_pal()(3)))) + ggtitle("Formula bandwidths")
 ```
 
+\newpage
 ### Corrected differences
-
-More interesting is probably a comparison of the corrected differences.
 
 #### PraatSauce vs. VoiceSauce H1\*-H2\* & H2\*-H4\*
 
@@ -312,7 +332,7 @@ ggplot(subset(df, method == 'estimated' & measure %in% c('H1H2c', 'H2H4c')), aes
 ggplot(subset(df, method == 'formula' & measure %in% c('H1H2c', 'H2H4c')), aes(t_ms, value, colour=measure, linetype=script, group=interaction(method,measure,script))) + geom_line() + facet_wrap(~Filename, scales="free_x") + ggtitle("Formula bandwidths")
 ```
 
-
+\newpage
 ##### PraatSauce vs. VoiceSauce H1\*-A1\*, A2\*, A3\*
 
 ```{r, echo=FALSE}
@@ -321,6 +341,7 @@ ggplot(subset(df, method=='estimated' & measure %in% c('H1A1c', 'H1A2c', 'H1A3c'
 ggplot(subset(df, method=='formula' & measure %in% c('H1A1c', 'H1A2c', 'H1A3c')), aes(t_ms, value, colour=measure, linetype=script, group=interaction(method,measure,script))) + geom_line() + facet_wrap(~Filename, scales='free_x') + ggtitle("Formula bandwidths")
 ```
 
+\newpage
 ### Cepstral peak prominence
 
 ```{r, echo=FALSE}
@@ -329,6 +350,7 @@ ggplot(subset(df, method=='formula' & measure=='CPP'), aes(t_ms, value, group=sc
 
 Praat(Sauce) estimates are (roughly) comparable if smoothed.
 
+\newpage
 ### Harmonic to noise ratios
 
 Here just showing HNR05 and HNR15 for clarity.
@@ -339,6 +361,7 @@ ggplot(subset(df, value>-10 & method=='formula' & measure %in% c('HNR05', 'HNR15
 
 Again, the Praat estimates differ in amplitude, but maintain roughly the same trajectories. However, the PraatSauce implementation is much less sophisticated than that of VoiceSauce, and relies entirely on Praat's `To Harmonicity...` function.
 
+\newpage
 ## Distinguishing voice qualities
 
 ```{r, include=FALSE}
@@ -358,6 +381,7 @@ ggplot(subset(is, measure %in% c('CPP')), aes(t, value, colour=Item, linetype=me
 ```
 
 It would appear that neither procedure is correctly diagnosing `cug`, but inspection of the original audio recording suggests that this token is not realized with especially breathy voice. 
+
 
 ### Low vowels
 ```{r, echo=FALSE}

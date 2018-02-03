@@ -1,6 +1,6 @@
 # Comparisons between PraatSauce and VoiceSauce
 
-This directory contains R Markdown and HTML documents, and associated measurement files, for three small data sets, illustrating how PraatSauce and VoiceSauce perform on each.
+The [comp](./comp) directory contains R Markdown and PDF documents, and associated measurement files, for three small data sets, illustrating how PraatSauce and VoiceSauce perform on each. The PDF rendering is not ideal, but Github currently won't display R Markdown documents (or rendered HTML files) of this size. Thus, these are best viewed locally in R (where you can also generate new plots of your own).
 
 The sample size is extremely small and so clearly no firm conclusions cannot be drawn from this comparison However, some observations:
 
