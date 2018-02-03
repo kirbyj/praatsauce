@@ -57,7 +57,7 @@ Please note that **version 6.0.30 or higher** of Praat is required to make use o
 
 ### Included files
 
-Presently, PraatSauce consists of 7 files:
+Presently, PraatSauce consists of 7 files, found in the `src` directory:
 
 - `praatSauce.praat`, the master script
 - `pitchTracking.praat`, which measures f0
@@ -164,9 +164,10 @@ In the `demo` file `naa_f_sen_3_pnn` for example, compare the difference in the 
 
 PraatSauce assumes that your filenames contain useful information such as subject codes, repetition number, and so forth, separated by a [`separator`](#sep). The output file will include a column for each separator. For example, if your input file has the name `12-cab-w_Audio.wav` and the separator is `-`, the first few of the the output file will look like this:
 
-```Filename,var1,var2,var3,Label,seg_Start,seg_End,t,t_ms,f0...```
-```12-cab-w_Audio,12,cab,w_Audio,a,0.648166,0.902471,1,0.648166,136.096...```
-```12-cab-w_Audio,12,cab,w_Audio,a,0.648166,0.902471,2,0.649166,136.192...```
+```Filename,var1,var2,var3,Label,seg_Start,seg_End,t,t_ms,f0...
+12-cab-w_Audio,12,cab,w_Audio,a,0.648166,0.902471,1,0.648166,136.096...
+12-cab-w_Audio,12,cab,w_Audio,a,0.648166,0.902471,2,0.649166,136.192...
+```
 
 `t` is the rank order of the measurement taken in a `Filename` for a given `Label`. `t_ms` is the absolute time in the file when the measurement was taken.
 
@@ -198,5 +199,5 @@ Shue, Y.-L., P. Keating, C. Vicenik, and K. Yu. (2011). VoiceSauce: a program fo
 
 
 
-*Last modified: 30 January 2018*
+*Last modified: 3 February 2018*
 
