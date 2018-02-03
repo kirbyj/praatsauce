@@ -1,0 +1,5 @@
+- Replace all Matrix-based storage with vector/array (since Praat finally has
+  a real vector data type, hooray)
+- Load Pitch objects (if they exist) to reduce amount of time spent on
+  (possibly redundant) pitch calculations
+- add option to use Mannell (1998) for formant bandwidth calculation

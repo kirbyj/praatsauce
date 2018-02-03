@@ -1,16 +1,13 @@
 # pitchTracking.praat
-# version 0.1
+# version 0.0.1
 #
 # from a script copyright 2009-2010 Timothy Mills <mills.timothy@gmail.com>
 # heavily modified 2011-2017 James Kirby <j.kirby@ed.ac.uk>
+
+# This script is designed to work as part of the "praatsauce" script suite,
+# which can be obtained from:
 #
-# This script is designed to facilitate automatic or manually-corrected
-# generation of glottal pulse marks, for the tracking of f0.
-#
-# It is designed to work as part of the "praatsauce" script suite,
-# which can be obtained from the author:
-#
-#	James Kirby <j.kirby@ed.ac.uk>
+#      https://github.com/kirbyj/praatsauce
 #
 # This script is released under the GNU General Public License version 3.0 
 # The included file "gpl-3.0.txt" or the URL "http://www.gnu.org/licenses/gpl.html" 

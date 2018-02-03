@@ -1,0 +1,6 @@
+0.2.2 (05-01-2018)
+
+- added 16 KHz resampling option
+- added Hawks and Miller bandwidth estimation formula method
+- added regex-based support for excluding intervals, including blank intervals
+- outputs formant bandwidths and amplitude differences
