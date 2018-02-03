@@ -8,7 +8,7 @@ As the name suggests, these scripts owe a debt to the [VoiceSauce](http://www.ph
 
 Most importantly, developing PraatSauce has helped me to appreciate many of the challenges posed by the (semi)automatic analysis of spectral amplitude measurements.
 
-While I referenced the VoiceSauce codebase when developing PraatSauce, be aware that this is not a direct "translation"; PraatSauce makes use of many Praat-internal functions such as `To Harmonicity (cc)`, `To PowerCepstrum`, etc. As such, identical results cannot be expected, even when using the Praat estimation methods for formants and f0 provided by VoiceSauce. Determining precisely where and why the approaches diverge is the subject of ongoing research; some [comparison](#comparison) data are provided for those interested.
+While I referenced the VoiceSauce codebase when developing PraatSauce, be aware that this is not a direct "translation"; PraatSauce makes use of many Praat-internal functions such as `To Harmonicity (cc)`, `To PowerCepstrum`, etc. As such, identical results cannot be expected, even when using the Praat estimation methods for formants and f0 provided by VoiceSauce. Determining precisely where and why the approaches diverge is the subject of ongoing research; some [comparison](#COMPARISONS.md) data are provided for those interested.
 
 The general architecture of PraatSauce is based on a suite of Praat scripts developed by Tim Mills [(2010)](#mills2010spectral), and as a result PraatSauce is released under the same license as these tools. 
 
@@ -172,7 +172,7 @@ Filename,var1,var2,var3,Label,seg_Start,seg_End,t,t_ms,f0...
 
 `t` is the rank order of the measurement taken in a `Filename` for a given `Label`. `t_ms` is the absolute time in the file when the measurement was taken.
 
-The abbreviations in the header otherwise follow the VoiceSauce conventions. `B1, B2, B3` are formant bandwidths; `H1u, H2u...` are uncorrected harmonic amplitudes or differences; and `H1H2c, H1A1c...` are corrected harmonic amplitudes or differences. For more details on the implementation of the corrections, see the accompanying CORRECTIONS.md file.
+The abbreviations in the header otherwise follow the VoiceSauce conventions. `B1, B2, B3` are formant bandwidths; `H1u, H1H2u...` are uncorrected harmonic amplitudes or differences; and `H1c, H1A1c...` are corrected harmonic amplitudes or differences. For more details on the implementation of the corrections, see the [CORRECTIONS.md](#CORRECTIONS.md) file.
 
 ## A note on smoothing
 VoiceSauce has a smoothing parameter and smooths harmonic amplitudes (but not formants or F0) using a (lagged) moving-average window filter [[2]](#fn2). Currently, there is no smoothing option implemented in PraatSauce, as most data analysis software such as R offers a greater range of easily accessible smoothing options that are fiddly to implement in Praat. 
