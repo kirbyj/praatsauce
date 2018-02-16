@@ -51,8 +51,12 @@ form Directory and measures
     sentence outputfile spectral_measures.txt
     comment If measuring in sessions, use this parameter to pick up where you left off.
     integer startToken 1
-    comment Which tier do you want to analyse?
+    comment Which is your interval tier?
     natural tier 2
+    comment Which is your point tier? (Enter 0 if you aren't using a point tier.)
+    natural pointtier 3
+    comment If you are using a point tier: what is the label?
+    word pointlab ov
     comment Enter interval labels you don't want to process as a well-formed regex:
     sentence skip_these_labels ^$|^\s+$|r|c
     comment What character separates linguistic variables in token names? (e.g. "-" or "_")
@@ -91,8 +95,8 @@ beginPause: "Select measurements"
     positive: "maxAnalysisHz", 5500
     comment: "For scripts that display spectrograms, what window size?"
     positive: "spectrogramWindow", 0.005
-	#comment: "Smoothing window size (set to 0 for no smoothing)"
-	#integer: "smoothWindowSize", 20
+    #comment: "Smoothing window size (set to 0 for no smoothing)"
+    #integer: "smoothWindowSize", 20
     #comment: "Select a smoothing algorithm"
     #optionMenu: "smoother", 1
     #option: "Simple moving average"
@@ -252,6 +256,11 @@ header$ = "'header$',Label"
 ## Add header columns for interval start and end times
 header$ = "'header$',seg_Start,seg_End"
 
+### Add header column for point tier, if present
+if pointtier <> 0
+    header$ = "'header$','pointlab$'"
+endif
+
 ## Add header columns for point number and the absolute timepoint value
 header$ = "'header$',t,t_ms"
 
@@ -345,66 +354,77 @@ for currentToken from startToken to numTokens
      # else: Didn't find parameter file; use defaults.
     endif
  
-	## Load TextGrid
+    ## Load TextGrid
     Read from file... 'textgriddir$''currentTextGridFile$'
     textGridID = selected("TextGrid")
 
     ## Parse the token name into a series of linguistic variables.
     lingVars$ = ""
     @splitstring: basename$, separator$
-	if splitstring.strLen > 1
-    	for i from 1 to splitstring.strLen
-       		lingVars$ = lingVars$ + splitstring.array$[i] + ","
-    	endfor
-   	endif
+    if splitstring.strLen > 1
+        for i from 1 to splitstring.strLen
+            lingVars$ = lingVars$ + splitstring.array$[i] + ","
+        endfor
+    endif
 
-	########################################
-	## Loop through non-empty intervals,
-	## ignoring those in skip_these_labels$
-	########################################
+    ## Get the time of the point tier point, if desired
+    if pointtier <> 0
+        npoints = Get number of points... 'pointtier'
+        for p from 1 to npoints
+            plabel = Get label of point... 'pointtier' 'p'
+            if plabel$ == pointlab$
+                ptime = Get time of point... 'pointtier' 'p'
+            endif
+        endfor
+    endif
 
-	num_intervals = Get number of intervals... 'tier'
-	for current_interval from 1 to num_intervals
+    ########################################
+    ## Loop through non-empty intervals,
+    ## ignoring those in skip_these_labels$
+    ########################################
+
+    num_intervals = Get number of intervals... 'tier'
+    for current_interval from 1 to num_intervals
         select 'textGridID'
-		interval_label$ = Get label of interval... 'tier' 'current_interval'
+        interval_label$ = Get label of interval... 'tier' 'current_interval'
 
-		## only process non-empty intervals and those not in skip_these_labels$
-		#if interval_label$ <> "" and index_regex(interval_label$, skip_these_labels$) = 0
-		## only process intervals not in skip_these_labels$ - if you want to skip empty
-		## intervals, include the relevant regex...
-		if index_regex(interval_label$, skip_these_labels$) = 0
+        ## only process non-empty intervals and those not in skip_these_labels$
+        #if interval_label$ <> "" and index_regex(interval_label$, skip_these_labels$) = 0
+        ## only process intervals not in skip_these_labels$ - if you want to skip empty
+        ## intervals, include the relevant regex...
+        if index_regex(interval_label$, skip_these_labels$) = 0
 
-		    echo <'current_interval' of 'num_intervals'> 'interval_label$'
+            echo <'current_interval' of 'num_intervals'> 'interval_label$'
 
-			######################################
-			## Sub-loop: process a single interval			
-			#######################################
+            ######################################
+            ## Sub-loop: process a single interval          
+            #######################################
 
-			## Add interval label column to header
-			header$ = "'header$','interval_label$'"
-		  
-		    ## Determine start and endpoints of current interval for reference
+            ## Add interval label column to header
+            header$ = "'header$','interval_label$'"
+          
+            ## Determine start and endpoints of current interval for reference
             interval_start = Get start time of interval... 'tier' 'current_interval'
             interval_end = Get end time of interval... 'tier' 'current_interval'
 
-		    ## Determine how many timepoints we're measuring at
-		    if measure = 1
-		       timepoints = points
-		    elsif measure = 2
-		       timepoints = round(((interval_end - interval_start)*1000)/points)
-		    endif
-		    
-		    ## Report current token number, name, and lingVars$:
-		    echo <'currentToken' of 'numTokens'> 'basename$':  'lingVars$'
-		    
-		    ## Manually check this token at random? 
-		    randomNumber = randomUniform(0,1)
-		    if manualCheckFrequency > randomNumber
-		        manualCheck = 1
-		    else
-		       manualCheck = 0
-		    endif 
-		 
+            ## Determine how many timepoints we're measuring at
+            if measure = 1
+               timepoints = points
+            elsif measure = 2
+               timepoints = round(((interval_end - interval_start)*1000)/points)
+            endif
+            
+            ## Report current token number, name, and lingVars$:
+            echo <'currentToken' of 'numTokens'> 'basename$':  'lingVars$'
+            
+            ## Manually check this token at random? 
+            randomNumber = randomUniform(0,1)
+            if manualCheckFrequency > randomNumber
+                manualCheck = 1
+            else
+               manualCheck = 0
+            endif 
+         
             ####################################################
             ## Since we know we are processing this interval 
             ## we can just pass the interval number to the 
@@ -412,137 +432,142 @@ for currentToken from startToken to numTokens
             ## this if the interval number is non-zero
             ####################################################
             
-		    ################################
-		    ### Pitch tracking
-		    ################################
-		    
-		    if pitchTracking
-		        if (fileReadable ("'inputdir$''basename$'.Pitch"))
-		            Read from file... 'inputdir$''basename$'.Pitch
-		        else
-		            select 'soundID'
-		            To Pitch... 0 'f0min' 'f0max'
+            ################################
+            ### Pitch tracking
+            ################################
+            
+            if pitchTracking
+                if (fileReadable ("'inputdir$''basename$'.Pitch"))
+                    Read from file... 'inputdir$''basename$'.Pitch
+                else
+                    select 'soundID'
+                    To Pitch... 0 'f0min' 'f0max'
                     Interpolate
-		        endif
-		        pitchID = selected("Pitch")
-		        plus soundID
-		        plus textGridID
-		        execute pitchTracking.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'manualCheck' 1 'measure' 'timepoints' 'points'
-		       
-		        ### Save output Matrix
-		        select Matrix PitchAverages
-		        pitchResultsID = selected("Matrix")
-		        select 'pitchID'
-		        Write to text file... 'inputdir$''basename$'.Pitch
-		    endif
-		    ### (end of pitch tracking)
-		    
-		    ###################### 
-		    ### Formant measures
-		    ###################### 
-		    
-		    if formantMeasures
-		        select 'soundID'
-		        plus 'textGridID'
-		        execute formantMeasures.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'manualCheck' 'saveAsEPS' 'useBandwidthFormula' 'useExistingFormants' 'inputdir$' 'basename$' 'listenToSound' 'timeStep' 'maxNumFormants' 'maxAnalysisHz' 'preEmphFrom' 'f1ref' 'f2ref' 'f3ref' 'spectrogramWindow' 'measure' 'timepoints' 'points' 'formantTracking' 
-		       	select Matrix FormantAverages
-		       	formantResultsID = selected("Matrix")
-		    
-		    endif
-		    ### (end of formant measures)
-		    
-		    ###################################################################################### 
-		    ### Spectral corrections (including H1*, H2*, H4, A1*, A2*, A3* from Iseli et al.)
-		    ###################################################################################### 
-		    
-		    if spectralMeasures
-		        # Load Formant object from disk.  If not possible, quit with error message
-		        if fileReadable ("'inputdir$''basename$'.Formant")
-		            Read from file... 'inputdir$''basename$'.Formant
-		            formantID = selected("Formant")
-		        else
-		            exit Cannot load formant data file <'name$'.Formant>.
-		        endif
-		    
-		        if (fileReadable ("'inputdir$''basename$'.Pitch"))
-		            Read from file... 'inputdir$''basename$'.Pitch
-		        else
-		            select 'soundID'
-		            To Pitch... 0 'f0min' 'f0max'
-		        endif
-		        pitchID = selected("Pitch")
-		        select 'soundID'
-		        plus 'textGridID'
-		        plus 'formantID'
-		        plus 'pitchID'
-		        execute spectralMeasures.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'saveAsEPS' 'useBandwidthFormula' 'inputdir$' 'manualCheck' 'maxDisplayHz' 'measure' 'timepoints' 'points' 'f0min' 'f0max'
-		    
-		        ## Assign ID to output matrix
-		        select Matrix IseliMeasures
-		        iseliResultsID = selected("Matrix")
-		    
-		    endif 
-		    ### (end of spectralMagnitude measure)
-		    
-		    # Report results
-		    #echo <token 'currentToken' of 'numTokens'> 'results$'
-		    
-		    ## Here we:
-		    ##  1. look for results matrices
-		    ##  2. Write as many lines as the matrices have rows
-		    
-		    for t from 1 to timepoints
-		    	# Begin building results string with file and linguistic info.
-		    	results$ = "'basename$','lingVars$''interval_label$','interval_start:6','interval_end:6','t'"
-		        # have we already written the ms time or do we still need to write it?
-		        msflag = 0
-		 
-		        if pitchTracking
-		            select 'pitchResultsID'
-		            if msflag = 0
-		                mspoint = Get value in cell... t 1
-		       		    results$ = "'results$','mspoint:6'"
-		                msflag = 1
-		            endif
-		       	    currentPitch = Get value in cell... t 2 
-		       		results$ = "'results$','currentPitch:3'"
-		        endif
-		    
-		        if formantMeasures 
-		            select 'formantResultsID'
-		            if msflag = 0
-		                mspoint = Get value in cell... t 1
-		       		    results$ = "'results$','mspoint:6'"
-		                msflag = 1
-		            endif
-		     		for formant from 2 to 4
-		       		    currentFormant = Get value in cell... t 'formant'
-		       		    results$ = "'results$','currentFormant:3'"
-		     		endfor
-		     		for bandwidth from 5 to 7
-		       		    currentBandwidth = Get value in cell... t 'bandwidth'
-		       		    results$ = "'results$','currentBandwidth:3'"
-		     		endfor
-		        endif			
-		    
-		        if spectralMeasures
-		            select 'iseliResultsID'
-		            if msflag = 0
-		                mspoint = Get value in cell... t 1
-		       		    results$ = "'results$','mspoint:6'"
-		            endif
-		       	    for measurement from 2 to 31
-		       		    aMeasure = Get value in cell... t 'measurement'
-		       		    results$ = "'results$','aMeasure:3'"
-		       	    endfor	
-		        endif
-		    
-		        ## FINALLY write the thing out....for this timepoint
-		        fileappend 'outputfile$' 'results$''newline$'
-		    endfor	
+                endif
+                pitchID = selected("Pitch")
+                plus soundID
+                plus textGridID
+                execute pitchTracking.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'manualCheck' 1 'measure' 'timepoints' 'points'
+               
+                ### Save output Matrix
+                select Matrix PitchAverages
+                pitchResultsID = selected("Matrix")
+                select 'pitchID'
+                Write to text file... 'inputdir$''basename$'.Pitch
+            endif
+            ### (end of pitch tracking)
+            
+            ###################### 
+            ### Formant measures
+            ###################### 
+            
+            if formantMeasures
+                select 'soundID'
+                plus 'textGridID'
+                execute formantMeasures.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'manualCheck' 'saveAsEPS' 'useBandwidthFormula' 'useExistingFormants' 'inputdir$' 'basename$' 'listenToSound' 'timeStep' 'maxNumFormants' 'maxAnalysisHz' 'preEmphFrom' 'f1ref' 'f2ref' 'f3ref' 'spectrogramWindow' 'measure' 'timepoints' 'points' 'formantTracking' 
+                select Matrix FormantAverages
+                formantResultsID = selected("Matrix")
+            
+            endif
+            ### (end of formant measures)
+            
+            ###################################################################################### 
+            ### Spectral corrections (including H1*, H2*, H4, A1*, A2*, A3* from Iseli et al.)
+            ###################################################################################### 
+            
+            if spectralMeasures
+                # Load Formant object from disk.  If not possible, quit with error message
+                if fileReadable ("'inputdir$''basename$'.Formant")
+                    Read from file... 'inputdir$''basename$'.Formant
+                    formantID = selected("Formant")
+                else
+                    exit Cannot load formant data file <'name$'.Formant>.
+                endif
+            
+                if (fileReadable ("'inputdir$''basename$'.Pitch"))
+                    Read from file... 'inputdir$''basename$'.Pitch
+                else
+                    select 'soundID'
+                    To Pitch... 0 'f0min' 'f0max'
+                endif
+                pitchID = selected("Pitch")
+                select 'soundID'
+                plus 'textGridID'
+                plus 'formantID'
+                plus 'pitchID'
+                execute spectralMeasures.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'saveAsEPS' 'useBandwidthFormula' 'inputdir$' 'manualCheck' 'maxDisplayHz' 'measure' 'timepoints' 'points' 'f0min' 'f0max'
+            
+                ## Assign ID to output matrix
+                select Matrix IseliMeasures
+                iseliResultsID = selected("Matrix")
+            
+            endif 
+            ### (end of spectralMagnitude measure)
+            
+            # Report results
+            #echo <token 'currentToken' of 'numTokens'> 'results$'
+            
+            ## Here we:
+            ##  1. look for results matrices
+            ##  2. Write as many lines as the matrices have rows
+            
+            for t from 1 to timepoints
+                # Begin building results string with file and linguistic info.
+                if pointtier == 0
+                    results$ = "'basename$','lingVars$''interval_label$','interval_start:6','interval_end:6','t'"
+                else
+                    results$ = "'basename$','lingVars$''interval_label$','interval_start:6','interval_end:6','ptime','t'"
+                endif
+
+                # have we already written the ms time or do we still need to write it?
+                msflag = 0
+         
+                if pitchTracking
+                    select 'pitchResultsID'
+                    if msflag = 0
+                        mspoint = Get value in cell... t 1
+                        results$ = "'results$','mspoint:6'"
+                        msflag = 1
+                    endif
+                    currentPitch = Get value in cell... t 2 
+                    results$ = "'results$','currentPitch:3'"
+                endif
+            
+                if formantMeasures 
+                    select 'formantResultsID'
+                    if msflag = 0
+                        mspoint = Get value in cell... t 1
+                        results$ = "'results$','mspoint:6'"
+                        msflag = 1
+                    endif
+                    for formant from 2 to 4
+                        currentFormant = Get value in cell... t 'formant'
+                        results$ = "'results$','currentFormant:3'"
+                    endfor
+                    for bandwidth from 5 to 7
+                        currentBandwidth = Get value in cell... t 'bandwidth'
+                        results$ = "'results$','currentBandwidth:3'"
+                    endfor
+                endif           
+            
+                if spectralMeasures
+                    select 'iseliResultsID'
+                    if msflag = 0
+                        mspoint = Get value in cell... t 1
+                        results$ = "'results$','mspoint:6'"
+                    endif
+                    for measurement from 2 to 31
+                        aMeasure = Get value in cell... t 'measurement'
+                        results$ = "'results$','aMeasure:3'"
+                    endfor  
+                endif
+            
+                ## FINALLY write the thing out....for this timepoint
+                fileappend 'outputfile$' 'results$''newline$'
+            endfor  
             ## end of writing out timepoints
             
-		endif
+        endif
         ## end of check to see if we have a non-empty interval
     endfor
     ## end of sub-loop processing single INTERVAL
@@ -550,7 +575,7 @@ for currentToken from startToken to numTokens
     select all
     minus Strings fileList
     Remove
-	## end of loop processing single FILE
+    ## end of loop processing single FILE
 
 endfor
 ## (End main analysis loop, which cycles through ALL TOKENS)
