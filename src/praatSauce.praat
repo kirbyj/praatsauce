@@ -51,13 +51,13 @@ form Directory and measures
     comment If measuring in sessions, use this parameter to pick up where you left off:
     natural startToken 1
     comment Which is your interval tier?
-    natural tier 2
+    natural interval_tier 2
     comment Enter interval labels you don't want to process as a well-formed regex:
     sentence skip_these_labels ^$|^\s+$|r|c
     comment Which is your point tier? (Enter 0 if you aren't using a point tier)
-    integer pointtier 0
+    integer point_tier 0
     comment If using a point tier: enter the labels of interest, separated by spaces:
-    sentence pointlab ov cv rv
+    sentence point_tier_labels ov cv rv
     comment What character separates linguistic variables in token names? (e.g. "-" or "_")
     sentence separator _
     #comment Some measures (formant measure, pitch tracking, h1-a3, a1-a2) 
@@ -257,8 +257,8 @@ header$ = "'header$',seg_Start,seg_End"
 
 ## Add header columns for point tier points
 ## One column is added per label
-if pointtier <> 0
-    @splitstring: pointlab$, " "
+if point_tier <> 0
+    @splitstring: point_tier_labels$, " "
     number_of_points = splitstring.strLen
     for i from 1 to number_of_points
         thisCol$ = splitstring.array$[i]
@@ -373,24 +373,24 @@ for currentToken from startToken to numTokens
     endif
 
     ## Find the point tier point times, if using the point tier
-    if pointtier <> 0
+    if point_tier <> 0
         ## ptimes$ will be string with number_of_points comma-separated values
         ptimes$ = ""
         ## slightly complicated because not all files have all points
-        @splitstring: pointlab$, " "
+        @splitstring: point_tier_labels$, " "
         ## points_on_tier is number of points on current TextGrid point tier
-        points_on_tier = Get number of points... 'pointtier'
+        points_on_tier = Get number of points... 'point_tier'
         ## for each item in @splitstring, write a time or NA
         for c from 1 to number_of_points
             ## set a flag so that we only write one per pass through the loop
             label_match = 0
             clabel$ = splitstring.array$[c]
             for p from 1 to points_on_tier
-                plabel$ = Get label of point... 'pointtier' 'p'
+                plabel$ = Get label of point... 'point_tier' 'p'
                 if plabel$ = clabel$
                     label_match = 1
                     ## record and truncate time of point
-                    ptime = Get time of point... 'pointtier' 'p'
+                    ptime = Get time of point... 'point_tier' 'p'
                     ptime = 'ptime:6'
                 endif
             endfor
@@ -408,10 +408,10 @@ for currentToken from startToken to numTokens
     ## ignoring those in skip_these_labels$
     ########################################
 
-    num_intervals = Get number of intervals... 'tier'
+    num_intervals = Get number of intervals... 'interval_tier'
     for current_interval from 1 to num_intervals
         select 'textGridID'
-        interval_label$ = Get label of interval... 'tier' 'current_interval'
+        interval_label$ = Get label of interval... 'interval_tier' 'current_interval'
 
         ## only process non-empty intervals and those not in skip_these_labels$
         #if interval_label$ <> "" and index_regex(interval_label$, skip_these_labels$) = 0
@@ -429,8 +429,8 @@ for currentToken from startToken to numTokens
             header$ = "'header$','interval_label$'"
           
             ## Determine start and endpoints of current interval for reference
-            interval_start = Get start time of interval... 'tier' 'current_interval'
-            interval_end = Get end time of interval... 'tier' 'current_interval'
+            interval_start = Get start time of interval... 'interval_tier' 'current_interval'
+            interval_end = Get end time of interval... 'interval_tier' 'current_interval'
 
             ## Determine how many timepoints we're measuring at
             if measure = 1
@@ -472,7 +472,7 @@ for currentToken from startToken to numTokens
                 pitchID = selected("Pitch")
                 plus soundID
                 plus textGridID
-                execute pitchTracking.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'manualCheck' 1 'measure' 'timepoints' 'points'
+                execute pitchTracking.praat 'interval_tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'manualCheck' 1 'measure' 'timepoints' 'points'
                
                 ### Save output Matrix
                 select Matrix PitchAverages
@@ -489,7 +489,7 @@ for currentToken from startToken to numTokens
             if formantMeasures
                 select 'soundID'
                 plus 'textGridID'
-                execute formantMeasures.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'manualCheck' 'saveAsEPS' 'useBandwidthFormula' 'useExistingFormants' 'inputdir$' 'basename$' 'listenToSound' 'timeStep' 'maxNumFormants' 'maxAnalysisHz' 'preEmphFrom' 'f1ref' 'f2ref' 'f3ref' 'spectrogramWindow' 'measure' 'timepoints' 'points' 'formantTracking' 
+                execute formantMeasures.praat 'interval_tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'manualCheck' 'saveAsEPS' 'useBandwidthFormula' 'useExistingFormants' 'inputdir$' 'basename$' 'listenToSound' 'timeStep' 'maxNumFormants' 'maxAnalysisHz' 'preEmphFrom' 'f1ref' 'f2ref' 'f3ref' 'spectrogramWindow' 'measure' 'timepoints' 'points' 'formantTracking'
                 select Matrix FormantAverages
                 formantResultsID = selected("Matrix")
             
@@ -520,7 +520,7 @@ for currentToken from startToken to numTokens
                 plus 'textGridID'
                 plus 'formantID'
                 plus 'pitchID'
-                execute spectralMeasures.praat 'tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'saveAsEPS' 'useBandwidthFormula' 'inputdir$' 'manualCheck' 'maxDisplayHz' 'measure' 'timepoints' 'points' 'f0min' 'f0max'
+                execute spectralMeasures.praat 'interval_tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'saveAsEPS' 'useBandwidthFormula' 'inputdir$' 'manualCheck' 'maxDisplayHz' 'measure' 'timepoints' 'points' 'f0min' 'f0max'
             
                 ## Assign ID to output matrix
                 select Matrix IseliMeasures
@@ -538,7 +538,7 @@ for currentToken from startToken to numTokens
             
             for t from 1 to timepoints
                 # Begin building results string with file and linguistic info.
-                if pointtier == 0
+                if point_tier == 0
                     results$ = "'basename$','lingVars$''interval_label$','interval_start:6','interval_end:6','t'"
                 else
                     results$ = "'basename$','lingVars$''interval_label$','interval_start:6','interval_end:6','ptimes$''t'"
