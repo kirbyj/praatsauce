@@ -88,14 +88,21 @@ Open and run the `praatSauce.praat` script. There are several pages of parameter
 
 If you want to start from a specific token (e.g. because the script was interrupted due to some kind of error and you don't want to start all over from the beginning), you can change the value of `startToken`. You will need to watch the info window to see the token number, or you can figure it out from the Strings list. If you do this, make sure to rename the existing version of `spectral_measures.txt` as it will be silently overwritten.
 
-#### tier
+#### interval tier
 
 The `tier` variable is the tier of interest. Note that **every labelled interval on this tier will be analyzed**. This means if you have intervals for both e.g. stop closure and rime, you will get spectral measurements for both intervals. 
-
 
 #### skip these labels
 
 If there are interval labels you don't want PraatSauce to extract measurements for, enter them here as a well-formed regex. `^$` is the empty string (an interval without a label). `^\s$` is a whitespace character (an interval that you meant to leave blank, but has an accidental, invisible space in it). Separate multiple labels with a pipe `|`. See the Praat manual for details.
+
+#### point tier
+
+If you have events recorded on a point tier, enter the tier number here. Otherwise leave as 0 (the default).
+
+#### point tier labels
+
+If `point_tier` != 0, enter the labels of the events marked on the point tier, separated by spaces. One header column will be added for each label. All other labels will be ignored. 
 
 <a name="sep"></a>
 #### separator
