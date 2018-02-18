@@ -1,6 +1,5 @@
 ###############
 # PraatSauce
-# version 0.2.2
 ###############
 
 # Copyright (c) 2018 James Kirby
@@ -19,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-# PraatSauce incorporates 
+# Portions of PraatSauce are based on
 
 # spectralTiltMaster.praat
 # version 0.0.5
@@ -49,16 +48,16 @@ form Directory and measures
     sentence textgriddir /Users/jkirby/Documents/Projects/praatsauce/comp/madurese/
     sentence outputdir /Users/jkirby/Documents/Projects/praatsauce/comp/
     sentence outputfile spectral_measures.txt
-    comment If measuring in sessions, use this parameter to pick up where you left off.
-    integer startToken 1
+    comment If measuring in sessions, use this parameter to pick up where you left off:
+    natural startToken 1
     comment Which is your interval tier?
     natural tier 2
-    comment Which is your point tier? (Enter 0 if you aren't using a point tier.)
-    natural pointtier 3
-    comment If you are using a point tier: what is the label?
-    word pointlab ov
     comment Enter interval labels you don't want to process as a well-formed regex:
     sentence skip_these_labels ^$|^\s+$|r|c
+    comment Which is your point tier? (Enter 0 if you aren't using a point tier)
+    integer pointtier 0
+    comment If using a point tier: enter the labels of interest, separated by spaces:
+    sentence pointlab ov cv rv
     comment What character separates linguistic variables in token names? (e.g. "-" or "_")
     sentence separator _
     #comment Some measures (formant measure, pitch tracking, h1-a3, a1-a2) 
@@ -256,9 +255,15 @@ header$ = "'header$',Label"
 ## Add header columns for interval start and end times
 header$ = "'header$',seg_Start,seg_End"
 
-### Add header column for point tier, if present
+## Add header columns for point tier points
+## One column is added per label
 if pointtier <> 0
-    header$ = "'header$','pointlab$'"
+    @splitstring: pointlab$, " "
+    number_of_points = splitstring.strLen
+    for i from 1 to number_of_points
+        thisCol$ = splitstring.array$[i]
+        header$ = "'header$','thisCol$'"
+    endfor
 endif
 
 ## Add header columns for point number and the absolute timepoint value
@@ -367,15 +372,35 @@ for currentToken from startToken to numTokens
         endfor
     endif
 
-    ## Get the time of the point tier point, if desired
+    ## Find the point tier point times, if using the point tier
     if pointtier <> 0
-        npoints = Get number of points... 'pointtier'
-        for p from 1 to npoints
-            plabel = Get label of point... 'pointtier' 'p'
-            if plabel$ == pointlab$
-                ptime = Get time of point... 'pointtier' 'p'
-            endif
-        endfor
+        ## ptimes$ will be string with number_of_points comma-separated values
+        ptimes$ = ""
+        ## slightly complicated because not all files have all points
+        @splitstring: pointlab$, " "
+        ## points_on_tier is number of points on current TextGrid point tier
+        points_on_tier = Get number of points... 'pointtier'
+        ## for each item in @splitstring, write a time or NA
+        for c from 1 to number_of_points
+            ## set a flag so that we only write one per pass through the loop
+            label_match = 0
+            clabel$ = splitstring.array$[c]
+            for p from 1 to points_on_tier
+                plabel$ = Get label of point... 'pointtier' 'p'
+                if plabel$ = clabel$
+                    label_match = 1
+                    ## record and truncate time of point
+                    ptime = Get time of point... 'pointtier' 'p'
+                    ptime = 'ptime:6'
+                endif
+            endfor
+            ## now: we either found a match for this clabel$, or we didn't
+            if label_match == 1
+                ptimes$ = ptimes$ + string$(ptime) + ","
+            else
+                ptimes$ = ptimes$ + "NA," 
+            endif 
+        endfor  
     endif
 
     ########################################
@@ -516,7 +541,7 @@ for currentToken from startToken to numTokens
                 if pointtier == 0
                     results$ = "'basename$','lingVars$''interval_label$','interval_start:6','interval_end:6','t'"
                 else
-                    results$ = "'basename$','lingVars$''interval_label$','interval_start:6','interval_end:6','ptime','t'"
+                    results$ = "'basename$','lingVars$''interval_label$','interval_start:6','interval_end:6','ptimes$''t'"
                 endif
 
                 # have we already written the ms time or do we still need to write it?
