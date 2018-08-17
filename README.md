@@ -57,9 +57,10 @@ Please note that **version 6.0.30 or higher** of Praat is required to make use o
 
 ### Included files
 
-Presently, PraatSauce consists of 7 files, found in the `src` directory:
+Presently, PraatSauce consists of 8 files, found in the `src` directory:
 
 - `praatSauce.praat`, the master script
+- `shellSauce.praat`, a version of the master script with all parameters in a single form, for easy shell scripting
 - `pitchTracking.praat`, which measures f0
 - `formantMeasures.praat`, which measures F1-F3
 - `spectralMeasurements.praat`, which measures harmonic amplitudes, formant bandwidths, harmonics-to-noise ratios, and cepstral peak amplitudes, returning corrections where appropriate
@@ -188,6 +189,12 @@ In terms of comparing between VoiceSauce and PraatSauce output: one thing to not
 
 
 <small><a name="fn2">[2]</a> Actually, F0 is smoothed, but using a different procedure.</small>
+
+## Calling from the command line
+
+If you would like to script **praatSauce** from the shell, use ```shellSauce.praat```, which collapses all argument windows into a single window. (If all arguments are included in a single form, which is what is needed for Praat to process all command line arguments when called from the shell due to the [single form requirement](http://praat-users.yahoogroups.co.narkive.com/UF4twWwZ/size-of-the-form-windows-in-scipts), the resulting form window will be too big for most screens (since resizing the window is [not possible](http://praat-users.yahoogroups.co.narkive.com/UF4twWwZ/size-of-the-form-windows-in-scipts)).
+
+For details of how to use Praat from the command line on your operating system, see the Praat manual (currently section 6.9 in Praat version 6.0.37).
 
 ## References
 
