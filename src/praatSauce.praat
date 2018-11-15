@@ -53,7 +53,7 @@ form Directory and measures
     comment Which is your interval tier?
     natural interval_tier 2
     comment Enter interval labels you don't want to process as a well-formed regex:
-    sentence skip_these_labels ^$|^\s+$|r|c
+    sentence skip_these_labels ^$|^\s+$|r
     comment Which is your point tier? (Enter 0 if you aren't using a point tier)
     integer point_tier 0
     comment If using a point tier: enter the labels of interest, separated by spaces:
