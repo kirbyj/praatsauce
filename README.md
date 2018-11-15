@@ -95,7 +95,7 @@ The `tier` variable is the tier of interest. Note that **every labelled interval
 
 #### skip these labels
 
-If there are interval labels you don't want PraatSauce to extract measurements for, enter them here as a well-formed regex. `^$` is the empty string (an interval without a label). `^\s$` is a whitespace character (an interval that you meant to leave blank, but has an accidental, invisible space in it). Separate multiple labels with a pipe `|`. See the Praat manual for details.
+If there are interval labels you don't want PraatSauce to extract measurements for, enter them here as a well-formed regex. `^$` is the empty string (an interval without a label). `^\s$` is a whitespace character (an interval that you meant to leave blank, but has an accidental, invisible space in it). Separate multiple labels with a pipe `|`. The default regex skips empty intervals, blank intervals, and intervals containing `r`. See the Praat manual for further details.
 
 #### point tier
 
