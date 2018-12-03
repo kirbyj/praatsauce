@@ -158,6 +158,15 @@ printline
 
 
 ###
+## Add redundant trailing directory slashes since everyone 
+## forgets, and it doesn't matter if they're doubled
+###
+
+inputdir$ = inputdir$ + "/" 
+outputdir$ = outputdir$ + "/"
+textgriddir$ = textgriddir$ + "/"
+
+###
 ## If outputfile already exists, delete it (so that it can be 
 ## replaced with a new version).  Also, clear info screen.
 ###
