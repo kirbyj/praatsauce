@@ -142,13 +142,16 @@ Here you have the options to:
 - set the maximum number of formants estimated and the point of pre-emphasis
 - smooth formant tracks using Praat's `Smooth...` function, and change the reference formant values for a neutral vowel
 - save the visual output as an EPS file
-- use existing formant objects if you have them, or explictly ignore them even if you do have them (by leaving the box unchecked)
+- use existing Formant objects if you have them, or explictly ignore and overwrite them even if you do have them (by leaving the box unchecked)
 - decide whether to use Praat's estimates of formant bandwidths, or the Hawks and Miller formula which is the VoiceSauce default
 
 
 ### Page 4: Pitch tracking options
 
-Here you can change the lower and upper limits for estimated f0. You may want to change these if you are working with data exclusively from a male or female speaker.
+Here you can:
+
+- use existing Pitch objects if you have them, or explictly ignore and overwrite them even if you do have them (by leaving the box unchecked)
+- change the lower and upper limits for estimated f0. You probably want to change these depending on the speaker's pitch range.
 
 ### Page 5: Got all that?
 
