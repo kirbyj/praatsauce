@@ -134,16 +134,14 @@ endif
 ###
 ### Fifth, create Formant object (or use existing Formant object if present)
 ###
+
 if useExistingFormants = 1
-# Load existing Formant object if available
+# Load existing Formant object if available and selected
     if fileReadable ("'inputdir$''basename$'.Formant")
         Read from file... 'inputdir$''basename$'.Formant
         formantID = selected("Formant")
     else
-        ## If can't load, create
-        select 'soundID'
-        To Formant (burg)... timeStep maxNumFormants maxFormantHz windowLength preEmphFrom
-        formantID = selected("Formant")
+    	exit Cannot load Pitch object <'basename$'.Pitch>.
     endif
 ## else create 
 else  
