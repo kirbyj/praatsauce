@@ -484,7 +484,11 @@ for currentToken from startToken to numTokens
 				# else create
                 else
                     select 'soundID'
-                    To Pitch... 0 'f0min' 'f0max'
+					## old way: autocorrelation method
+                    #To Pitch... 0 'f0min' 'f0max'
+					## new way: cross-correlation method
+					## TODO April 2019: add this as a user option
+                    To Pitch (cc)... 0 'f0min' 15 0 0.03 0.45 0.01 0.35 0.14 'f0max'
                     Interpolate
                 endif
                 pitchID = selected("Pitch")
@@ -519,35 +523,49 @@ for currentToken from startToken to numTokens
             ###################################################################################### 
             
             if spectralMeasures
-				# Since it's possible we might want spectral measures on their own, run these checks again
-                # Load Formant object or create new one
-                if useExistingFormants = 1 
-					if fileReadable ("'inputdir$''basename$'.Formant")
-                    	Read from file... 'inputdir$''basename$'.Formant
-                    	formantID = selected("Formant")
-                	else
-                    	exit Cannot load Pitch object <'basename$'.Formant>.
+				# Since it's possible we might want spectral measures on their own, run these checks again, 
+				# checking first to see if the objects are already in the list
+
+				# if there isn't already a Formant object in the list...
+				select 'formantID'
+				numSelectedFormant = numberOfSelected("Formant")
+				if numSelectedFormant<>1
+					# if you want to load an existing object from disk...
+					if useExistingFormants = 1 
+						if fileReadable ("'inputdir$''basename$'.Formant")
+							Read from file... 'inputdir$''basename$'.Formant
+							formantID = selected("Formant")
+						else
+							exit Cannot load Pitch object <'basename$'.Formant>.
+						endif
+					# else create
+					else
+						select 'soundID'
+						To Formant (burg)... timeStep maxNumFormants maxFormantHz windowLength preEmphFrom
+						formantID = selected("Formant")
 					endif
-				# else create
-				else
-    				select 'soundID'
-    				To Formant (burg)... timeStep maxNumFormants maxFormantHz windowLength preEmphFrom
-    				formantID = selected("Formant")
-                endif
-           
-				if useExistingPitch = 1 
-                	if (fileReadable ("'inputdir$''basename$'.Pitch"))
-                    	Read from file... 'inputdir$''basename$'.Pitch
-                		pitchID = selected("Pitch")
-                	else
-                    	exit Cannot load Pitch object <'basename$'.Pitch>.
+				endif
+
+				# if there isn't already a Pitch object in the list...           
+				select 'pitchID'
+				numPitch = numberOfSelected("Pitch")
+				if numPitch<>1
+					# if you want to load it from disk...
+					if useExistingPitch = 1 
+						if (fileReadable ("'inputdir$''basename$'.Pitch"))
+							Read from file... 'inputdir$''basename$'.Pitch
+							pitchID = selected("Pitch")
+						else
+							exit Cannot load Pitch object <'basename$'.Pitch>.
+						endif
+					# else create
+					else
+						select 'soundID'
+						#To Pitch... 0 'f0min' 'f0max'
+                    	To Pitch (cc)... 0 'f0min' 15 0 0.03 0.45 0.01 0.35 0.14 'f0max'
+						pitchID = selected("Pitch")
 					endif
-				# else create
-				else
-                    select 'soundID'
-                    To Pitch... 0 'f0min' 'f0max'
-                	pitchID = selected("Pitch")
-                endif
+				endif
 
                 select 'soundID'
                 plus 'textGridID'
