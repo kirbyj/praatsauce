@@ -430,7 +430,6 @@ for currentToken from startToken to numTokens
         ## only process intervals not in skip_these_labels$ - if you want to skip empty
         ## intervals, include the relevant regex...
         if index_regex(interval_label$, skip_these_labels$) = 0
-
             echo <'current_interval' of 'num_intervals'> 'interval_label$'
 
             ######################################
@@ -474,23 +473,30 @@ for currentToken from startToken to numTokens
             ################################
             
             if pitchTracking
-                if useExistingPitch = 1 
-					if fileReadable ("'inputdir$''basename$'.Pitch")
-                    	Read from file... 'inputdir$''basename$'.Pitch
-						pause Using existing Pitch object	
+                # if there isn't already a Pitch object in the list...
+                nocheck select 'pitchID'
+                numPitch = numberOfSelected("Pitch")
+                if numPitch<>1
+                    # if you want to load an existing object from disk...
+					if useExistingPitch = 1 
+						if fileReadable ("'inputdir$''basename$'.Pitch")
+							Read from file... 'inputdir$''basename$'.Pitch
+							pause Using existing Pitch object	
+						else
+							exit Cannot load Pitch object <'basename$'.Pitch>.
+						endif
+					# else create
 					else
-                    	exit Cannot load Pitch object <'basename$'.Pitch>.
+						select 'soundID'
+						## old way: autocorrelation method
+						#To Pitch... 0 'f0min' 'f0max'
+						## new way: cross-correlation method
+						## TODO April 2019: add this as a user option
+						To Pitch (cc)... 0 'f0min' 15 0 0.03 0.45 0.01 0.35 0.14 'f0max'
+						Interpolate
 					endif
-				# else create
-                else
-                    select 'soundID'
-					## old way: autocorrelation method
-                    #To Pitch... 0 'f0min' 'f0max'
-					## new way: cross-correlation method
-					## TODO April 2019: add this as a user option
-                    To Pitch (cc)... 0 'f0min' 15 0 0.03 0.45 0.01 0.35 0.14 'f0max'
-                    Interpolate
-                endif
+				endif
+				## one way or another you now have a Pitch object
                 pitchID = selected("Pitch")
                 plus soundID
                 plus textGridID
@@ -499,6 +505,7 @@ for currentToken from startToken to numTokens
                 ### Save output Matrix
                 select Matrix PitchAverages
                 pitchResultsID = selected("Matrix")
+				## TODO April 2019: we are re/saving this object every time through...
                 select 'pitchID'
                 Write to text file... 'inputdir$''basename$'.Pitch
             endif
@@ -509,25 +516,45 @@ for currentToken from startToken to numTokens
             ###################### 
             
             if formantMeasures
+                # if there isn't already a Formant object in the list...
+                nocheck select 'formantID'
+                numSelectedFormant = numberOfSelected("Formant")
+                if numSelectedFormant<>1
+                    # if you want to load an existing object from disk...
+					if useExistingFormants = 1
+					# Load existing Formant object if available and selected
+						if fileReadable ("'inputdir$''basename$'.Formant")
+							Read from file... 'inputdir$''basename$'.Formant
+							formantID = selected("Formant")
+						else
+							exit Cannot load Formant object <'basename$'.Formant>.
+						endif
+					## else create 
+					else
+						select 'soundID'
+						To Formant (burg)... timeStep maxNumFormants maxFormantHz windowLength preEmphFrom
+						formantID = selected("Formant")
+					endif
+				endif
                 select 'soundID'
                 plus 'textGridID'
+                plus 'formantID'
                 execute formantMeasures.praat 'interval_tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'manualCheck' 'saveAsEPS' 'useBandwidthFormula' 'useExistingFormants' 'inputdir$' 'basename$' 'listenToSound' 'timeStep' 'maxNumFormants' 'maxFormantHz' 'preEmphFrom' 'f1ref' 'f2ref' 'f3ref' 'spectrogramWindow' 'measure' 'timepoints' 'points' 'formantTracking'
+				formantID = selected("Formant")
                 select Matrix FormantAverages
                 formantResultsID = selected("Matrix")
             
             endif
             ### (end of formant measures)
-            
+           
             ###################################################################################### 
             ### Spectral corrections (including H1*, H2*, H4, A1*, A2*, A3* from Iseli et al.)
             ###################################################################################### 
             
             if spectralMeasures
-				# Since it's possible we might want spectral measures on their own, run these checks again, 
-				# checking first to see if the objects are already in the list
 
 				# if there isn't already a Formant object in the list...
-				select 'formantID'
+				nocheck select 'formantID'
 				numSelectedFormant = numberOfSelected("Formant")
 				if numSelectedFormant<>1
 					# if you want to load an existing object from disk...
@@ -547,7 +574,7 @@ for currentToken from startToken to numTokens
 				endif
 
 				# if there isn't already a Pitch object in the list...           
-				select 'pitchID'
+				nocheck select 'pitchID'
 				numPitch = numberOfSelected("Pitch")
 				if numPitch<>1
 					# if you want to load it from disk...
@@ -642,10 +669,19 @@ for currentToken from startToken to numTokens
                 fileappend 'outputfile$' 'results$''newline$'
             endfor  
             ## end of writing out timepoints
-            
+
+			## clean up
+			select all
+			minus Strings fileList
+			minus Sound 'basename$'
+			minus TextGrid 'basename$'
+			minus Pitch 'basename$'
+			minus Formant 'basename$'
+			Remove
         endif
-        ## end of check to see if we have a non-empty interval
     endfor
+        ## end of check to see if we have a non-empty interval
+ 
     ## end of sub-loop processing single INTERVAL
 
     select all
