@@ -435,11 +435,9 @@ for currentToken from startToken to numTokens
 					# else create
 					else
 						select 'soundID'
-						## old way: autocorrelation method
 						#To Pitch... 0 'f0min' 'f0max'
-						## new way: cross-correlation method
 						## TODO April 2019: add this as a user option
-						To Pitch (cc)... 0 'f0min' 15 0 0.03 0.45 0.01 0.35 0.14 'f0max'
+						To Pitch (ac)... 0 'f0min' 15 0 0.03 0.45 0.01 0.35 0.14 'f0max'
 						Interpolate
 					endif
 				endif

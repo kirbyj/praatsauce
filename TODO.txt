@@ -3,3 +3,6 @@
 - Load Pitch objects (if they exist) to reduce amount of time spent on
   (possibly redundant) pitch calculations
 - add option to use Mannell (1998) for formant bandwidth calculation
+- add option to allow user to select autocorrelation or cross-correlation pitch estimation methods, along with associated parameters
+- completely revist structure: currently we are re/saving objects over and over again (Formant objects at least) each time we find an interval
+  to process. The object reference scheme should be completely revisited
