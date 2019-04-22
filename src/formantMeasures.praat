@@ -66,12 +66,14 @@ endform
 ###
 numSelectedSound = numberOfSelected("Sound")
 numSelectedTextGrid = numberOfSelected("TextGrid")
-if (numSelectedSound<>1 or numSelectedTextGrid<>1)
- exit Select only one Sound object and one TextGrid object.
+numSelectedFormant = numberOfSelected("Formant")
+if (numSelectedSound<>1 or numSelectedTextGrid<>1 or numSelectedFormant <>1)
+ exit Select only one Sound object, one TextGrid object and one Formant object.
 endif
 name$ = selected$("Sound")
 soundID = selected("Sound")
 textGridID = selected("TextGrid")
+formantID = selected("Formant")
 ### (end object check)
 
 ###
@@ -131,28 +133,13 @@ if manualCheck
 endif
 ### (end of manual check sound playback)
 
-###
-### Fifth, create Formant object (or use existing Formant object if present)
-###
-
-if useExistingFormants = 1
-# Load existing Formant object if available and selected
-    if fileReadable ("'inputdir$''basename$'.Formant")
-        Read from file... 'inputdir$''basename$'.Formant
-        formantID = selected("Formant")
-    else
-    	exit Cannot load Pitch object <'basename$'.Pitch>.
-    endif
-## else create 
-else  
-    select 'soundID'
-    To Formant (burg)... timeStep maxNumFormants maxFormantHz windowLength preEmphFrom
-    formantID = selected("Formant")
-endif
-### (end of load/create Formant object)
-
 if formantTracking = 1
 	# Tracking cleans up the tracks a little.  The original Formant object is then discarded.
+	## mar 19: should really make the number of tracks a user parameter
+	## also need to tune it possibly for each frame, because if the Formant
+	## object has fewer values than the numTracks parameter, the command
+	## will fail.
+	select 'formantID'
 	minFormants = Get minimum number of formants
 	if 'minFormants' = 2
 		Track... 2 f1ref f2ref f3ref 3850 4950 1 1 1
@@ -160,7 +147,7 @@ if formantTracking = 1
 		Track... 3 f1ref f2ref f3ref 3850 4950 1 1 1
 	endif
 	trackedFormantID = selected("Formant")
-	select formantID
+	select 'formantID'
 	Remove
     formantID = trackedFormantID
 endif
@@ -333,9 +320,9 @@ if saveAsEPS
     Write to EPS file... 'inputdir$''name$'-'interval_label$'.Fmt.eps
 endif
 
-
 ## OK, now we've got a Formant object we can live with
 ## Better save it to file
+## TODO April 2019: we're saving this object for every interval we process... not very efficient
 select 'formantID'
 Write to text file... 'inputdir$''basename$'.Formant
 
@@ -416,5 +403,6 @@ endfor
 #endif  
 ###
 
-select 'soundID'
-plus 'textGridID'
+#select 'soundID'
+#plus 'textGridID'
+select 'formantID'
