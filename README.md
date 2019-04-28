@@ -129,7 +129,7 @@ If `points` is set to e.g. 5 and `measure` is `every n milliseconds`, a measurem
 
 The second window allows you to choose the spectral measures you are interested in, along with some analysis window properties. Unlike VoiceSauce, PraatSauce currently just returns a fixed set of measurements. There is also an option to resample to 16 KHz, although this is not really necessary as (a) VoiceSauce does it mostly for STRAIGHT and (b) resampling will occur when formants are estimated in any event.
 
-If you select `spectralMeasures` but leaves `formantMeasures` and/or `pitchTracking` unchecked, they will be checked for you anyways, since the spectral balance measures require both Pitch and Formant objects. But it is possible to just get f0 and/or F1-F3 and bandwidths, if you would like (but see Page 4, below).
+If you select `spectralMeasures` but leave `formantMeasures` and/or `pitchTracking` unchecked, they will be checked for you anyways, since the spectral balance measures require both Pitch and Formant objects. But it is possible to just get f0 and/or F1-F3 and bandwidths, if you would like (but see Page 4, below).
 
 If you have existing Praat `.Formant` objects in your `inputdir`, you may find that PraatSauce is faster if you uncheck the `formantMeasures` box; you will then load the existing `.Formant` objects and use these for bandwidth estimation, etc. You can select this option on the following page.
 
