@@ -195,7 +195,7 @@ if formantMeasures
         boolean: "useExistingFormants", 0
         comment: "Do you want to use Praat's estimates of formant bandwidths, or"
         comment: "bandwidths estimated by the Hawks and Miller formula?"
-        comment: "Note: this requires that you selected to run a pitch analysis"
+        comment: "Note: this requires that you selected to run a pitch analysis previously"
         boolean: "useBandwidthFormula", 0
     endPause: "Continue", 1
 
