@@ -323,8 +323,8 @@ endif
 ## OK, now we've got a Formant object we can live with
 ## Better save it to file
 ## TODO April 2019: we're saving this object for every interval we process... not very efficient
-select 'formantID'
-Write to text file... 'inputdir$''basename$'.Formant
+#select 'formantID'
+#Write to text file... 'inputdir$''basename$'.Formant
 
 ###
 ### Store measurements for each timepoint

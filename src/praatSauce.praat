@@ -44,14 +44,14 @@ clearinfo
 
 form Directory and measures
     comment Input directory and results file
-    sentence inputdir /Users/jkirby/Documents/Projects/praatsauce/comp/madurese/
-    sentence textgriddir /Users/jkirby/Documents/Projects/praatsauce/comp/madurese/
-    sentence outputdir /Users/jkirby/Documents/Projects/praatsauce/comp/
+    sentence inputdir /Users/jkirby/Projects/praatsauce/comp/madurese/
+    sentence textgriddir /Users/jkirby/Projects/praatsauce/comp/madurese/
+    sentence outputdir /Users/jkirby/Projects/praatsauce/comp/
     sentence outputfile spectral_measures.txt
     comment If measuring in sessions, use this parameter to pick up where you left off:
     natural startToken 1
     comment Which is your interval tier?
-    natural interval_tier 2
+    natural interval_tier 1
     comment Enter interval labels you don't want to process as a well-formed regex:
     sentence skip_these_labels ^$|^\s+$|r
     comment Which is your point tier? (Enter 0 if you aren't using a point tier)
@@ -71,7 +71,7 @@ form Directory and measures
        option every n milliseconds
     comment If n equidistant points, how many? (e.g. 1, 3, 11...)
     comment If every n milliseconds, at what msec interval? (e.g. 5, 10...)
-    natural Points 1
+    natural Points 5
 endform
 
 ###
@@ -83,15 +83,16 @@ beginPause: "Select measurements"
     comment: "Resample to 16 KHZ?"
     boolean: "resample_to_16k", 1    
     comment: "Spectral measure(s) to take"
-    boolean: "formantMeasures", 1
     boolean: "pitchTracking", 1
+    boolean: "formantMeasures", 1
     boolean: "spectralMeasures", 1
-    comment: "Note that taking spectral measures requires either an existing Formant object, or"
-    comment: "that you check the formantMeasures box above."
+    comment: "Note that taking spectral measures requires both formant and pitch analysis;"
+    comment: "checking this box implies checking the two previous boxes."
+	comment: "You can elect to load existing Pitch and Formant objects in a moment."
     comment: "Analysis window properties"
     positive: "windowLength", 0.025
     positive: "windowPosition", 0.5
-    positive: "maxFormantHz", 5500
+    positive: "maxFormantHz", 5000
     comment: "For scripts that display spectrograms, what window size?"
     positive: "spectrogramWindow", 0.005
     #comment: "Smoothing window size (set to 0 for no smoothing)"
@@ -113,6 +114,58 @@ printline maxFormantHz:  <'maxFormantHz'>
 #printline smoother:  <'smoother'>
 
 ###
+### The following form obtains parameters specific to the spectral
+### measurement subscript. This form will be shown only if the 
+### user has selected spectral measures in the previous window.
+### Not currently implemented. However, if spectralMeasures is
+### selected, automatically select pitch and formant tracking, 
+### since these objects are both needed to calculate the spectral
+### balance measures.
+###
+
+if spectralMeasures
+#    beginPause ("VoiceSauce-like Spectral magnitude measurement options")
+#        comment ("Do you want to save the display summary of each token's")
+#        comment ("analysis as an EPS file?")
+#        boolean ("spectralMagnitudeSaveAsEPS", 0)
+#        comment ("Maximum frequency for LTAS display")
+#        positive ("maxDisplayHz", 5000)
+#    endPause ("Continue", 1)
+#    
+#    #printline -------
+#    #printline Spectral Magnitude
+#    #printline -------
+#    #printline smoothingHz: <'smoothingHz'>
+#    #printline
+	pitchTracking = 1
+	formantMeasures = 1
+endif
+
+###
+### The following form obtains parameters specific to the pitch
+### measurement subscript. This form will be shown only if the 
+### user has selected pitch tracking in the previous window.
+###
+
+if pitchTracking
+    beginPause ("Pitch tracking options")
+    comment: "Do you want to load existing Pitch objects, or generate new ones?"
+    boolean: "useExistingPitch", 0 
+    comment ("Lower and upper limits to estimated frequency?")
+    positive ("f0min", 50)
+    positive ("f0max", 300)
+
+    endPause ("Continue", 1)
+    printline -------
+    printline Pitch tracking
+    printline -------
+    printline useExistingPitch: <'useExistingPitch'>
+    printline f0min:  <'f0min'>
+    printline f0max:  <'f0max'>
+    printline
+endif
+
+###
 ### The following form obtains parameters specific to the formant
 ### measurement subscript. This form will be shown only if the 
 ### user has selected formant tracking in the previous window.
@@ -120,7 +173,7 @@ printline maxFormantHz:  <'maxFormantHz'>
 
 if formantMeasures
     beginPause: "Formant measurement options"
-        comment: "Would you like to listen to each sound when checking tracks?"
+        comment: "Would you like to listen to each sound if checking tracks?"
         boolean: "listenToSound", 0
         comment: "Time step determines how close the analysis frames are for"
         comment: "formant measurement.  Set at 0 for default (1/4 of window)."
@@ -142,9 +195,10 @@ if formantMeasures
         boolean: "useExistingFormants", 0
         comment: "Do you want to use Praat's estimates of formant bandwidths, or"
         comment: "bandwidths estimated by the Hawks and Miller formula?"
-        boolean: "useBandwidthFormula", 1
+        comment: "Note: this requires that you selected to run a pitch analysis"
+        boolean: "useBandwidthFormula", 0
     endPause: "Continue", 1
-    
+
     printline -------
     printline Formant measures
     printline -------
@@ -161,46 +215,6 @@ if formantMeasures
     printline useBandwidthFormula: <'useBandwidthFormula'>
     printline
 endif
-
-###
-### The following form obtains parameters specific to the pitch
-### measurement subscript. This form will be shown only if the 
-### user has selected formant tracking in the previous window.
-###
-
-if pitchTracking
-    beginPause ("Pitch tracking options")
-    comment: "Do you want to load existing Pitch objects, or generate new ones?"
-    boolean: "useExistingPitch", 0 
-    comment ("Lower and upper limits to estimated frequency?")
-    positive ("f0min", 50)
-    positive ("f0max", 600)
-
-    endPause ("Continue", 1)
-    printline -------
-    printline Pitch tracking
-    printline -------
-    printline useExistingPitch: <'useExistingPitch'>
-    printline f0min:  <'f0min'>
-    printline f0max:  <'f0max'>
-    printline
-endif
-
-#if spectralMeasures
-#    beginPause ("VoiceSauce-like Spectral magnitude measurement options")
-#        comment ("Do you want to save the display summary of each token's")
-#        comment ("analysis as an EPS file?")
-#        boolean ("spectralMagnitudeSaveAsEPS", 0)
-#        comment ("Maximum frequency for LTAS display")
-#        positive ("maxDisplayHz", 5000)
-#    endPause ("Continue", 1)
-#    
-#    #printline -------
-#    #printline Spectral Magnitude
-#    #printline -------
-#    #printline smoothingHz: <'smoothingHz'>
-#    #printline
-#endif
 
 ###
 ## A quick pause so that the user can check all of the parameters 
@@ -283,13 +297,13 @@ header$ = "'header$',t,t_ms"
 
 ## Add header columns for selected measures
 if pitchTracking
- header$ = "'header$',f0"
+	header$ = "'header$',f0"
 endif
 if formantMeasures
- header$ = "'header$',F1,F2,F3,B1,B2,B3"
+	header$ = "'header$',F1,F2,F3,B1,B2,B3"
 endif
 if spectralMeasures
- header$ = "'header$',H1u,H2u,H4u,H2Ku,H5Ku,A1u,A2u,A3u,H1H2u,H2H4u,H1A1u,H1A2u,H1A3u,H2KH5Ku,H1c,H2c,H4c,A1c,A2c,A3c,H1H2c,H2H4c,H1A1c,H1A2c,H1A3c,CPP,HNR05,HNR15,HNR25,HNR35"
+	header$ = "'header$',H1u,H2u,H4u,H2Ku,H5Ku,A1u,A2u,A3u,H1H2u,H2H4u,H1A1u,H1A2u,H1A3u,H2KH5Ku,H1c,H2c,H4c,A1c,A2c,A3c,H1H2c,H2H4c,H1A1c,H1A2c,H1A3c,CPP,HNR05,HNR15,HNR25,HNR35"
 endif
 header$ = "'header$''newline$'"
 
@@ -415,11 +429,63 @@ for currentToken from startToken to numTokens
         endfor  
     endif
 
+    #########################################
+    ## Load/create Pitch and Formant objects
+    #########################################
+
+	###
+	## Not sure of the best way to do this. This way seems to be the cleanest,
+	## because the objects are alway sonly loaded or created once. 
+	##
+	## However, it is possible that they are created redundantly, because if
+	## a given file doesn't have any intervals of interest, nothing will
+	## be measured. 
+	###
+
+	if pitchTracking
+ 		# if you want to load an existing object from disk...
+    	if useExistingPitch
+        	if fileReadable ("'inputdir$''basename$'.Pitch")
+            	Read from file... 'inputdir$''basename$'.Pitch
+            else
+            	exit Cannot load Pitch object <'basename$'.Pitch>.
+            endif
+        # else create
+        else
+        	select 'soundID'
+            #To Pitch... 0 'f0min' 'f0max'
+            ## TODO April 2019: add this as a user option
+            To Pitch (ac)... 0 'f0min' 15 0 0.03 0.45 0.01 0.35 0.14 'f0max'
+			## This will result in two Pitch objects, but that's OK (I hope)...
+            Interpolate
+        endif
+		## ... since only the second one will get referred to from now on
+        pitchID = selected("Pitch")
+	endif
+
+	if formantMeasures
+    	# if you want to load an existing object from disk...
+        if useExistingFormants
+        	# Load existing Formant object if available and selected
+            if fileReadable ("'inputdir$''basename$'.Formant")
+            	Read from file... 'inputdir$''basename$'.Formant
+            else
+            	exit Cannot load Formant object <'basename$'.Formant>.
+            endif
+		## else create 
+        else
+        	select 'soundID'
+            To Formant (burg)... timeStep maxNumFormants maxFormantHz windowLength preEmphFrom
+		endif
+		formantID = selected("Formant")
+	endif
+
     ########################################
     ## Loop through non-empty intervals,
     ## ignoring those in skip_these_labels$
     ########################################
 
+	select 'textGridID'
     num_intervals = Get number of intervals... 'interval_tier'
     for current_interval from 1 to num_intervals
         select 'textGridID'
@@ -473,29 +539,7 @@ for currentToken from startToken to numTokens
             ################################
             
             if pitchTracking
-                # if there isn't already a Pitch object in the list...
-                nocheck select 'pitchID'
-                numPitch = numberOfSelected("Pitch")
-                if numPitch<>1
-                    # if you want to load an existing object from disk...
-					if useExistingPitch = 1 
-						if fileReadable ("'inputdir$''basename$'.Pitch")
-							Read from file... 'inputdir$''basename$'.Pitch
-							pause Using existing Pitch object	
-						else
-							exit Cannot load Pitch object <'basename$'.Pitch>.
-						endif
-					# else create
-					else
-						select 'soundID'
-						#To Pitch... 0 'f0min' 'f0max'
-						## TODO April 2019: add this as a user option
-						To Pitch (ac)... 0 'f0min' 15 0 0.03 0.45 0.01 0.35 0.14 'f0max'
-						Interpolate
-					endif
-				endif
-				## one way or another you now have a Pitch object
-                pitchID = selected("Pitch")
+                select pitchID
                 plus soundID
                 plus textGridID
                 execute pitchTracking.praat 'interval_tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'manualCheck' 1 'measure' 'timepoints' 'points'
@@ -503,37 +547,14 @@ for currentToken from startToken to numTokens
                 ### Save output Matrix
                 select Matrix PitchAverages
                 pitchResultsID = selected("Matrix")
-				## TODO April 2019: we are re/saving this object every time through...
-                select 'pitchID'
-                Write to text file... 'inputdir$''basename$'.Pitch
             endif
             ### (end of pitch tracking)
-            
+
             ###################### 
             ### Formant measures
             ###################### 
-            
-            if formantMeasures
-                # if there isn't already a Formant object in the list...
-                nocheck select 'formantID'
-                numSelectedFormant = numberOfSelected("Formant")
-                if numSelectedFormant<>1
-                    # if you want to load an existing object from disk...
-					if useExistingFormants = 1
-					# Load existing Formant object if available and selected
-						if fileReadable ("'inputdir$''basename$'.Formant")
-							Read from file... 'inputdir$''basename$'.Formant
-							formantID = selected("Formant")
-						else
-							exit Cannot load Formant object <'basename$'.Formant>.
-						endif
-					## else create 
-					else
-						select 'soundID'
-						To Formant (burg)... timeStep maxNumFormants maxFormantHz windowLength preEmphFrom
-						formantID = selected("Formant")
-					endif
-				endif
+
+			if formantMeasures
                 select 'soundID'
                 plus 'textGridID'
                 plus 'formantID'
@@ -541,57 +562,14 @@ for currentToken from startToken to numTokens
 				formantID = selected("Formant")
                 select Matrix FormantAverages
                 formantResultsID = selected("Matrix")
-            
             endif
             ### (end of formant measures)
-           
+
             ###################################################################################### 
             ### Spectral corrections (including H1*, H2*, H4, A1*, A2*, A3* from Iseli et al.)
             ###################################################################################### 
             
             if spectralMeasures
-
-				# if there isn't already a Formant object in the list...
-				nocheck select 'formantID'
-				numSelectedFormant = numberOfSelected("Formant")
-				if numSelectedFormant<>1
-					# if you want to load an existing object from disk...
-					if useExistingFormants = 1 
-						if fileReadable ("'inputdir$''basename$'.Formant")
-							Read from file... 'inputdir$''basename$'.Formant
-							formantID = selected("Formant")
-						else
-							exit Cannot load Pitch object <'basename$'.Formant>.
-						endif
-					# else create
-					else
-						select 'soundID'
-						To Formant (burg)... timeStep maxNumFormants maxFormantHz windowLength preEmphFrom
-						formantID = selected("Formant")
-					endif
-				endif
-
-				# if there isn't already a Pitch object in the list...           
-				nocheck select 'pitchID'
-				numPitch = numberOfSelected("Pitch")
-				if numPitch<>1
-					# if you want to load it from disk...
-					if useExistingPitch = 1 
-						if (fileReadable ("'inputdir$''basename$'.Pitch"))
-							Read from file... 'inputdir$''basename$'.Pitch
-							pitchID = selected("Pitch")
-						else
-							exit Cannot load Pitch object <'basename$'.Pitch>.
-						endif
-					# else create
-					else
-						select 'soundID'
-						#To Pitch... 0 'f0min' 'f0max'
-                    	To Pitch (cc)... 0 'f0min' 15 0 0.03 0.45 0.01 0.35 0.14 'f0max'
-						pitchID = selected("Pitch")
-					endif
-				endif
-
                 select 'soundID'
                 plus 'textGridID'
                 plus 'formantID'
@@ -669,19 +647,30 @@ for currentToken from startToken to numTokens
             ## end of writing out timepoints
 
 			## clean up
-			select all
-			minus Strings fileList
-			minus Sound 'basename$'
-			minus TextGrid 'basename$'
-			minus Pitch 'basename$'
-			minus Formant 'basename$'
-			Remove
+			#select all
+			#minus Strings fileList
+			#minus Sound 'basename$'
+			#minus TextGrid 'basename$'
+			#nocheck minus Pitch 'basename$'
+			#nocheck minus Formant 'basename$'
+			#Remove
         endif
     endfor
-        ## end of check to see if we have a non-empty interval
- 
+    ## end of check to see if we have a non-empty interval
     ## end of sub-loop processing single INTERVAL
 
+	## save the Pitch and Formant objects, if they exist
+	if pitchTracking
+    	select 'pitchID'
+        Write to text file... 'inputdir$''basename$'.Pitch
+	endif
+
+	if formantMeasures
+    	select 'formantID'
+        Write to text file... 'inputdir$''basename$'.Formant
+	endif
+
+	## clean up
     select all
     minus Strings fileList
     Remove
