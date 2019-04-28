@@ -11,3 +11,5 @@ In order of urgency:
 - completely revist structure: currently we are re/saving objects over and over again (Formant objects at least) each time we find an interval to process. The object reference scheme should be completely revisited. **April 2019**: this has been temporarily worked around; we now only create/load the objects once, but this is problematic given that the logic of the scripts was designed to process each file once and once only, and we are looping through based on interval, potentially modifying the Formant object once per *interval*. This isn't scalable but then the manual-check logic also needs revisiting
 
 - Re-do the comparisons with the latest version
+
+- Unify the shell and GUI versions somehow - maybe through forcing everyone to specify their parameter settings in a settings file, rather than having pages and pages of forms?
