@@ -129,11 +129,20 @@ If `points` is set to e.g. 5 and `measure` is `every n milliseconds`, a measurem
 
 The second window allows you to choose the spectral measures you are interested in, along with some analysis window properties. Unlike VoiceSauce, PraatSauce currently just returns a fixed set of measurements. There is also an option to resample to 16 KHz, although this is not really necessary as (a) VoiceSauce does it mostly for STRAIGHT and (b) resampling will occur when formants are estimated in any event.
 
+If you select `spectralMeasures` but leave `formantMeasures` and/or `pitchTracking` unchecked, they will be checked for you anyways, since the spectral balance measures require both Pitch and Formant objects. But it is possible to just get f0 and/or F1-F3 and bandwidths, if you would like (but see Page 4, below).
+
 If you have existing Praat `.Formant` objects in your `inputdir`, you may find that PraatSauce is faster if you uncheck the `formantMeasures` box; you will then load the existing `.Formant` objects and use these for bandwidth estimation, etc. You can select this option on the following page.
 
 The `windowLength` and `maxAnalysisHz` options are used by the formant and spectral amplitude measurement procedures. For formant estimation, `windowLength` specifies the effective duration of the analysis window in seconds, while `maxAnalysisHz` gives the ceiling of the formant search range; see Praat documentation for details. `windowLength` is also used in the estimation of spectral amplitudes to create a 'slice' around a timepoint used to create a long-term average spectrum object. `windowPosition` is not currently used.
 
-### Page 3: Formant measurement options
+### Page 3: Pitch tracking options
+
+Here you can:
+
+- use existing Pitch objects if you have them, or explictly ignore and overwrite them even if you do have them (by leaving the box unchecked)
+- change the lower and upper limits for estimated f0. You probably want to change these depending on the speaker's pitch range.
+
+### Page 4: Formant measurement options
 
 Here you have the options to:
 
@@ -143,15 +152,8 @@ Here you have the options to:
 - smooth formant tracks using Praat's `Smooth...` function, and change the reference formant values for a neutral vowel
 - save the visual output as an EPS file
 - use existing Formant objects if you have them, or explictly ignore and overwrite them even if you do have them (by leaving the box unchecked)
-- decide whether to use Praat's estimates of formant bandwidths, or the Hawks and Miller formula which is the VoiceSauce default
+- decide whether to use Praat's estimates of formant bandwidths, or the Hawks and Miller formula which is the VoiceSauce default. Note that if you haven't selected Pitch estimation two pages previously, the script will exit with an error (because Hawks and Miller's formula relies on a pitch esimate).
 
-
-### Page 4: Pitch tracking options
-
-Here you can:
-
-- use existing Pitch objects if you have them, or explictly ignore and overwrite them even if you do have them (by leaving the box unchecked)
-- change the lower and upper limits for estimated f0. You probably want to change these depending on the speaker's pitch range.
 
 ### Page 5: Got all that?
 
@@ -217,5 +219,5 @@ Shue, Y.-L., P. Keating, C. Vicenik, and K. Yu. (2011). VoiceSauce: a program fo
 
 
 
-*Last modified: 8 December 2018*
+*Last modified: Bangkok, 28 April 2019*
 
