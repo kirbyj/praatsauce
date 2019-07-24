@@ -462,7 +462,6 @@ for currentToken from startToken to numTokens
         endif
 		## ... since only the second one will get referred to from now on
         pitchID = selected("Pitch")
-		pause
 	endif
 
 	if formantMeasures
