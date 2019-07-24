@@ -2,7 +2,7 @@
 # PraatSauce
 ###############
 
-# Copyright (c) 2018 James Kirby
+# Copyright (c) 2018-2019 James Kirby
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -457,10 +457,12 @@ for currentToken from startToken to numTokens
             ## TODO April 2019: add this as a user option
             To Pitch (ac)... 0 'f0min' 15 0 0.03 0.45 0.01 0.35 0.14 'f0max'
 			## This will result in two Pitch objects, but that's OK (I hope)...
-            Interpolate
+            # Interpolate
+			## This is maybe nice for some applications but hallucinates f0 in clearly voiceless regions!!
         endif
 		## ... since only the second one will get referred to from now on
         pitchID = selected("Pitch")
+		pause
 	endif
 
 	if formantMeasures
