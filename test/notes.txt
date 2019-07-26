@@ -1,0 +1,8 @@
+correct_iseli_z.praat
+formantMeasures.praat
+getbw_HawksMiller.praat
+pitchTracking.praat
+praatSauce.praat
+shellSauce.praat
+spectralMeasures.praat
+splitstring.praat
