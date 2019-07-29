@@ -36,7 +36,7 @@ def main():
             # edit the tests in src/ and still run this script.
             print(dest+" already exists, skipping.")
 
-    # change directory to src
+    # change directory to src, run tests
     os.chdir(os.path.join(my_path,'..','src'))
     for test in tests:
         print("\n\n**** starting: "+test)
@@ -44,6 +44,13 @@ def main():
         print(cmd)
         subprocess.call(cmd, shell=True)
         print("**** finished: "+test)
+
+    # Copy tests back to test/.
+    # (This is for convenience while working on tests)
+    for test in tests:
+        src = os.path.join(my_path,'..','src',test)
+        test = os.path.join(my_path,test)
+        shutil.copy(src, dest)
 
 if __name__=='__main__':
     main()
