@@ -1,1 +1,1 @@
-include ../src/shellSauce.praat
+include shellSauce.praat

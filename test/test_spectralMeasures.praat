@@ -1,1 +1,1 @@
-include ../src/spectralMeasures.praat
+include spectralMeasures.praat

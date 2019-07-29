@@ -1,1 +1,1 @@
-include ../src/splitstring.praat
+include splitstring.praat

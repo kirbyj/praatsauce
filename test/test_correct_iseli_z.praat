@@ -1,1 +1,1 @@
-include ../src/correct_iseli_z.praat
+include correct_iseli_z.praat

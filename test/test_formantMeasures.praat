@@ -1,1 +1,1 @@
-include ../src/formantMeasures.praat
+include formantMeasures.praat

@@ -1,1 +1,1 @@
-include ../src/getbw_HawksMiller.praat
+include getbw_HawksMiller.praat

@@ -1,1 +1,1 @@
-include ../src/praatSauce.praat
+include praatSauce.praat
