@@ -1,4 +1,7 @@
+from collections import defaultdict
+import csv
 import datetime
+import difflib
 import os
 import shutil
 import subprocess
@@ -16,7 +19,7 @@ class logger(object):
         with open(self.filename, "a") as f:
             f.write(text+"\n")
 
-def run_with_log(cmd, l):
+def run_with_log(cmd, l, file_results):
     p = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,
@@ -30,16 +33,51 @@ def run_with_log(cmd, l):
     for contents, name in [(out, "Output"), (err, "Error")]:
         if contents.strip():
             loggable += name+": \n"+contents+"\n"
-    # we can't use the return value as this doesn't give us anything useful
-    # on Windows (it's 0 for both fail or succeed)
+    # we can't use the return value from the praat command as this doesn't
+    # give us anything useful on Windows (it's 0 for both fail or succeed)
+    result = None
     if "assertion fails" in out or "not completed" in loggable:
-        l.log("Failed:\n---\n"+loggable.strip()+"\n---\n")
-        return False
+        l.log("Praat failed:\n---\n"+loggable.strip()+"\n---\n")
+        result = False
     else:
-        l.log("Succeeded\n")
-        return True
+        l.log("Praat succeeded\n")
+        result = True
+    for to_compare in file_results:
+        # diff
+        expected = os.path.join("..","test","expected",to_compare["expected"])
+        obtained = os.path.join("..","test","obtained",to_compare["obtained"])
+        l.log("Comparing {expected} and {obtained} from {cwd}".format(
+            cwd=os.getcwd(), **to_compare
+        ))
+        diff_gen = difflib.unified_diff(
+            list(open(expected)), list(open(obtained))
+        )
+        diff = list(diff_gen)
+        if len(diff) != 0:
+            fmt = """\
+Failed on expected result comparing {} and {}.
+**** Diff:
+{}
+****
+"""
+            l.log(fmt.format(expected,obtained,"\n".join(diff)))
+            result = False
+    return result
 
 def main():
+    # dict of test_filename -> [
+    #    {"obtained": filename, "expected": filename},
+    #    ....
+    # ]
+    # the script will use these to compare output
+    file_results_all = defaultdict(list)
+    reader = csv.reader(open("comparisons.csv"))
+    for line in reader:
+        if len(line) == 0 or line[0].strip() == "":
+            continue # skip blank
+        assert len(line) == 3, "Comparisons file must have three columns"
+        file_results_all[line[0]].append({"expected": line[1], "obtained": line[2]})
+
     dt = datetime.datetime.now().isoformat()[:-7]
 
     # log file is written wherever you run the code from
@@ -87,11 +125,15 @@ def main():
             testfile=test, logfile=l.filename
         )
         l.log(cmd)
-        successes += run_with_log(cmd, l)
+        successes += run_with_log(cmd, l, file_results_all[test])
         l.log("**** finished: "+test)
 
-    report = "{fail} failures and {succ} successes of {tests} tests".format(
-        fail=n_tests-successes, succ=successes, tests=n_tests
+    report = """\
+{fail} failures and {succ} successes of {tests} tests.
+Detailed results in {filename}
+""".format(
+        fail=n_tests-successes, succ=successes, tests=n_tests,
+        filename=l.filename
     )
     print(report)
     l.log(report)
