@@ -16,8 +16,8 @@ class logger(object):
         self.filename = _filename
 
     def log(self, text):
-        with open(self.filename, "a") as f:
-            f.write(text.encode("utf8")+"\n")
+        with open(self.filename, "a", encoding="utf8") as f:
+            f.write(text+"\n")
 
 def run_with_log(cmd, l, file_results):
     p = subprocess.Popen(
