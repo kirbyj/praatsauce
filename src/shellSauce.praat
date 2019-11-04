@@ -25,7 +25,7 @@
 # copyright 2009-2010 Timothy Mills
 # <mills.timothy@gmail.com>
 
-# VoiceSauce 
+# VoiceSauce
 # version 1.31
 # http://www.seas.ucla.edu/spapl/voicesauce/
 
@@ -33,10 +33,11 @@
 ## includes
 ###############################
 include splitstring.praat
+include log_output.praat
 
 ###
 ### The opening form gets information on the location of the files to process,
-### where the output should go, the structure of the TextGrids, which labels 
+### where the output should go, the structure of the TextGrids, which labels
 ### to process, and the temporal resolution of the measurements.
 ###
 
@@ -60,7 +61,7 @@ form Directory and measures
     sentence point_tier_labels ov cv rv
     comment What character separates linguistic variables in token names? (e.g. "-" or "_")
     sentence separator _
-    comment What portion of tokens do you wish to (randomly) manually inspect? 
+    comment What portion of tokens do you wish to (randomly) manually inspect?
     comment (0=none, 0.5 half, 1=all, etc.)
     real manualCheckFrequency 0
     comment At what points in the segment should we record measurements?
@@ -71,7 +72,7 @@ form Directory and measures
     comment If every n milliseconds, at what msec interval? (e.g. 5, 10...)
 	natural Points 5
     comment Resample to 16 KHZ?
-    boolean resample_to_16k 1    
+    boolean resample_to_16k 1
     comment Spectral measure(s) to take
     boolean pitchTracking 1
     boolean formantMeasures 1
@@ -112,7 +113,7 @@ form Directory and measures
     boolean useBandwidthFormula 0
 
     comment Do you want to load existing Pitch objects, or generate new ones?
-    boolean useExistingPitch 0 
+    boolean useExistingPitch 0
     comment Lower and upper limits to estimated frequency?
     positive f0min 50
     positive f0max 300
@@ -131,53 +132,29 @@ endif
 ### Print out info
 ###
 
-printline -------
-printline Common settings
-printline -------
-printline resample_to_16k:  <'resample_to_16k'>
-printline windowLength:  <'windowLength'>
-printline windowPosition:  <'windowPosition'>
-printline maxFormantHz:  <'maxFormantHz'>
-printline -------
-printline Pitch tracking
-printline -------
-printline useExistingPitch: <'useExistingPitch'>
-printline f0min:  <'f0min'>
-printline f0max:  <'f0max'>
-printline
-printline -------
-printline Formant measures
-printline -------
-printline listenToSound:  <'listenToSound'>
-printline timeStep:  <'timeStep'>
-printline maxNumFormants:  <'maxNumFormants'>
-printline preEmphFrom:  <'preEmphFrom'>
-printline formantTracking:  <'formantTracking'>
-printline F1ref:  <'F1ref'>
-printline F2ref:  <'F2ref'>
-printline F3ref:  <'F3ref'>
-printline saveAsEPS:  <'saveAsEPS'>
-printline useExistingFormants: <'useExistingFormants'>
-printline useBandwidthFormula: <'useBandwidthFormula'>
-printline
+@show_common_settings:
+... resample_to_16k, windowLength, windowPosition, maxFormantHz
+@show_pitch_tracking: useExistingPitch, f0min, f0max
+@show_formant_measures:
+... listenToSound, timeStep, maxNumFormants, preEmphFrom, formantTracking,
+... f1ref, f2ref, f3ref, saveAsEPS, useExistingFormants, useBandwidthFormula
 
 ###
-## Add redundant trailing directory slashes since everyone 
+## Add redundant trailing directory slashes since everyone
 ## forgets, and it doesn't matter if they're doubled
 ###
 
-inputdir$ = inputdir$ + "/" 
+inputdir$ = inputdir$ + "/"
 outputdir$ = outputdir$ + "/"
 textgriddir$ = textgriddir$ + "/"
 
 ###
-## If outputfile already exists, delete it (so that it can be 
-## replaced with a new version).  Also, clear info screen.
+## If outputfile already exists, delete it (so that it can be
+## replaced with a new version).
 ###
 
 outputfile$ = "'outputdir$''outputfile$'"
 filedelete 'outputfile$'
-clearinfo
 
 ###
 ## Get directory listing, sort, count
@@ -195,9 +172,9 @@ header$ = "Filename"
 
 ## Add label for each linguistic variable parsed from token names.
 ## In order to be as flexible as possible, this script simply labels
-## these variables 'var1', 'var2', etc.  After measurement, you can 
-## change these labels in the text file or in your statistical 
-## software to have more descriptive names.  Alternatively, you can 
+## these variables 'var1', 'var2', etc.  After measurement, you can
+## change these labels in the text file or in your statistical
+## software to have more descriptive names.  Alternatively, you can
 ## modify this section of the script.
 
 select stringsListID
@@ -256,16 +233,16 @@ for currentToken from startToken to numTokens
     select stringsListID
     currentTextGridFile$ = Get string... 'currentToken'
     basename$ = left$("'currentTextGridFile$'", index("'currentTextGridFile$'", ".") - 1)
-    
+
     ## Load Sound
     Read from file... 'inputdir$''basename$'.wav
-    ## Note that Sound is not resampled b/c later we use To Formant (burg)... 
+    ## Note that Sound is not resampled b/c later we use To Formant (burg)...
     ## which resamples to twice the frequency of maxFormant (so 10k-11k usually)
     soundID = selected("Sound")
-   
+
     ## If selected, downsample
     ## VoiceSauce only really does this b/c it is faster for STRAIGHT
-    ## Given how the Burg algorithm works, input will be resampled 
+    ## Given how the Burg algorithm works, input will be resampled
     ## at the formant estimation stage no matter what.
     if resample_to_16k == 1
         Resample... 16000 50
@@ -275,20 +252,20 @@ for currentToken from startToken to numTokens
         select 'resampledID'
         Rename... 'basename$'
         soundID = selected("Sound")
-    endif  
+    endif
 
-    # If there is an existing formant-tracking parameter file 
+    # If there is an existing formant-tracking parameter file
     # ("*.FmtParam.txt"), load it and use its parameters rather
     # than the ones entered in the opening forms.
     formantParamFile$ = "'inputdir$''basename$'.FmtParam.txt"
-    
+
     if fileReadable (formantParamFile$)
         #pause Found <'formantParamFile$'>, started loop
         formantParameters$ < 'formantParamFile$'
         # This should contain a tab-delimited list in the following order:
         # windowPosition, windowLength, maxNumFormants, maxFormantHz, preEmphFrom, spectrogramWindow
         #echo 'formantParameters$'
-        
+
         parameterIndex = index(formantParameters$, ,) - 1
         parameter$ = left$(formantParameters$, parameterIndex)
         windowPosition = 'parameter$'
@@ -318,7 +295,7 @@ for currentToken from startToken to numTokens
         #printline spectrogramWindow = <'spectrogramWindow'>
      # else: Didn't find parameter file; use defaults.
     endif
- 
+
     ## Load TextGrid
     Read from file... 'textgriddir$''currentTextGridFile$'
     textGridID = selected("TextGrid")
@@ -358,9 +335,9 @@ for currentToken from startToken to numTokens
             if label_match == 1
                 ptimes$ = ptimes$ + string$(ptime) + ","
             else
-                ptimes$ = ptimes$ + "NA," 
-            endif 
-        endfor  
+                ptimes$ = ptimes$ + "NA,"
+            endif
+        endfor
     endif
 
     #########################################
@@ -369,11 +346,11 @@ for currentToken from startToken to numTokens
 
 	###
 	## Not sure of the best way to do this. This way seems to be the cleanest,
-	## because the objects are alway sonly loaded or created once. 
+	## because the objects are alway sonly loaded or created once.
 	##
 	## However, it is possible that they are created redundantly, because if
 	## a given file doesn't have any intervals of interest, nothing will
-	## be measured. 
+	## be measured.
 	###
 
 	if pitchTracking
@@ -407,7 +384,7 @@ for currentToken from startToken to numTokens
             else
             	exit Cannot load Formant object <'basename$'.Formant>.
             endif
-		## else create 
+		## else create
         else
         	select 'soundID'
             To Formant (burg)... timeStep maxNumFormants maxFormantHz windowLength preEmphFrom
@@ -434,12 +411,12 @@ for currentToken from startToken to numTokens
             echo <'current_interval' of 'num_intervals'> 'interval_label$'
 
             ######################################
-            ## Sub-loop: process a single interval          
+            ## Sub-loop: process a single interval
             #######################################
 
             ## Add interval label column to header
             header$ = "'header$','interval_label$'"
-          
+
             ## Determine start and endpoints of current interval for reference
             interval_start = Get start time of interval... 'interval_tier' 'current_interval'
             interval_end = Get end time of interval... 'interval_tier' 'current_interval'
@@ -450,44 +427,44 @@ for currentToken from startToken to numTokens
             elsif measure = 2
                timepoints = round(((interval_end - interval_start)*1000)/points)
             endif
-            
+
             ## Report current token number, name, and lingVars$:
             echo <'currentToken' of 'numTokens'> 'basename$':  'lingVars$'
-            
-            ## Manually check this token at random? 
+
+            ## Manually check this token at random?
             randomNumber = randomUniform(0,1)
             if manualCheckFrequency > randomNumber
                 manualCheck = 1
             else
                manualCheck = 0
-            endif 
-         
+            endif
+
             ####################################################
-            ## Since we know we are processing this interval 
-            ## we can just pass the interval number to the 
-            ## sub-scripts; they are already set up to handle 
+            ## Since we know we are processing this interval
+            ## we can just pass the interval number to the
+            ## sub-scripts; they are already set up to handle
             ## this if the interval number is non-zero
             ####################################################
-            
+
             ################################
             ### Pitch tracking
             ################################
-            
+
             if pitchTracking
                 select pitchID
                 plus soundID
                 plus textGridID
                 execute pitchTracking.praat 'interval_tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'manualCheck' 1 'measure' 'timepoints' 'points'
-               
+
                 ### Save output Matrix
                 select Matrix PitchAverages
                 pitchResultsID = selected("Matrix")
             endif
             ### (end of pitch tracking)
 
-            ###################### 
+            ######################
             ### Formant measures
-            ###################### 
+            ######################
 
 			if formantMeasures
                 select 'soundID'
@@ -500,31 +477,31 @@ for currentToken from startToken to numTokens
             endif
             ### (end of formant measures)
 
-            ###################################################################################### 
+            ######################################################################################
             ### Spectral corrections (including H1*, H2*, H4, A1*, A2*, A3* from Iseli et al.)
-            ###################################################################################### 
-            
+            ######################################################################################
+
             if spectralMeasures
                 select 'soundID'
                 plus 'textGridID'
                 plus 'formantID'
                 plus 'pitchID'
                 execute spectralMeasures.praat 'interval_tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'saveAsEPS' 'useBandwidthFormula' 'inputdir$' 'manualCheck' 'maxDisplayHz' 'measure' 'timepoints' 'points' 'f0min' 'f0max'
-            
+
                 ## Assign ID to output matrix
                 select Matrix IseliMeasures
                 iseliResultsID = selected("Matrix")
-            
-            endif 
+
+            endif
             ### (end of spectralMagnitude measure)
-            
+
             # Report results
             #echo <token 'currentToken' of 'numTokens'> 'results$'
-            
+
             ## Here we:
             ##  1. look for results matrices
             ##  2. Write as many lines as the matrices have rows
-            
+
             for t from 1 to timepoints
                 # Begin building results string with file and linguistic info.
                 if point_tier == 0
@@ -535,7 +512,7 @@ for currentToken from startToken to numTokens
 
                 # have we already written the ms time or do we still need to write it?
                 msflag = 0
-         
+
                 if pitchTracking
                     select 'pitchResultsID'
                     if msflag = 0
@@ -543,11 +520,11 @@ for currentToken from startToken to numTokens
                         results$ = "'results$','mspoint:6'"
                         msflag = 1
                     endif
-                    currentPitch = Get value in cell... t 2 
+                    currentPitch = Get value in cell... t 2
                     results$ = "'results$','currentPitch:3'"
                 endif
-            
-                if formantMeasures 
+
+                if formantMeasures
                     select 'formantResultsID'
                     if msflag = 0
                         mspoint = Get value in cell... t 1
@@ -562,8 +539,8 @@ for currentToken from startToken to numTokens
                         currentBandwidth = Get value in cell... t 'bandwidth'
                         results$ = "'results$','currentBandwidth:3'"
                     endfor
-                endif           
-            
+                endif
+
                 if spectralMeasures
                     select 'iseliResultsID'
                     if msflag = 0
@@ -573,12 +550,12 @@ for currentToken from startToken to numTokens
                     for measurement from 2 to 31
                         aMeasure = Get value in cell... t 'measurement'
                         results$ = "'results$','aMeasure:3'"
-                    endfor  
+                    endfor
                 endif
-            
+
                 ## FINALLY write the thing out....for this timepoint
                 fileappend 'outputfile$' 'results$''newline$'
-            endfor  
+            endfor
             ## end of writing out timepoints
 
 			## clean up

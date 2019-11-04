@@ -19,7 +19,7 @@ class logger(object):
         with open(self.filename, "a", encoding="utf8") as f:
             f.write(text+"\n")
 
-def run_with_log(cmd, l, file_results):
+def run_with_log(cmd, l, file_results, keep_output):
     p = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,
@@ -35,13 +35,10 @@ def run_with_log(cmd, l, file_results):
             loggable += name+": \n"+contents+"\n"
     # we can't use the return value from the praat command as this doesn't
     # give us anything useful on Windows (it's 0 for both fail or succeed)
-    result = None
-    if "assertion fails" in out or "not completed" in loggable:
-        l.log("Praat failed:\n---\n"+loggable.strip()+"\n---\n")
-        result = False
-    else:
-        l.log("Praat succeeded\n")
-        result = True
+    succeeded = not ("assertion fails" in out or "not completed" in loggable)
+    l.log("Praat "+{False: "failed", True: "succeeded"}[succeeded]+":\n")
+    if not succeeded or keep_output:
+        l.log("---\n"+loggable.strip()+"\n---\n")
     for to_compare in file_results:
         # diff
         expected = os.path.join("..","test","expected",to_compare["expected"])
@@ -61,10 +58,13 @@ Failed on expected result comparing {} and {}.
 ****
 """
             l.log(fmt.format(expected,obtained,"\n".join(diff)))
-            result = False
-    return result
+            succeeded = False
+    return succeeded
 
 def main():
+    # just one command line argument so keep it simple for now
+    keep_output = (len(sys.argv) == 2 and sys.argv[1] == "--keep-output")
+
     # dict of test_filename -> [
     #    {"obtained": filename, "expected": filename},
     #    ....
@@ -125,7 +125,7 @@ def main():
             testfile=test, logfile=l.filename
         )
         l.log(cmd)
-        successes += run_with_log(cmd, l, file_results_all[test])
+        successes += run_with_log(cmd, l, file_results_all[test], keep_output)
         l.log("**** finished: "+test)
 
     report = """\
