@@ -50,6 +50,8 @@ form Directory and measures
     sentence outputfile spectral_measures.txt
     comment If measuring in sessions, use this parameter to pick up where you left off:
     natural startToken 1
+    comment If you only want to analyze one channel, enter it here (or 0 for stereo):
+    integer channel 1
     comment Which is your interval tier?
     natural interval_tier 1
     comment Enter interval labels you don't want to process as a well-formed regex:
@@ -339,6 +341,18 @@ for currentToken from startToken to numTokens
         select 'soundID'
         Remove
         select 'resampledID'
+        Rename... 'basename$'
+        soundID = selected("Sound")
+    endif  
+
+    ## If selected, extract the channel of interest
+	## if e.g. you have audio on channel 1 and EGG on channel 2
+    if channel
+        Extract one channel... channel
+        monoID = selected("Sound")
+        select 'soundID'
+        Remove
+        select 'monoID'
         Rename... 'basename$'
         soundID = selected("Sound")
     endif  
