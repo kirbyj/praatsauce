@@ -89,6 +89,10 @@ Open and run the `praatSauce.praat` script. There are several pages of parameter
 
 If you want to start from a specific token (e.g. because the script was interrupted due to some kind of error and you don't want to start all over from the beginning), you can change the value of `startToken`. You will need to watch the info window to see the token number, or you can figure it out from the Strings list. If you do this, make sure to rename the existing version of `spectral_measures.txt` as it will be silently overwritten.
 
+#### channel
+
+If you only want to produce analysis measures for a single channel of a stereo file, enter the channel number here. This is useful if e.g. you have (mono) audio on channel 1 and EGG or another co-registered signal on channel 2. Otherwise, enter `0` to process the stereo `Sound` file.
+
 #### interval tier
 
 The `tier` variable is the tier of interest. Note that **every labelled interval on this tier will be analyzed**. This means if you have intervals for both e.g. stop closure and rime, you will get spectral measurements for both intervals. 
