@@ -50,6 +50,8 @@ form Directory and measures
     sentence outputfile spectral_measures.txt
     comment If measuring in sessions, use this parameter to pick up where you left off:
     natural startToken 1
+    comment If you only want to analyze one channel, enter it here (or 0 for stereo):
+    integer channel 1
     comment Which is your interval tier?
     natural interval_tier 1
     comment Enter interval labels you don't want to process as a well-formed regex:
@@ -86,6 +88,12 @@ form Directory and measures
     comment For scripts that display spectrograms, what window size?
     positive spectrogramWindow 0.005
 
+    comment Do you want to load existing Pitch objects, or generate new ones?
+    boolean useExistingPitch 0 
+    comment Lower and upper limits to estimated frequency?
+    positive f0min 50
+    positive f0max 300
+
     comment Would you like to listen to each sound if checking tracks?
     boolean listenToSound 0
     comment Time step determines how close the analysis frames are for
@@ -111,11 +119,6 @@ form Directory and measures
     comment Note: this requires that you selected to run a pitch analysis previously
     boolean useBandwidthFormula 0
 
-    comment Do you want to load existing Pitch objects, or generate new ones?
-    boolean useExistingPitch 0 
-    comment Lower and upper limits to estimated frequency?
-    positive f0min 50
-    positive f0max 300
 endform
 
 ###
@@ -276,6 +279,18 @@ for currentToken from startToken to numTokens
         Rename... 'basename$'
         soundID = selected("Sound")
     endif  
+
+    ## If selected, extract the channel of interest
+    ## if e.g. you have audio on channel 1 and EGG on channel 2
+    if channel
+        Extract one channel... channel
+        monoID = selected("Sound")
+        select 'soundID'
+        Remove
+        select 'monoID'
+        Rename... 'basename$'
+        soundID = selected("Sound")
+    endif
 
     # If there is an existing formant-tracking parameter file 
     # ("*.FmtParam.txt"), load it and use its parameters rather
