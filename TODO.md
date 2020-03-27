@@ -13,3 +13,5 @@ In order of urgency:
 - Re-do the comparisons with the latest version
 
 - Unify the shell and GUI versions somehow - maybe through forcing everyone to specify their parameter settings in a settings file, rather than having pages and pages of forms?
+
+- 27.3.20: there appear to be issues with loading Formant/Pitch objects; need to investigate
