@@ -15,3 +15,6 @@ In order of urgency:
 - Unify the shell and GUI versions somehow - maybe through forcing everyone to specify their parameter settings in a settings file, rather than having pages and pages of forms?
 
 - 27.3.20: there appear to be issues with loading Formant/Pitch objects; need to investigate
+
+- SSFF output/emuR integration? https://ips-lmu.github.io/The-EMU-SDMS-Manual/app-chap-wrassp.html#sec:app-chap-wrassp-praatsSigProc
+
