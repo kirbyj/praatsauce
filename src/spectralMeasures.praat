@@ -26,7 +26,7 @@ form Parameters for spectral tilt measure following Iseli et al.
  comment TextGrid interval to measure.  If numeric, check the box.
  natural tier 1
  integer interval_number 0
- text interval_label v
+ #text interval_label v
  comment Window parameters
  real windowPosition 0.5
  positive windowLength 0.025
@@ -68,14 +68,14 @@ formantID = selected("Formant")
 select textGridID
 if 'interval_number' > 0
  intervalOfInterest = interval_number
-else
- numIntervals = Get number of intervals... 'tier'
- for currentInterval from 1 to 'numIntervals'
-  currentIntervalLabel$ = Get label of interval... 'tier' 'currentInterval'
-  if currentIntervalLabel$==interval_label$
-   intervalOfInterest = currentInterval
-  endif
- endfor
+#else
+# numIntervals = Get number of intervals... 'tier'
+# for currentInterval from 1 to 'numIntervals'
+#  currentIntervalLabel$ = Get label of interval... 'tier' 'currentInterval'
+#  if currentIntervalLabel$==interval_label$
+#   intervalOfInterest = currentInterval
+#  endif
+# endfor
 endif
 
 startTime = Get starting point... 'tier' 'intervalOfInterest'

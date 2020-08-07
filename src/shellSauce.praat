@@ -492,7 +492,7 @@ for currentToken from startToken to numTokens
                 select pitchID
                 plus soundID
                 plus textGridID
-                execute pitchTracking.praat 'interval_tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'manualCheck' 1 'measure' 'timepoints' 'points'
+                execute pitchTracking.praat 'interval_tier' 'current_interval' 'windowPosition' 'windowLength' 'manualCheck' 1 'measure' 'timepoints' 'points'
                
                 ### Save output Matrix
                 select Matrix PitchAverages
@@ -508,7 +508,7 @@ for currentToken from startToken to numTokens
                 select 'soundID'
                 plus 'textGridID'
                 plus 'formantID'
-                execute formantMeasures.praat 'interval_tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'manualCheck' 'saveAsEPS' 'useBandwidthFormula' 'useExistingFormants' 'inputdir$' 'basename$' 'listenToSound' 'timeStep' 'maxNumFormants' 'maxFormantHz' 'preEmphFrom' 'f1ref' 'f2ref' 'f3ref' 'spectrogramWindow' 'measure' 'timepoints' 'points' 'formantTracking'
+                execute formantMeasures.praat 'interval_tier' 'current_interval' 'windowPosition' 'windowLength' 'manualCheck' 'saveAsEPS' 'useBandwidthFormula' 'useExistingFormants' 'inputdir$' 'basename$' 'listenToSound' 'timeStep' 'maxNumFormants' 'maxFormantHz' 'preEmphFrom' 'f1ref' 'f2ref' 'f3ref' 'spectrogramWindow' 'measure' 'timepoints' 'points' 'formantTracking'
 				formantID = selected("Formant")
                 select Matrix FormantAverages
                 formantResultsID = selected("Matrix")
@@ -524,7 +524,7 @@ for currentToken from startToken to numTokens
                 plus 'textGridID'
                 plus 'formantID'
                 plus 'pitchID'
-                execute spectralMeasures.praat 'interval_tier' 'current_interval' 'interval_label$' 'windowPosition' 'windowLength' 'saveAsEPS' 'useBandwidthFormula' 'inputdir$' 'manualCheck' 'maxDisplayHz' 'measure' 'timepoints' 'points' 'f0min' 'f0max'
+                execute spectralMeasures.praat 'interval_tier' 'current_interval' 'windowPosition' 'windowLength' 'saveAsEPS' 'useBandwidthFormula' 'inputdir$' 'manualCheck' 'maxDisplayHz' 'measure' 'timepoints' 'points' 'f0min' 'f0max'
             
                 ## Assign ID to output matrix
                 select Matrix IseliMeasures

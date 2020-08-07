@@ -33,7 +33,7 @@ form Parameters for formant measurement
     comment TextGrid interval
     natural tier 1
     integer interval_number 2
-    sentence interval_label v
+    #sentence interval_label v
     comment Window parameters
     positive windowPosition 0.5
     positive windowLength 0.025
@@ -82,14 +82,14 @@ formantID = selected("Formant")
 select textGridID
 if 'interval_number' > 0
  intervalOfInterest = interval_number
-else
- numIntervals = Get number of intervals... 'tier'
- for currentInterval from 1 to 'numIntervals'
-  currentIntervalLabel$ = Get label of interval... 'tier' 'currentInterval'
-  if currentIntervalLabel$==interval_label$
-   intervalOfInterest = currentInterval
-  endif
- endfor
+#else
+# numIntervals = Get number of intervals... 'tier'
+# for currentInterval from 1 to 'numIntervals'
+#  currentIntervalLabel$ = Get label of interval... 'tier' 'currentInterval'
+#  if currentIntervalLabel$==interval_label$
+#   intervalOfInterest = currentInterval
+#  endif
+# endfor
 endif
 
 startTime = Get starting point... 'tier' 'intervalOfInterest'

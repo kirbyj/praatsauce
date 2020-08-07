@@ -17,11 +17,11 @@ form Parameters for f0 measurement
  comment TextGrid interval
  natural tier 4
  natural interval_number 0
- text interval_label v
+# text interval_label v
  real windowPosition
  positive windowLength
  boolean manualCheck 1
- boolean outputToMatrix 1
+ boolean outputToMatrix 0
  positive measure 2
  positive timepoints 10
  positive timestep 1
@@ -48,14 +48,14 @@ pitchID = selected("Pitch")
 select textGridID
 if interval_number > 0
  intervalOfInterest = interval_number
-else
- numIntervals = Get number of intervals... 'tier'
- for currentInterval from 1 to 'numIntervals'
- 	currentIntervalLabel$ = Get label of interval... 'tier' 'currentInterval'
-    if currentIntervalLabel$==interval_label$
-    	intervalOfInterest = currentInterval
-    endif
- endfor
+#else
+# numIntervals = Get number of intervals... 'tier'
+# for currentInterval from 1 to 'numIntervals'
+# 	currentIntervalLabel$ = Get label of interval... 'tier' 'currentInterval'
+#    if currentIntervalLabel$==interval_label$
+#    	intervalOfInterest = currentInterval
+#    endif
+# endfor
 endif
 
 startTime = Get starting point... 'tier' 'intervalOfInterest'
@@ -116,6 +116,7 @@ for i from 1 to timepoints
         Set value... i 2 'f0'
 	else
         printline "'name$''tab$''f0'"
+	pause
 	endif
 endfor
 ### (end measurement loop)
