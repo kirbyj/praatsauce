@@ -66,7 +66,7 @@ endTime = Get end point... 'tier' 'intervalOfInterest'
 ### Third, decide what times to measure at.
 ###
 
-d = startTime
+d = startTime + (timestep/1000)
 ## If equidistant points: compute based on number of points
 if measure = 1
     diff = (endTime - startTime) / (timepoints+1)

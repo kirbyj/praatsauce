@@ -449,7 +449,7 @@ for currentToken from startToken to numTokens
 
 	###
 	## Not sure of the best way to do this. This way seems to be the cleanest,
-	## because the objects are alway sonly loaded or created once. 
+	## because the objects are always only loaded or created once. 
 	##
 	## However, it is possible that they are created redundantly, because if
 	## a given file doesn't have any intervals of interest, nothing will
@@ -523,12 +523,15 @@ for currentToken from startToken to numTokens
             ## Determine start and endpoints of current interval for reference
             interval_start = Get start time of interval... 'interval_tier' 'current_interval'
             interval_end = Get end time of interval... 'interval_tier' 'current_interval'
+			# truncate to msec precision
+			interval_start = (floor(1000 * interval_start) / 1000)
+			interval_end = floor(1000 * interval_end) / 1000
 
-            ## Determine how many timepoints we're measuring at
+            ## Determine how many timepoints we are measuring at
             if measure = 1
                timepoints = points
             elsif measure = 2
-               timepoints = round(((interval_end - interval_start)*1000)/points)
+               timepoints = round(((interval_end - interval_start))*1000)/points
             endif
             
             ## Report current token number, name, and lingVars$:
@@ -607,9 +610,9 @@ for currentToken from startToken to numTokens
             for t from 1 to timepoints
                 # Begin building results string with file and linguistic info.
                 if point_tier == 0
-                    results$ = "'basename$','lingVars$''interval_label$','interval_start:6','interval_end:6','t'"
+                    results$ = "'basename$','lingVars$''interval_label$','interval_start:3','interval_end:3','t'"
                 else
-                    results$ = "'basename$','lingVars$''interval_label$','interval_start:6','interval_end:6','ptimes$''t'"
+                    results$ = "'basename$','lingVars$''interval_label$','interval_start:3','interval_end:3','ptimes$''t'"
                 endif
 
                 # have we already written the ms time or do we still need to write it?
@@ -619,7 +622,7 @@ for currentToken from startToken to numTokens
                     select 'pitchResultsID'
                     if msflag = 0
                         mspoint = Get value in cell... t 1
-                        results$ = "'results$','mspoint:6'"
+                        results$ = "'results$','mspoint:3'"
                         msflag = 1
                     endif
                     currentPitch = Get value in cell... t 2 
@@ -630,7 +633,7 @@ for currentToken from startToken to numTokens
                     select 'formantResultsID'
                     if msflag = 0
                         mspoint = Get value in cell... t 1
-                        results$ = "'results$','mspoint:6'"
+                        results$ = "'results$','mspoint:3'"
                         msflag = 1
                     endif
                     for formant from 2 to 4
@@ -647,7 +650,7 @@ for currentToken from startToken to numTokens
                     select 'iseliResultsID'
                     if msflag = 0
                         mspoint = Get value in cell... t 1
-                        results$ = "'results$','mspoint:6'"
+                        results$ = "'results$','mspoint:3'"
                     endif
                     for measurement from 2 to 31
                         aMeasure = Get value in cell... t 'measurement'
