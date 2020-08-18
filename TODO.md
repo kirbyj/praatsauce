@@ -1,10 +1,12 @@
-In order of urgency:
+In semi-order of urgency:
 
 - Replace all Matrix-based storage with vector/array (since Praat finally has a real vector data type, hooray)
 
   By doing this we can also address the issue of --undefined-- values of F1/F2 crashing the script. What should really happen is that if f0/F1/F2 is undefined, the calculation of spectral amplitudes or any other measure that relies on f0/F1/F2 should be set to --undefined-- as well; then the analyst can decide what to do about it later (throw them away, rejigger the TextGrid boundaries, something else...) but this may involve a rather fundamental re-write of how PraatSauce stores and outputs results
       
 - Add option to use Mannell (1998) for formant bandwidth calculation
+
+- Split out spectral measures so that they don't all have to be computed
 
 - add option to allow user to select autocorrelation or cross-correlation pitch estimation methods, along with associated parameters
 
@@ -16,5 +18,5 @@ In order of urgency:
 
 - 27.3.20: there appear to be issues with loading Formant/Pitch objects; need to investigate
 
-- SSFF output/emuR integration? https://ips-lmu.github.io/The-EMU-SDMS-Manual/app-chap-wrassp.html#sec:app-chap-wrassp-praatsSigProc
+- SSFF output/emuR integration? https://ips-lmu.github.io/The-EMU-SDMS-Manual/app-chap-wrassp.html#sec:app-chap-wrassp-praatsSigProc **August 2020**: simpler to read in and convert to ASSP file internally in emuR.
 
