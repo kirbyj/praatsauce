@@ -133,24 +133,24 @@ if manualCheck
 endif
 ### (end of manual check sound playback)
 
-if formantTracking = 1
-	# Tracking cleans up the tracks a little.  The original Formant object is then discarded.
-	## mar 19: should really make the number of tracks a user parameter
-	## also need to tune it possibly for each frame, because if the Formant
-	## object has fewer values than the numTracks parameter, the command
-	## will fail.
-	select 'formantID'
-	minFormants = Get minimum number of formants
-	if 'minFormants' = 2
-		Track... 2 f1ref f2ref f3ref 3850 4950 1 1 1
-	else
-		Track... 3 f1ref f2ref f3ref 3850 4950 1 1 1
-	endif
-	trackedFormantID = selected("Formant")
-	select 'formantID'
-	Remove
-    formantID = trackedFormantID
-endif
+#if formantTracking = 1
+#	# Tracking cleans up the tracks a little.  The original Formant object is then discarded.
+#	## mar 19: should really make the number of tracks a user parameter
+#	## also need to tune it possibly for each frame, because if the Formant
+#	## object has fewer values than the numTracks parameter, the command
+#	## will fail.
+#	select 'formantID'
+#	minFormants = Get minimum number of formants
+#	if 'minFormants' = 2
+#		Track... 2 f1ref f2ref f3ref 3850 4950 1 1 1
+#	else
+#		Track... 3 f1ref f2ref f3ref 3850 4950 1 1 1
+#	endif
+#	trackedFormantID = selected("Formant")
+#	select 'formantID'
+#	Remove
+#    formantID = trackedFormantID
+#endif
 
 ###
 # Display results, possibly

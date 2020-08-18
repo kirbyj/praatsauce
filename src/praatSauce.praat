@@ -443,9 +443,9 @@ for currentToken from startToken to numTokens
         endfor  
     endif
 
-    #########################################
-    ## Load/create Pitch and Formant objects
-    #########################################
+    ###########################################
+    ## Load/create Pitch, Formant, etc. objects
+    ###########################################
 
 	###
 	## Not sure of the best way to do this. This way seems to be the cleanest,
@@ -454,6 +454,8 @@ for currentToken from startToken to numTokens
 	## However, it is possible that they are created redundantly, because if
 	## a given file doesn't have any intervals of interest, nothing will
 	## be measured. 
+	##
+	## Mostly relevant for processing single files with many intervals of interest.
 	###
 
 	if pitchTracking
@@ -492,7 +494,57 @@ for currentToken from startToken to numTokens
         	select 'soundID'
             To Formant (burg)... timeStep maxNumFormants maxFormantHz windowLength preEmphFrom
 		endif
+
+		if formantTracking = 1
+			# Tracking cleans up the tracks a little.  The original Formant object is then discarded.
+			## mar 19: should really make the number of tracks a user parameter
+			## also need to tune it possibly for each frame, because if the Formant
+			## object has fewer values than the numTracks parameter, the command
+			## will fail.
+			select 'formantID'
+			minFormants = Get minimum number of formants
+			if 'minFormants' = 2
+				Track... 2 f1ref f2ref f3ref 3850 4950 1 1 1
+			else
+				Track... 3 f1ref f2ref f3ref 3850 4950 1 1 1
+			endif
+			trackedFormantID = selected("Formant")
+			select 'formantID'
+			Remove
+			formantID = trackedFormantID
+		endif
+
 		formantID = selected("Formant")
+	endif
+
+	if spectralMeasures
+		# TODO: add option to read from disk as above
+		### Create Harmonicity objects ###
+
+		## here we use a 1 period window; the Praat 
+		## default of 4.5 periods per window produces
+		## much less accurate estimates
+		select 'soundID'
+		Filter (pass Hann band): 0, 500, 100
+		Rename... 'basename$'_500
+		To Harmonicity (cc): 0.01, f0min, 0.1, 1.0
+		hnr05ID = selected ("Harmonicity")
+		select 'soundID'
+		Filter (pass Hann band): 0, 1500, 100
+		Rename... 'basename$'_1500
+		To Harmonicity (cc): 0.01, f0min, 0.1, 1.0
+		hnr15ID = selected ("Harmonicity")
+		select 'soundID'
+		Filter (pass Hann band): 0, 2500, 100
+		Rename... 'basename$'_2500
+		To Harmonicity (cc): 0.01, f0min, 0.1, 1.0
+		hnr25ID = selected ("Harmonicity")
+		select 'soundID'
+		Filter (pass Hann band): 0, 3500, 100
+		Rename... 'basename$'_3500
+		To Harmonicity (cc): 0.01, f0min, 0.1, 1.0
+		hnr35ID = selected ("Harmonicity")
+		### (end create Harmonicity objects ###
 	endif
 
     ########################################
@@ -591,6 +643,10 @@ for currentToken from startToken to numTokens
                 plus 'textGridID'
                 plus 'formantID'
                 plus 'pitchID'
+				plus 'hnr05ID'
+				plus 'hnr15ID'
+				plus 'hnr25ID'
+				plus 'hnr35ID'
                 execute spectralMeasures.praat 'interval_tier' 'current_interval' 'windowPosition' 'windowLength' 'saveAsEPS' 'useBandwidthFormula' 'inputdir$' 'manualCheck' 'maxDisplayHz' 'measure' 'timepoints' 'points' 'f0min' 'f0max'
             
                 ## Assign ID to output matrix
@@ -670,7 +726,10 @@ for currentToken from startToken to numTokens
 			#minus TextGrid 'basename$'
 			#nocheck minus Pitch 'basename$'
 			#nocheck minus Formant 'basename$'
-			#Remove
+			select 'pitchResultsID'
+			plus 'formantResultsID'
+			plus 'iseliResultsID'
+			Remove
         endif
     endfor
     ## end of check to see if we have a non-empty interval

@@ -60,6 +60,10 @@ soundID = selected("Sound")
 textGridID = selected("TextGrid")
 pitchID = selected("Pitch")
 formantID = selected("Formant")
+hnr05ID = selected("Harmonicity", 1)
+hnr15ID = selected("Harmonicity", 2)
+hnr25ID = selected("Harmonicity", 3)
+hnr35ID = selected("Harmonicity", 4)
 ### (end object check)
 
 ###
@@ -122,26 +126,26 @@ matrixID = selected("Matrix")
 ## default of 4.5 periods per window produces
 ## much less accurate estimates
 
-select 'soundID'
-Filter (pass Hann band): 0, 500, 100
-Rename... 'name$'_500
-To Harmonicity (cc): 0.01, f0min, 0.1, 1.0
-hnr05ID = selected ("Harmonicity")
-select 'soundID'
-Filter (pass Hann band): 0, 1500, 100
-Rename... 'name$'_1500
-To Harmonicity (cc): 0.01, f0min, 0.1, 1.0
-hnr15ID = selected ("Harmonicity")
-select 'soundID'
-Filter (pass Hann band): 0, 2500, 100
-Rename... 'name$'_2500
-To Harmonicity (cc): 0.01, f0min, 0.1, 1.0
-hnr25ID = selected ("Harmonicity")
-select 'soundID'
-Filter (pass Hann band): 0, 3500, 100
-Rename... 'name$'_3500
-To Harmonicity (cc): 0.01, f0min, 0.1, 1.0
-hnr35ID = selected ("Harmonicity")
+#select 'soundID'
+#Filter (pass Hann band): 0, 500, 100
+#Rename... 'name$'_500
+#To Harmonicity (cc): 0.01, f0min, 0.1, 1.0
+#hnr05ID = selected ("Harmonicity")
+#select 'soundID'
+#Filter (pass Hann band): 0, 1500, 100
+#Rename... 'name$'_1500
+#To Harmonicity (cc): 0.01, f0min, 0.1, 1.0
+#hnr15ID = selected ("Harmonicity")
+#select 'soundID'
+#Filter (pass Hann band): 0, 2500, 100
+#Rename... 'name$'_2500
+#To Harmonicity (cc): 0.01, f0min, 0.1, 1.0
+#hnr25ID = selected ("Harmonicity")
+#select 'soundID'
+#Filter (pass Hann band): 0, 3500, 100
+#Rename... 'name$'_3500
+#To Harmonicity (cc): 0.01, f0min, 0.1, 1.0
+#hnr35ID = selected ("Harmonicity")
 ### (end create Harmonicity objects ###
 
 ###
@@ -428,6 +432,7 @@ for i from 1 to timepoints
 	###
 	select 'windowedSoundID'
 	plus 'spectrumID'
+	plus 'cepstrumID'
 	plus 'ltasID'
 	Remove
 
