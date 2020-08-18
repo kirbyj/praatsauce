@@ -6,7 +6,7 @@ In semi-order of urgency:
       
 - Add option to use Mannell (1998) for formant bandwidth calculation
 
-- Split out spectral measures so that they don't all have to be computed
+- Split out spectral measures so that they don't all have to be computed. Actually the whole thing could be more modular; right now different aspects of different functions are spread out all over the place
 
 - add option to allow user to select autocorrelation or cross-correlation pitch estimation methods, along with associated parameters
 
