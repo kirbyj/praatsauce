@@ -495,13 +495,15 @@ for currentToken from startToken to numTokens
             To Formant (burg)... timeStep maxNumFormants maxFormantHz windowLength preEmphFrom
 		endif
 
+		formantID = selected("Formant")
+
+		# moved from formantMeasures.praat 2020-08-18
 		if formantTracking = 1
 			# Tracking cleans up the tracks a little.  The original Formant object is then discarded.
 			## mar 19: should really make the number of tracks a user parameter
 			## also need to tune it possibly for each frame, because if the Formant
 			## object has fewer values than the numTracks parameter, the command
 			## will fail.
-			select 'formantID'
 			minFormants = Get minimum number of formants
 			if 'minFormants' = 2
 				Track... 2 f1ref f2ref f3ref 3850 4950 1 1 1
@@ -514,7 +516,6 @@ for currentToken from startToken to numTokens
 			formantID = trackedFormantID
 		endif
 
-		formantID = selected("Formant")
 	endif
 
 	if spectralMeasures
@@ -720,15 +721,16 @@ for currentToken from startToken to numTokens
             ## end of writing out timepoints
 
 			## clean up
-			#select all
-			#minus Strings fileList
-			#minus Sound 'basename$'
-			#minus TextGrid 'basename$'
-			#nocheck minus Pitch 'basename$'
-			#nocheck minus Formant 'basename$'
-			select 'pitchResultsID'
-			plus 'formantResultsID'
-			plus 'iseliResultsID'
+			select all
+			minus Strings fileList
+			minus Sound 'basename$'
+			minus TextGrid 'basename$'
+			nocheck minus 'pitchID'
+			nocheck minus 'formantID'
+			nocheck minus 'hnr05ID'
+			nocheck minus 'hnr15ID'
+			nocheck minus 'hnr25ID'
+			nocheck minus 'hnr35ID'
 			Remove
         endif
     endfor
