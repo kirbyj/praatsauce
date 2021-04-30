@@ -47,6 +47,7 @@ These scripts are provided as-is, without any warranty regarding their suitabili
 - Many of the fancier things implemented in VoiceSauce: epochs, Sun's SHR methods, etc. 
 - Alternative methods of estimating F0 (STRAIGHT, Snack)
 - Correct H2K or H5K for formant frequencies and bandwidths (because this is based on cepstral peak rather than F0 window). Note that VoiceSauce doesn't correct for H5K either, though it does correct H2K.
+- Integrate EGG measurements
 
 
 ## Requirements

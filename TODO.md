@@ -23,3 +23,6 @@ In semi-order of urgency:
 
 - SSFF output/emuR integration? https://ips-lmu.github.io/The-EMU-SDMS-Manual/app-chap-wrassp.html#sec:app-chap-wrassp-praatsSigProc **August 2020**: simpler to read in and convert to ASSP file internally in emuR.
 
+- Figure out what the Praat "Get CPPS" function does, compare it with manual smoothing of CPP and with VS
+
+- Hook to integrate **praatdet** or EGGWorks EGG measures?
