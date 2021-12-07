@@ -54,32 +54,32 @@ endform
 ### The second form gets information about the TextGrid structure and determines
 ### the time resolution.
 ###
-form Intervals and timepoints
-    comment If you only want to analyze one channel, enter it here (or 0 for stereo):
-    integer channel 1
-    comment Which is your interval tier?
-    natural interval_tier 1
-    comment Enter interval labels you don't want to process as a well-formed regex:
-    sentence skip_these_labels ^$|^\s+$|r
-    comment Which is your point tier? (Enter 0 if you aren't using a point tier)
-    integer point_tier 0
-    comment If using a point tier: enter the labels of interest, separated by spaces:
-    sentence point_tier_labels ov cv rv
-    comment What character separates linguistic variables in token names? (e.g. "-" or "_")
-    sentence separator _
+beginPause: "Intervals and timepoints"
+    comment: "If you only want to analyze one channel, enter it here (or 0 for stereo):"
+    integer: "channel", 1
+    comment: "Which is your interval tier?"
+    natural: "interval_tier", 1
+    comment: "Enter interval labels you don't want to process as a well-formed regex:"
+    sentence: "skip_these_labels", "^$|^\s+$|r"
+    comment: "Which is your point tier? (Enter 0 if you aren't using a point tier)"
+    integer: "point_tier", 0
+    comment: "If using a point tier: enter the labels of interest, separated by spaces:"
+    sentence: "point_tier_labels", "ov cv rv"
+    comment: "What character separates linguistic variables in token names? (e.g. - or _)"
+    sentence: "separator", "_"
     #comment Some measures (formant measure, pitch tracking, h1-a3, a1-a2) 
     #comment allow you to manually check the output.
-    comment What portion of tokens do you wish to (randomly) manually inspect? 
-    comment (0=none, 0.5 half, 1=all, etc.)
-    real manualCheckFrequency 0
-    comment At what points in the segment should we record measurements?
-    optionmenu Measure: 2
-       option n equidistant points
-       option every n milliseconds
-    comment If n equidistant points, how many? (e.g. 1, 3, 11...)
-    comment If every n milliseconds, at what msec interval? (e.g. 5, 10...)
-    natural Points 5
-endform
+    comment: "What portion of tokens do you wish to (randomly) manually inspect?"
+    comment: "(0=none, 0.5 half, 1=all, etc.)"
+    real: "manualCheckFrequency", 0
+    comment: "At what points in the segment should we record measurements?"
+    optionMenu: "Measure", 2
+       option: "n equidistant points"
+       option: "every n milliseconds"
+    comment: "If n equidistant points, how many? (e.g. 1, 3, 11...)"
+    comment: "If every n milliseconds, at what msec interval? (e.g. 5, 10...)"
+    natural: "Points", 5
+endPause: "Continue", 1
 
 ###
 ### The third form lets the user select which measures to run, and 
@@ -202,8 +202,7 @@ if formantMeasures
         boolean: "useExistingFormants", 0
         #comment: "Do you want to use Praat's estimates of formant bandwidths, or"
         #comment: "bandwidths estimated by the Hawks and Miller formula?"
-		comment: "Use Hawks and Miller bandwidth formula?"
-        comment: "Note: this requires that you selected to run a pitch analysis previously"
+		comment: "Use Hawks and Miller bandwidth formula? (requires a pitch analysis) "
         boolean: "useBandwidthFormula", 0
     endPause: "Continue", 1
 
