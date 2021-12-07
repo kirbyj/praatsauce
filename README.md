@@ -75,7 +75,7 @@ Presently, PraatSauce consists of 8 files, found in the `src` directory:
 
 Open and run the `praatSauce.praat` script. There are several pages of parameters that need to be specified.
 
-### Page 1: directory and files
+### Page 1: Directory and files
 
 #### Input directory and results file
 
@@ -91,7 +91,7 @@ Open and run the `praatSauce.praat` script. There are several pages of parameter
 
 If you want to start from a specific token (e.g. because the script was interrupted due to some kind of error and you don't want to start all over from the beginning), you can change the value of `startToken`. You will need to watch the info window to see the token number, or you can figure it out from the Strings list. If you do this, make sure to rename the existing version of `spectral_measures.txt` as it will be silently overwritten.
 
-### Page 2: intervals and timepoints
+### Page 2: Intervals and timepoints
 
 #### channel
 
