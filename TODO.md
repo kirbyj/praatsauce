@@ -1,7 +1,7 @@
 In semi-order of urgency:
 
 - Right now, a TextGrid is *required* and an interval needs to be specified for any of this to work. It would be nice to be able to just process a
-  .wav file without having to have an accompanying TextGrid at all.:wq!
+  .wav file without having to have an accompanying TextGrid at all.
 
 - Replace all Matrix-based storage with vector/array (since Praat finally has a real vector data type, hooray)
 
@@ -13,7 +13,9 @@ In semi-order of urgency:
 
 - add option to allow user to select autocorrelation or cross-correlation pitch estimation methods, along with associated parameters
 
-- completely revist structure: currently we are re/saving objects over and over again (Formant objects at least) each time we find an interval to process. The object reference scheme should be completely revisited. **April 2019**: this has been temporarily worked around; we now only create/load the objects once, but this is problematic given that the logic of the scripts was designed to process each file once and once only, and we are looping through based on interval, potentially modifying the Formant object once per *interval*. This isn't scalable but then the manual-check logic also needs revisiting **August 2020**: Formant object generation is now done only once per audio file, but that means tracking is only done once per file too (there's no obvious way to extract a portion of a Formant object?), so in some/long files there will be some frames where F3 can't be estimated and therefore you'll get no F3 measurements for *any intervals in the entire file*. If Formant objects are built (and tracked) once per interval, then this usually won't happen, but there is a non-trivial performance hit in doing this.
+- calculate harmonics pitch-synchronously, like VoiceSauce does
+
+- completely revisit structure: currently we are re/saving objects over and over again (Formant objects at least) each time we find an interval to process. The object reference scheme should be completely revisited. **April 2019**: this has been temporarily worked around; we now only create/load the objects once, but this is problematic given that the logic of the scripts was designed to process each file once and once only, and we are looping through based on interval, potentially modifying the Formant object once per *interval*. This isn't scalable but then the manual-check logic also needs revisiting **August 2020**: Formant object generation is now done only once per audio file, but that means tracking is only done once per file too (there's no obvious way to extract a portion of a Formant object?), so in some/long files there will be some frames where F3 can't be estimated and therefore you'll get no F3 measurements for *any intervals in the entire file*. If Formant objects are built (and tracked) once per interval, then this usually won't happen, but there is a non-trivial performance hit in doing this.
 
 - Re-do the comparisons with the latest version
 
