@@ -36,13 +36,11 @@ include splitstring.praat
 
 ###
 ### The opening form gets information on the location of the files to process,
-### where the output should go, the structure of the TextGrids, which labels 
-### to process, and the temporal resolution of the measurements.
+### and where the output should go.
 ###
-
 clearinfo
 
-form Directory and measures
+form Directory and files
     comment Input directory and results file
     sentence inputdir /Users/jkirby/Projects/praatsauce/comp/madurese/
     sentence textgriddir /Users/jkirby/Projects/praatsauce/comp/madurese/
@@ -50,6 +48,13 @@ form Directory and measures
     sentence outputfile spectral_measures.txt
     comment If measuring in sessions, use this parameter to pick up where you left off:
     natural startToken 1
+endform
+
+###
+### The second form gets information about the TextGrid structure and determines
+### the time resolution.
+###
+form Intervals and timepoints
     comment If you only want to analyze one channel, enter it here (or 0 for stereo):
     integer channel 1
     comment Which is your interval tier?
@@ -77,7 +82,7 @@ form Directory and measures
 endform
 
 ###
-### The second form lets the user select which measures to run, and 
+### The third form lets the user select which measures to run, and 
 ### obtains some general analysis parameters that are used by the  
 ### subscripts.
 ###
@@ -186,8 +191,8 @@ if formantMeasures
         positive: "preEmphFrom", 50
         comment: "Would you like to smooth the formant tracks?"
         boolean: "formantTracking", 1
-        comment: "If yes: the tracking used to smooth formant contours after initial"
-        comment: "estimates requires reference formant values (neutral vowel)."
+        #comment: "If yes: the tracking used to smooth formant contours after initial estimates"
+        comment: "If yes: requires reference formant values (neutral vowel)."
         positive: "F1ref", 500
         positive: "F2ref", 1500
         positive: "F3ref", 2500
@@ -195,8 +200,9 @@ if formantMeasures
         boolean: "saveAsEPS", 0
         comment: "Do you want to load existing Formant objects, or generate new ones?"
         boolean: "useExistingFormants", 0
-        comment: "Do you want to use Praat's estimates of formant bandwidths, or"
-        comment: "bandwidths estimated by the Hawks and Miller formula?"
+        #comment: "Do you want to use Praat's estimates of formant bandwidths, or"
+        #comment: "bandwidths estimated by the Hawks and Miller formula?"
+		comment: "Use Hawks and Miller bandwidth formula?"
         comment: "Note: this requires that you selected to run a pitch analysis previously"
         boolean: "useBandwidthFormula", 0
     endPause: "Continue", 1
