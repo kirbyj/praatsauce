@@ -74,7 +74,7 @@ Presently, PraatSauce consists of 8 files, found in the `src` directory:
 
 Open and run the `praatSauce.praat` script. There are several pages of parameters that need to be specified.
 
-### Page 1: directory and measures
+### Page 1: directory and files
 
 #### Input directory and results file
 
@@ -89,6 +89,8 @@ Open and run the `praatSauce.praat` script. There are several pages of parameter
 #### session
 
 If you want to start from a specific token (e.g. because the script was interrupted due to some kind of error and you don't want to start all over from the beginning), you can change the value of `startToken`. You will need to watch the info window to see the token number, or you can figure it out from the Strings list. If you do this, make sure to rename the existing version of `spectral_measures.txt` as it will be silently overwritten.
+
+### Page 2: intervals and timepoints
 
 #### channel
 
@@ -130,7 +132,7 @@ This variable allows the user to choose to measure either at *n* equidistant poi
 
 If `points` is set to e.g. 5 and `measure` is `every n milliseconds`, a measurement will be taken every 5 msec. If `measure` is `n equidistant points` than this will take 5 evenly spaced measurements, the precise times of which will depend on the length of the interval of interest.
 
-### Page 2: Select measures
+### Page 3: Select measures
 
 The second window allows you to choose the spectral measures you are interested in, along with some analysis window properties. Unlike VoiceSauce, PraatSauce currently just returns a fixed set of measurements. There is also an option to resample to 16 KHz, although this is not really necessary as (a) VoiceSauce does it mostly for STRAIGHT and (b) resampling will occur when formants are estimated in any event.
 
@@ -140,14 +142,14 @@ If you have existing Praat `.Formant` objects in your `inputdir`, you may find t
 
 The `windowLength` and `maxAnalysisHz` options are used by the formant and spectral amplitude measurement procedures. For formant estimation, `windowLength` specifies the effective duration of the analysis window in seconds, while `maxAnalysisHz` gives the ceiling of the formant search range; see Praat documentation for details. `windowLength` is also used in the estimation of spectral amplitudes to create a 'slice' around a timepoint used to create a long-term average spectrum object. `windowPosition` is not currently used.
 
-### Page 3: Pitch tracking options
+### Page 4: Pitch tracking options
 
 Here you can:
 
 - use existing Pitch objects if you have them, or explictly ignore and overwrite them even if you do have them (by leaving the box unchecked)
 - change the lower and upper limits for estimated f0. You probably want to change these depending on the speaker's pitch range.
 
-### Page 4: Formant measurement options
+### Page 5: Formant measurement options
 
 Here you have the options to:
 
@@ -160,7 +162,7 @@ Here you have the options to:
 - decide whether to use Praat's estimates of formant bandwidths, or the Hawks and Miller formula which is the VoiceSauce default. Note that if you haven't selected Pitch estimation two pages previously, the script will exit with an error (because Hawks and Miller's formula relies on a pitch esimate).
 
 
-### Page 5: Got all that?
+### Page 6: Got all that?
 
 This pause allows you to save the previous parameter selections as a text file for reference. After this, PraatSauce will begin processing all files in `inputdir`, pausing only if there is an error or if you have set [`manualCheckFrequency`](#check) to be something greater than 0.
 
@@ -224,5 +226,5 @@ Shue, Y.-L., P. Keating, C. Vicenik, and K. Yu. (2011). VoiceSauce: a program fo
 
 
 
-*Last modified: Berlin, 18 August 2020*
+*Last modified: Munich, 7 December 2021*
 
