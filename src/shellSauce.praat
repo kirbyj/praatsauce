@@ -2,7 +2,7 @@
 # PraatSauce
 ###############
 
-# Copyright (c) 2018-2019 James Kirby
+# Copyright (c) 2018-2021 James Kirby
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

@@ -2,7 +2,7 @@
 # version 0.0.1
 #
 # from a script copyright 2009-2010 Timothy Mills <mills.timothy@gmail.com>
-# heavily modified 2011-2017 James Kirby <j.kirby@ed.ac.uk>
+# heavily modified 2011-2021 James Kirby <j.kirby@ed.ac.uk>
 
 # This script is designed to work as part of the "praatsauce" script suite,
 # which can be obtained from:
