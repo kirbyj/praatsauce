@@ -2,6 +2,8 @@ In semi-order of urgency:
 
 - Right now, a TextGrid is *required* and an interval needs to be specified for any of this to work. It would be nice to be able to just process a
   .wav file without having to have an accompanying TextGrid at all.
+  
+- Related to this, since the TextGrids are used to generate the file list, if you have a stray TextGrid that doesn't have an accompanying .wav file, I think the process fails silently in some horrible way.
 
 - Replace all Matrix-based storage with vector/array (since Praat finally has a real vector data type, hooray)
 
