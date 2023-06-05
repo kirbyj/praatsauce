@@ -23,7 +23,7 @@ In semi-order of urgency:
 
 - Unify the shell and GUI versions somehow - maybe through forcing everyone to specify their parameter settings in a settings file, rather than having pages and pages of forms?
 
-- 27.3.20: there appear to be issues with loading Formant/Pitch objects; need to investigate
+- 27.3.20: there appear to be issues with loading Formant/Pitch objects; need to investigate **June 2023**: this seems to work now? but Bert is saying it doesn't load objects from disk even when asked to. I tested and it seems to be OK; but objects are *always* written back to disk at the end of each run, even if loaded from disk/unchanged.
 
 - SSFF output/emuR integration? https://ips-lmu.github.io/The-EMU-SDMS-Manual/app-chap-wrassp.html#sec:app-chap-wrassp-praatsSigProc **August 2020**: simpler to read in and convert to ASSP file internally in emuR.
 
