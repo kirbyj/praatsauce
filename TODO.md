@@ -1,5 +1,7 @@
 In semi-order of urgency:
 
+- Introduce a check such that *if* a delimiter is specified, that every filename can be split into the same number of chunks based on this delimiter. Right now if this is not the case but the delimiter is specified/exists, Praat crashes horribly.
+
 - Right now, a TextGrid is *required* and an interval needs to be specified for any of this to work. It would be nice to be able to just process a
   .wav file without having to have an accompanying TextGrid at all.
   
