@@ -7,6 +7,8 @@ In semi-order of urgency:
   
 - Related to this, since the TextGrids are used to generate the file list, if you have a stray TextGrid that doesn't have an accompanying .wav file, I think the process fails silently in some horrible way.
 
+- Add an option to record labels of *all* intervals tiers at each measurement point (see [issue 8](https://github.com/kirbyj/praatsauce/issues/8))
+
 - Replace all Matrix-based storage with vector/array (since Praat finally has a real vector data type, hooray)
 
   By doing this we can also address the issue of --undefined-- values of F1/F2 crashing the script. What should really happen is that if f0/F1/F2 is undefined, the calculation of spectral amplitudes or any other measure that relies on f0/F1/F2 should be set to --undefined-- as well; then the analyst can decide what to do about it later (throw them away, rejigger the TextGrid boundaries, something else...) but this may involve a rather fundamental re-write of how PraatSauce stores and outputs results
