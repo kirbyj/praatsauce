@@ -33,4 +33,6 @@ In semi-order of urgency:
 
 - Figure out what the Praat "Get CPPS" function does, compare it with manual smoothing of CPP and with VS
 
+- Intensity/RMS energy (see [issue #9](https://github.com/kirbyj/praatsauce/issues/9))
+  
 - Hook to integrate **praatdet** or EGGWorks EGG measures?
