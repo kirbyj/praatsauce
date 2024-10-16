@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Rasmus Puggaard-Rode &amp; James Kirby">
+<meta name="dcterms.date" content="2024-10-16">
+
+<title>PraatSauce workflow and parameters</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/quarto.js"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="index_files/libs/quarto-html/anchor.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="index_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#basic-workflow" id="toc-basic-workflow" class="nav-link active" data-scroll-target="#basic-workflow">Basic workflow</a></li>
+  <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
+  <li><a href="#output" id="toc-output" class="nav-link" data-scroll-target="#output">Output</a></li>
+  <li><a href="#details" id="toc-details" class="nav-link" data-scroll-target="#details">Details</a></li>
+  <li><a href="#workflow-in-r" id="toc-workflow-in-r" class="nav-link" data-scroll-target="#workflow-in-r">Workflow in R</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">PraatSauce workflow and parameters</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Rasmus Puggaard-Rode &amp; James Kirby </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 16, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="basic-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="basic-workflow">Basic workflow</h2>
+<p>When you download <code>praatsauce</code>, all source code is in the <code>src</code> directory. This directory contains the files <code>params.csv</code>, <code>praatsauce.praat</code>, and a whole bunch of other files with Praat scripts that are called by <code>praatsauce.praat</code>. Unlike in previous versions of PraatSauce, you don’t set parameters directly in Praat, but instead by editing the <code>params.csv</code> file. When you run <code>praatsauce.praat</code>, a form will appear asking you only for the location of your parameters file. We think this is advantageous in terms of reproducibility, as you can simply share this parameters file when sharing the code for a study.</p>
+<p>This simple set-up also means that calling PraatSauce from the command line is very simple:</p>
+<pre><code>&lt;praat-location&gt; &lt;praatsauce-location&gt; &lt;params-location&gt;</code></pre>
+<p>where <code>&lt;praat-location&gt;</code> is the location of your <code>praat.exe</code> file, <code>&lt;praatsauce-location&gt;</code> is the path to <code>praatsauce.praat</code>, and <code>&lt;params-location&gt;</code> is the path to your parameters file. If Praat is on your <code>PATH</code> and you are running the code directly from the <code>src</code> directory, it could look like this:</p>
+<pre><code>praat praatsauce.praat params.csv</code></pre>
+</section>
+<section id="parameters" class="level2">
+<h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
+<p>The provided <code>params.csv</code> file has three “columns”:</p>
+<ul>
+<li><code>variable</code> the name of the parameter</li>
+<li><code>input</code> the value for this parameter</li>
+<li><code>comment</code> a brief description of the parameter</li>
+</ul>
+<p>Here, we provide a little more detail about each parameter.</p>
+<ul>
+<li><code>inputDir</code> is the directory where your sound files are located. The default value is <code>../audio</code>, i.e.&nbsp;a sister directory to <code>src</code> called <code>audio</code>.</li>
+<li><code>outputDir</code> is the directory where your output file should be saved. The default value is <code>.</code>, i.e.&nbsp;the same directory as where <code>praatsauce.praat</code> is located.</li>
+<li><code>outputFile</code> is the name of the output file. Default is <code>out.tsv</code>.</li>
+<li><code>channel</code> is the channel you want to analyze. Default is <code>1</code> the first channel. If your sound files have multiple channels, fx if the audio is stereo or you have an EGG channel, one of them is extracted and used for processing. You can input <code>0</code> if you want to use both channels of a stereo file.</li>
+<li><code>intervalEquidistant</code> If measures should be taken at equidistant intervals, how many measures should be taken? This parameter is only relevant if TextGrids are used to determine where to take measures in a sound file. Default is <code>0</code>, in which case measures are taken at fixed intervals.</li>
+<li><code>intervalFixed</code> How often should measures be taken (in seconds)? Default is <code>0.005</code>, i.e.&nbsp;every 5 ms. This is more coarse than the VoiceSauce default of taking measures every 1 ms. This should be set to <code>0</code> if you are taking equidistant measures; either <code>intervalEquidistant</code> or <code>intervalFixed</code> should be set to <code>0</code>, otherwise Praat will give you an error.</li>
+<li><code>pitch</code> Should pitch measures be reported in the output file? Default is <code>1</code>, set to <code>0</code> if you are not interested in pitch. Note that pitch will typically be measured anyways, as most of the other measures rely on pitch.</li>
+<li><code>formant</code> Should formant measures be reported in the output file? Default is <code>1</code>, set to <code>0</code> if you are not interested in formants. Note that formants will often be measured anyways, as many of the other measures rely on formants.</li>
+<li><code>harmonicAmplitude</code> Should corrected harmonic amplitude measures (H1*, H2*, H4*, A1*, A2*, A3*, H2K, H5K) be reported in the output file? Default is <code>1</code>, set to <code>0</code> if you are not interested in corrected harmonic amplitudes. Note that corrected harmonic amplitudes are calculated anyways if you want spectral slope measures.</li>
+<li><code>harmonicAmplitudeUncorrected</code> Should uncorrected harmonic amplitude measures (H1, H2, H4, A1, A2, A3) be reported in the output file? Default is <code>1</code>, set to <code>0</code> if you are not interested in uncorrected harmonic amplitudes. Note that uncorrected harmonic amplitudes are calculated anyways if you want corrected harmonic amplitudes.</li>
+<li><code>bw</code> Should formant bandwidths be reported? Default is <code>1</code>, set to <code>0</code> if you are not interested in bandwidths. Note that bandwidths will be measured/estimated anyways if you want corrected harmonic amplitudes.</li>
+<li><code>bwHawksMiller</code> Should formant bandwidths be estimated using the Hawks-Miller formula (Hawks &amp; Miller 1995)? Default is <code>1</code>, set to <code>0</code> if you want to use Praat’s empirical bandwidth measures for harmonic amplitude corrections.</li>
+<li><code>slope</code> Should corrected spectral slope measures (H1*-H2*, H2*-H4*, H1*-A1*, H1*-A2*, H1*-A3*, H2K-H5K) be reported? Default is <code>1</code>, set to <code>0</code> if you are not interested in corrected spectral slope measures.</li>
+<li><code>slopeUncorrected</code> Should corrected spectral slope measures (H1-H2, H2-H4, H1-A1, H1-A2, H1-A3) be reported? Default is <code>1</code>, set to <code>0</code> if you are not interested in uncorrected spectral slope measures.</li>
+<li><code>cpp</code> Should ceptral peak prominence (CPP) measures be reported? Default is <code>1</code>, set to <code>0</code> if you are not interested in CPP.</li>
+<li><code>hnr</code> Should harmonics-to-noise ratio (HNR) measures be reported? Default is <code>1</code>, set to <code>0</code> if you are not interested in HNR.</li>
+<li><code>intensity</code> Should intensity (root-mean-squared amplitude) measures be reported? Default is <code>1</code>, set to <code>0</code> if you are not interested in intensity.</li>
+<li><code>resample16khz</code> Should audio be resampled to 16 kHz? Default is <code>0</code>, set to <code>0</code> if you want resampling. This option is mainly provided because it is done in VoiceSauce, it won’t speed up the PraatSauce process.</li>
+<li><code>windowLength</code> Length of the analysis window for taking formant measurements and generating spectrograms in seconds. Default is <code>0.025</code>.</li>
+<li><code>f0min</code> Pitch floor, minimum frequency to look for when estimating pitch. Default is <code>50</code>.</li>
+<li><code>f0max</code> Pitch ceiling, maximum frequency to look for when estimating pitch. Default is <code>300</code>.</li>
+<li><code>maxNumFormants</code> How many formants should be estimated? Default is <code>5</code>. In any case, only three formants are reported.</li>
+<li><code>preEmphFrom</code> Pre-emphasize from which frequency when estimating formants? Default is <code>50</code>.</li>
+<li><code>f1ref</code> Reference F1 value used for formant tracking. Default is <code>500</code>.</li>
+<li><code>f2ref</code> Reference F2 value used for formant tracking. Default is <code>1500</code>.</li>
+<li><code>f3ref</code> Reference F3 value used for formant tracking. Default is <code>2500</code>.</li>
+<li><code>maxFormantHz</code> Frequency ceiling when tracking formants. Default is <code>5000</code>.</li>
+<li><code>useTextGrid</code> Should TextGrids be used to determine where in a sound file to take measures? Default is <code>0</code>, i.e.&nbsp;measures are taken over the entire sound file. Set to <code>1</code> if you wish to take measures only from select parts of sound files based on information in TextGrids.</li>
+<li><code>tgDir</code> is the directory where your TextGrids are located (if <code>useTextGrid</code> is set to <code>1</code>).</li>
+<li><code>filelist</code> Path to a text file which specifies which sound files to analyze. Should be a plain text file where each line is a relative path to a sound file. These paths are relative to <code>inputDir</code>. By default this argument is ignored, replace <code>0</code> with a path if you want to use it.</li>
+<li><code>intervalTier</code>. If using a TextGrid, which is the interval tier of interest? Default is <code>1</code>.</li>
+<li><code>includeTheseLabels</code>. If using a TextGrid, the code will search for intervals with these labels. Should be a well-formed regex – the default is <code>^()!\s*$</code> which refers to any interval that isn’t empty.</li>
+</ul>
+</section>
+<section id="output" class="level2">
+<h2 class="anchored" data-anchor-id="output">Output</h2>
+<p>The output of PraatSauce is a tab-separated text file which maximally looks something like this:</p>
+<pre><code>file    label   t   f0  F1  F2  F3  H1c H2c H4c A1c A2c A3c H2Ku    H5Ku    H1u H2u H4u...
+1.wav   b   0.621   0   1798.185    2299.12 3370.494    0   0   0   -42.67060159300069  -37.532...
+ 1.wav  b   0.626   0   1798.185    2299.12 3370.494    0   0   0   -42.67060159300069  -37.5...</code></pre>
+<p>It includes a column with a file name, a column with an interval label if TextGrids are used to determine intervals to analyze, a column giving the time stamp where the measures is taken, and columns for each measure at that time.</p>
+</section>
+<section id="details" class="level2">
+<h2 class="anchored" data-anchor-id="details">Details</h2>
+<p><strong>Pitch</strong> (<span class="math inline">\(F_0\)</span>) is measured using Praat’s filtered autocorrelation method, which implements <span class="citation" data-cites="boersma1993">Boersma (<a href="#ref-boersma1993" role="doc-biblioref">1993</a>)</span>’s autocorrelation method after low-pass filtering the waveform. This is currently considered the state-of-the-art method for measuring intonation in Praat. The standard “silence threshold” of 0.09 is reduced to 0.01 for better performance near consonant boundaries and in sound files with relatively low volume, following <a href="https://fon.hum.uva.nl/praat//manual/how_to_choose_a_pitch_analysis_method.html">these recommendations</a>. The <code>Kill octave jumps</code> routine is run on the resulting <code>Pitch</code> object. See <code>get_pitch.praat</code>.</p>
+<p><strong>Formants</strong> (<span class="math inline">\(F_1\)</span>, <span class="math inline">\(F_2\)</span>, <span class="math inline">\(F_3\)</span>) are measured using Praat’s implementation of <span class="citation" data-cites="burg">Burg (<a href="#ref-burg" role="doc-biblioref">1975</a>)</span>’s algorithm. The <code>Track</code> routine, which implements a Viterbi algorithm explained <a href="https://fon.hum.uva.nl/praat/manual/Formant__Track___.html">here</a>, is run on the resulting <code>Formant</code> object. See <code>get_formants.praat</code>.</p>
+<p><strong>Formant bandwidths</strong> (<span class="math inline">\(B_1\)</span>, <span class="math inline">\(B_2\)</span>, <span class="math inline">\(B_3\)</span>) are either empirical bandwidths returned by the formant tracking process outlined above (see <code>get_formants.praat</code>), or bandwidths estimated from formants scaled by pitch according to the procedure outlined by <span class="citation" data-cites="hawks1995">Hawks &amp; Miller (<a href="#ref-hawks1995" role="doc-biblioref">1995</a>)</span> (see <code>get_bwHawksMiller.praat</code>).</p>
+<p><strong>Harmonic amplitudes</strong> are calculated by generating long-term spectra (by default narrowband spectra from 25 ms Gaussian windows) with a frequency ceiling of 5500 Hz for each time step with a valid pitch measure. <span class="math inline">\(H_1\)</span>, the amplitude of the first harmonic, is determined as the energy peak within <span class="math inline">\(F_0\pm\frac{1}{10}F_0\)</span>, where <span class="math inline">\(F_0\)</span> is the fundamental frequency measure returned for any given time step; <span class="math inline">\(H_2\)</span>, the amplitude of the second harmonic, is the energy peak within <span class="math inline">\(2F_0\pm\frac{1}{10}F_0\)</span>; and <span class="math inline">\(H_4\)</span>, the amplitude of the fourth harmonic, is the energy peak within <span class="math inline">\(4F_0\pm\frac{1}{10}F_0\)</span>. <span class="math inline">\(A_1\)</span>, the amplitude of the harmonic nearest <span class="math inline">\(F_1\)</span>, is determined as the energy peak within <span class="math inline">\(F1\pm\frac{1}{5}F1\)</span>, <span class="math inline">\(A_2\)</span> is determined as the energy peak within <span class="math inline">\(F2\pm\frac{1}{10}F2\)</span>, and <span class="math inline">\(A_3\)</span> is determined as the energy peak within <span class="math inline">\(F3\pm\frac{1}{10}F3\)</span>, where <span class="math inline">\(F_n\)</span> is the nth formant measure returned for any given time step. <span class="math inline">\(H_{2K}\)</span>, the amplitude of the harmonic nearest 2000 Hz, is determined as the energy peak within <span class="math inline">\(2000\pm F_0\)</span>, and <span class="math inline">\(H_{5K}\)</span>, the amplitude of the harmonic nearest 5000 Hz, is determined as the energy peak within <span class="math inline">\(5000\pm F_0\)</span>. See <code>get_spectralMeasures.praat</code>. <span class="math inline">\(H_1^*\)</span>, <span class="math inline">\(H_2^*\)</span>, <span class="math inline">\(H_4^*\)</span>, <span class="math inline">\(A_1^*\)</span>, and <span class="math inline">\(A_2^*\)</span> corrected for the influence of <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> following the formula given by <span class="citation" data-cites="iseli2007">Iseli, Shue &amp; Alwan (<a href="#ref-iseli2007" role="doc-biblioref">2007</a>)</span>, while <span class="math inline">\(A_3^*\)</span> is corrected for the influence of <span class="math inline">\(F_1\)</span>, <span class="math inline">\(F_2\)</span>, and <span class="math inline">\(F_3\)</span> (see <code>correctIseli.praat</code>). <span class="math inline">\(H_{2K}\)</span> and <span class="math inline">\(H_{5K}\)</span> are not corrected.</p>
+<p><strong>Spectral slope</strong> measures are straightforward: <span class="math inline">\(H_1^*-H_2^*\)</span> is the difference between <span class="math inline">\(H_1^*\)</span> and <span class="math inline">\(H_2^*\)</span> etc. PraatSauce returns the standard corrected measures <span class="math inline">\(H_1^*-H_2^*\)</span>, <span class="math inline">\(H_2^*-H_4^*\)</span>, <span class="math inline">\(H_1^*-A_1^*\)</span>, <span class="math inline">\(H_1^*-A_2^*\)</span>, <span class="math inline">\(H_1^*-A_3^*\)</span>, and the uncorrected measures <span class="math inline">\(H_1-H_2\)</span>, <span class="math inline">\(H_2-H_4\)</span>, <span class="math inline">\(H_1-A_1\)</span>, <span class="math inline">\(H_1-A_2\)</span>, <span class="math inline">\(H_1-A_3\)</span>, and <span class="math inline">\(H_{2K}-H_{5K}\)</span>. See <code>get_spectralMeasures.praat</code>.</p>
+<p><strong>Ceptral peak prominence</strong> measures are calculated by generating power cepstra with a frequency ceiling of 5000 Hz for each time step, fitting exponential regression lines to each cepstrum, and determining how much the cepstral peak deviates from the regression line. This is the standard procedure of Praat’s <code>Get peak prominence</code> routine, but note that <span class="citation" data-cites="hillenbrand1994">Hillenbrand, Cleveland &amp; Erickson (<a href="#ref-hillenbrand1994" role="doc-biblioref">1994</a>)</span> and VoiceSauce determine the peak prominence by comparing with a <em>linear</em> regression line. The arguments for using exponential regression are laid out <a href="https://www.fon.hum.uva.nl/praat/manual/PowerCepstrum__Get_peak_prominence___.html">here</a>. See <code>get_CPP.praat</code>.</p>
+<p><strong>Harmonics-to-noise ratio</strong> measures are calculated using Praat’s cross-correlation method (a version of <span class="citation" data-cites="boersma1993">Boersma (<a href="#ref-boersma1993" role="doc-biblioref">1993</a>)</span>’s algorithm) which estimates the relative height of the cross-correlation peak (corresponding to the amplitude of the fundamental frequency). Harmonics-to-noise ratios are taken from different low pass filtered versions of the sound file: <span class="math inline">\(HNR_{500}\)</span>, <span class="math inline">\(HNR_{1500}\)</span>, <span class="math inline">\(HNR_{2500}\)</span>, and <span class="math inline">\(HNR_{3500}\)</span> use low pass filters of 500, 1500, 2500, and 3500 Hz, respectively. See <code>get_HNR.praat</code>.</p>
+<p><strong>Intensity</strong> measures, corresponding to the root-mean-squared amplitude, are calculated using Praat’s <code>To Intensity</code> procedure. See <code>get_intensity.praat</code>.</p>
+<p>The <strong>time domain</strong> looks a little goofy. In order to speed up the processing, we did our best to ‘vectorize’ all the operations in PraatSauce by using Praat’s tabulating functions instead of e.g.&nbsp;querying the pitch value for each time step in a loop, as was done in the previous version of PraatSauce. However, tabulating means that the time series for each measure will differ – the start and end point of a table will depend on the window size used for calculating the measure, which is different for each measure, and is further rounded in some esoteric fashion that is difficult to complete figure out. We solve this by taking whichever measure has the most time points as the standards, and padding other time series with zeros, see <code>zeroPadding.praat</code>.</p>
+<p><strong>A note on smoothing</strong>: VoiceSauce has a smoothing parameter, and by default smooths harmonic amplitudes and <span class="math inline">\(F_0\)</span>. Apparently spectral slope measures are computed using the smoothed harmonic amplitudes, and the spectral slope measures are then smoothed <em>again</em>. PraatSauce does not do any smoothing – we leave it up to the user how or if they choose to smoothe the measures. This means that PraatSauce output will look a lot more jagged than VoiceSauce output (partially by design).</p>
+</section>
+<section id="workflow-in-r" class="level2">
+<h2 class="anchored" data-anchor-id="workflow-in-r">Workflow in R</h2>
+<p>You can use whichever analysis pipeline you prefer, but if you do your analysis in R, note that we have a few convenience tools available as part of an in-development R library called <code>sauceshelf</code>. <code>sauceshelf</code> can be downloaded like so:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">'rpuggaardrode/sauceshelf'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>There is a function available, <code>praatsauce()</code>, which should generates a parameters file using the arguments passed on, run the PraatSauce scripts, and read in the resulting output as a data frame. <code>praatsauce()</code> The function is finicky for various reasons, but we’re working to make it more stable.</p>
+<p>Other functions available in <code>sauceshelf</code> are</p>
+<ul>
+<li><code>make_params()</code>, which will generate a valid parameters file to use with PraatSauce</li>
+<li><code>load_sauce()</code>, which will read PraatSauce output as a well-formatted data frame</li>
+<li><code>sauce2ssff()</code> which converts a data frame with PraatSauce output into SSFF files if you are working with the <a href="https://rpuggaardrode.github.io/emuintro/">EMU-SDMS infrastructure</a>.</li>
+</ul>
+<p>The aim is for <code>sauceshelf</code> to eventually have fully fledged R-internal methods of calculating all the measures above, as well as other measures such as <strong>epochs</strong> and <strong>strength of excitation</strong>, which are provided by VoiceSauce but not by PraatSauce. It will then hopefully be possible to supply pitch or formant measurements from other software, and use these to estimate spectral slope in R.</p>
+</section>
+<section id="references" class="level2 unnumbered">
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-boersma1993" class="csl-entry" role="listitem">
+Boersma, Paul. 1993. Accurate short-term analysis of the fundamental frequency and the harmonics-to-noise ratio of a sampled sound. <em>Institute of Phonetic Sciences, University of Amsterdam, Proceedings</em> 17, 97–110.
+</div>
+<div id="ref-burg" class="csl-entry" role="listitem">
+Burg, John Parker. 1975. Maximum entropy spectral analysis. PhD dissertation, Stanford University.
+</div>
+<div id="ref-hawks1995" class="csl-entry" role="listitem">
+Hawks, John W. &amp; James D. Miller. 1995. A formant bandwidth estimation procedure for vowel synthesis. <em>Journal of the Acoustical Society of America</em> 97(2), 1343–1344. doi:<a href="https://doi.org/10.1121/1.412986">10.1121/1.412986</a>.
+</div>
+<div id="ref-hillenbrand1994" class="csl-entry" role="listitem">
+Hillenbrand, James, Ronald A. Cleveland &amp; Robert L. Erickson. 1994. Acoustic correlates of breathy vocal quality. <em>Journal of Speech, Language, and Hearing Research</em> 37(4), 769–778. doi:<a href="https://doi.org/10.1044/jshr.3704.769">10.1044/jshr.3704.769</a>.
+</div>
+<div id="ref-iseli2007" class="csl-entry" role="listitem">
+Iseli, Markus, Yen-Liang Shue &amp; Abeer Alwan. 2007. Age, sex, and vowel dependencies of acoustic measures related to the voice source. <em>Journal of the Acoustical Society of America</em> 121(4), 2283–2295. doi:<a href="https://doi.org/10.1121/1.2697522">10.1121/1.2697522</a>.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

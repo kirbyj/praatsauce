@@ -1,6 +1,6 @@
 # PraatSauce
 
-This is a suite of [Praat](https://fon.hum.uva.nl/praat/) scripts that facilitate the analysis of voice quality. They are used to extract measures such as *F*~0~, formants, spectral measures such as H1-H2, H1-A3 etc, cepstral peak prominence, harmonics-to-noise-ratios in select frequency bands, and amplitude from acoustic data. 
+This is a suite of [Praat](https://fon.hum.uva.nl/praat/) scripts that facilitate the analysis of voice quality. They are used to extract measures such as f0, formants, spectral measures such as H1-H2, H1-A3 etc, cepstral peak prominence, harmonics-to-noise-ratios in select frequency bands, and amplitude from acoustic data. 
 
 ## Background
 
@@ -16,3 +16,8 @@ These scripts have been tested on Praat version 6.4.01. The scripts make extensi
 
 All the PraatSauce files are in the `src` directory. There are bunch of parameters to toggle, and this is simply done using the `params.csv` file, also in the `src` directory, which is a comma-separated file that can be opened and edited in a simple text editor or spreadsheet editor (Excel or similar). You can run the PraatSauce scripts by running the code in the `praatsauce.praat` file, which will open a window that prompts the location of your parameters file.
 
+## References
+
+Boersma, Paul & David Weenink (2023) *Praat. Doing phonetics by computer*, version 6.4.01.
+
+Shue, Yen-Liang, Patricia A. Keating, Chad Vicenik & Kristine Yu (2011) VoiceSauce. A program for voice analysis. *Proceedings of the 17th International Congress of Phonetic Sciences*, 1846--1849. Hong Kong. 

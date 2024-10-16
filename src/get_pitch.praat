@@ -20,7 +20,7 @@ snippetID = selected("Sound")
 ## attenuation at ceiling, silence threshold, voicing threshold, octave cost,
 ## octave-jump cost, voiced/unvoiced cost
 
-To Pitch (filtered ac): .timeStep, .f0min, .f0max, 15, 0, 0.03, 0.09, 0.5,
+To Pitch (filtered ac): .timeStep, .f0min, .f0max, 15, 0, 0.03, 0.01, 0.5,
   ... 0.005, 0.35, 0.14
 pitchOrgID = selected("Pitch")
 
