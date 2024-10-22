@@ -25,7 +25,7 @@
 # copyright 2009-2010 Timothy Mills
 # <mills.timothy@gmail.com>
 
-# VoiceSauce 
+# VoiceSauce
 # version 1.31
 # http://www.seas.ucla.edu/spapl/voicesauce/
 
@@ -67,7 +67,7 @@ beginPause: "Intervals and timepoints"
     sentence: "point_tier_labels", "ov cv rv"
     comment: "What character separates linguistic variables in token names? (e.g. - or _)"
     sentence: "separator", "_"
-    #comment Some measures (formant measure, pitch tracking, h1-a3, a1-a2) 
+    #comment Some measures (formant measure, pitch tracking, h1-a3, a1-a2)
     #comment allow you to manually check the output.
     comment: "What portion of tokens do you wish to (randomly) manually inspect?"
     comment: "(0=none, 0.5 half, 1=all, etc.)"
@@ -82,13 +82,13 @@ beginPause: "Intervals and timepoints"
 endPause: "Continue", 1
 
 ###
-### The third form lets the user select which measures to run, and 
-### obtains some general analysis parameters that are used by the  
+### The third form lets the user select which measures to run, and
+### obtains some general analysis parameters that are used by the
 ### subscripts.
 ###
 beginPause: "Select measurements"
     comment: "Resample to 16 KHZ?"
-    boolean: "resample_to_16k", 1    
+    boolean: "resample_to_16k", 1
     comment: "Spectral measure(s) to take"
     boolean: "pitchTracking", 1
     boolean: "formantMeasures", 1
@@ -122,10 +122,10 @@ printline maxFormantHz:  <'maxFormantHz'>
 
 ###
 ### The following form obtains parameters specific to the spectral
-### measurement subscript. This form will be shown only if the 
+### measurement subscript. This form will be shown only if the
 ### user has selected spectral measures in the previous window.
 ### Not currently implemented. However, if spectralMeasures is
-### selected, automatically select pitch and formant tracking, 
+### selected, automatically select pitch and formant tracking,
 ### since these objects are both needed to calculate the spectral
 ### balance measures.
 ###
@@ -138,7 +138,7 @@ if spectralMeasures
 #        comment ("Maximum frequency for LTAS display")
 #        positive ("maxDisplayHz", 5000)
 #    endPause ("Continue", 1)
-#    
+#
 #    #printline -------
 #    #printline Spectral Magnitude
 #    #printline -------
@@ -150,14 +150,14 @@ endif
 
 ###
 ### The following form obtains parameters specific to the pitch
-### measurement subscript. This form will be shown only if the 
+### measurement subscript. This form will be shown only if the
 ### user has selected pitch tracking in the previous window.
 ###
 
 if pitchTracking
     beginPause ("Pitch tracking options")
     comment: "Do you want to load existing Pitch objects, or generate new ones?"
-    boolean: "useExistingPitch", 0 
+    boolean: "useExistingPitch", 0
     comment ("Lower and upper limits to estimated frequency?")
     positive ("f0min", 50)
     positive ("f0max", 300)
@@ -174,7 +174,7 @@ endif
 
 ###
 ### The following form obtains parameters specific to the formant
-### measurement subscript. This form will be shown only if the 
+### measurement subscript. This form will be shown only if the
 ### user has selected formant tracking in the previous window.
 ###
 
@@ -224,7 +224,7 @@ if formantMeasures
 endif
 
 ###
-## A quick pause so that the user can check all of the parameters 
+## A quick pause so that the user can check all of the parameters
 ## reported in the info window, and save them to a file if needed.
 ###
 
@@ -235,16 +235,16 @@ beginPause ("Got all that?")
 endPause ("Continue", 1)
 
 ###
-## Add redundant trailing directory slashes since everyone 
+## Add redundant trailing directory slashes since everyone
 ## forgets, and it doesn't matter if they're doubled
 ###
 
-inputdir$ = inputdir$ + "/" 
+inputdir$ = inputdir$ + "/"
 outputdir$ = outputdir$ + "/"
 textgriddir$ = textgriddir$ + "/"
 
 ###
-## If outputfile already exists, delete it (so that it can be 
+## If outputfile already exists, delete it (so that it can be
 ## replaced with a new version).  Also, clear info screen.
 ###
 
@@ -261,6 +261,16 @@ stringsListID = selected("Strings", 1)
 Sort
 numTokens = Get number of strings
 
+### check to see that the number of sound files and TextGrids is equal
+
+Create Strings as file list... fileList 'inputdir$'*.wav
+numWavs = Get number of strings
+if numTokens <> numWavs
+  exitScript: "There is not a one-to-one correspondence between TextGrids and sound files"
+endif
+
+Remove
+
 ###
 ## Build up header variable based on user's choices in the form.
 
@@ -268,14 +278,15 @@ header$ = "Filename"
 
 ## Add label for each linguistic variable parsed from token names.
 ## In order to be as flexible as possible, this script simply labels
-## these variables 'var1', 'var2', etc.  After measurement, you can 
-## change these labels in the text file or in your statistical 
-## software to have more descriptive names.  Alternatively, you can 
+## these variables 'var1', 'var2', etc.  After measurement, you can
+## change these labels in the text file or in your statistical
+## software to have more descriptive names.  Alternatively, you can
 ## modify this section of the script.
 
 select stringsListID
 sampleFileName$ = Get string... 1
 @splitstring: sampleFileName$, separator$
+strLen = splitstring.strLen
 if splitstring.strLen > 1
     for i from 1 to splitstring.strLen
         header$ = "'header$',var'i'"
@@ -329,16 +340,16 @@ for currentToken from startToken to numTokens
     select stringsListID
     currentTextGridFile$ = Get string... 'currentToken'
     basename$ = left$("'currentTextGridFile$'", index("'currentTextGridFile$'", ".") - 1)
-    
+
     ## Load Sound
     Read from file... 'inputdir$''basename$'.wav
-    ## Note that Sound is not resampled b/c later we use To Formant (burg)... 
+    ## Note that Sound is not resampled b/c later we use To Formant (burg)...
     ## which resamples to twice the frequency of maxFormant (so 10k-11k usually)
     soundID = selected("Sound")
-   
+
     ## If selected, downsample
     ## VoiceSauce only really does this b/c it is faster for STRAIGHT
-    ## Given how the Burg algorithm works, input will be resampled 
+    ## Given how the Burg algorithm works, input will be resampled
     ## at the formant estimation stage no matter what.
     if resample_to_16k == 1
         Resample... 16000 50
@@ -348,7 +359,7 @@ for currentToken from startToken to numTokens
         select 'resampledID'
         Rename... 'basename$'
         soundID = selected("Sound")
-    endif  
+    endif
 
     ## If selected, extract the channel of interest
 	## if e.g. you have audio on channel 1 and EGG on channel 2
@@ -360,20 +371,20 @@ for currentToken from startToken to numTokens
         select 'monoID'
         Rename... 'basename$'
         soundID = selected("Sound")
-    endif  
+    endif
 
-    # If there is an existing formant-tracking parameter file 
+    # If there is an existing formant-tracking parameter file
     # ("*.FmtParam.txt"), load it and use its parameters rather
     # than the ones entered in the opening forms.
     formantParamFile$ = "'inputdir$''basename$'.FmtParam.txt"
-    
+
     if fileReadable (formantParamFile$)
         #pause Found <'formantParamFile$'>, started loop
         formantParameters$ < 'formantParamFile$'
         # This should contain a tab-delimited list in the following order:
         # windowPosition, windowLength, maxNumFormants, maxFormantHz, preEmphFrom, spectrogramWindow
         #echo 'formantParameters$'
-        
+
         parameterIndex = index(formantParameters$, ,) - 1
         parameter$ = left$(formantParameters$, parameterIndex)
         windowPosition = 'parameter$'
@@ -403,18 +414,24 @@ for currentToken from startToken to numTokens
         #printline spectrogramWindow = <'spectrogramWindow'>
      # else: Didn't find parameter file; use defaults.
     endif
- 
+
     ## Load TextGrid
     Read from file... 'textgriddir$''currentTextGridFile$'
     textGridID = selected("TextGrid")
 
     ## Parse the token name into a series of linguistic variables.
+    # In order to avoid horrible crashes, we don't
     lingVars$ = ""
     @splitstring: basename$, separator$
-    if splitstring.strLen > 1
-        for i from 1 to splitstring.strLen
+    if splitstring.strLen => strLen
+      for i from 1 to strLen
             lingVars$ = lingVars$ + splitstring.array$[i] + ","
-        endfor
+      endfor
+    else
+      lingVars$ = basename$
+      for i from 1 to strLen
+            lingVars$ = lingVars$ + ","
+      endfor
     endif
 
     ## Find the point tier point times, if using the point tier
@@ -443,9 +460,9 @@ for currentToken from startToken to numTokens
             if label_match == 1
                 ptimes$ = ptimes$ + string$(ptime) + ","
             else
-                ptimes$ = ptimes$ + "NA," 
-            endif 
-        endfor  
+                ptimes$ = ptimes$ + "NA,"
+            endif
+        endfor
     endif
 
     ###########################################
@@ -454,11 +471,11 @@ for currentToken from startToken to numTokens
 
 	###
 	## Not sure of the best way to do this. This way seems to be the cleanest,
-	## because the objects are always only loaded or created once. 
+	## because the objects are always only loaded or created once.
 	##
 	## However, it is possible that they are created redundantly, because if
 	## a given file doesn't have any intervals of interest, nothing will
-	## be measured. 
+	## be measured.
 	##
 	## Mostly relevant for processing single files with many intervals of interest.
 	###
@@ -494,7 +511,7 @@ for currentToken from startToken to numTokens
             else
             	exit Cannot load Formant object <'basename$'.Formant>.
             endif
-		## else create 
+		## else create
         else
         	select 'soundID'
             To Formant (burg)... timeStep maxNumFormants maxFormantHz windowLength preEmphFrom
@@ -527,7 +544,7 @@ for currentToken from startToken to numTokens
 		# TODO: add option to read from disk as above
 		### Create Harmonicity objects ###
 
-		## here we use a 1 period window; the Praat 
+		## here we use a 1 period window; the Praat
 		## default of 4.5 periods per window produces
 		## much less accurate estimates
 		select 'soundID'
@@ -572,12 +589,12 @@ for currentToken from startToken to numTokens
             echo <'current_interval' of 'num_intervals'> 'interval_label$'
 
             ######################################
-            ## Sub-loop: process a single interval          
+            ## Sub-loop: process a single interval
             #######################################
 
             ## Add interval label column to header
             header$ = "'header$','interval_label$'"
-          
+
             ## Determine start and endpoints of current interval for reference
             interval_start = Get start time of interval... 'interval_tier' 'current_interval'
             interval_end = Get end time of interval... 'interval_tier' 'current_interval'
@@ -591,43 +608,43 @@ for currentToken from startToken to numTokens
             elsif measure = 2
                timepoints = round(((interval_end - interval_start))*1000)/points
             endif
-            
+
             ## Report current token number, name, and lingVars$:
             echo <'currentToken' of 'numTokens'> 'basename$':  'lingVars$'
-            
-            ## Manually check this token at random? 
+
+            ## Manually check this token at random?
             randomNumber = randomUniform(0,1)
             if manualCheckFrequency > randomNumber
                 manualCheck = 1
             else
                manualCheck = 0
-            endif 
-         
+            endif
+
             ####################################################
-            ## Since we know we are processing this interval 
-            ## we can just pass the interval number to the 
-            ## sub-scripts; they are already set up to handle 
+            ## Since we know we are processing this interval
+            ## we can just pass the interval number to the
+            ## sub-scripts; they are already set up to handle
             ####################################################
-            
+
             ################################
             ### Pitch tracking
             ################################
-            
+
             if pitchTracking
                 select pitchID
                 plus soundID
                 plus textGridID
                 execute pitchTracking.praat 'interval_tier' 'current_interval' 'windowPosition' 'windowLength' 'manualCheck' 1 'measure' 'timepoints' 'points'
-               
+
                 ### Save output Matrix
                 select Matrix PitchAverages
                 pitchResultsID = selected("Matrix")
             endif
             ### (end of pitch tracking)
 
-            ###################### 
+            ######################
             ### Formant measures
-            ###################### 
+            ######################
 
 			if formantMeasures
                 select 'soundID'
@@ -640,10 +657,10 @@ for currentToken from startToken to numTokens
             endif
             ### (end of formant measures)
 
-            ###################################################################################### 
+            ######################################################################################
             ### Spectral corrections (including H1*, H2*, H4, A1*, A2*, A3* from Iseli et al.)
-            ###################################################################################### 
-            
+            ######################################################################################
+
             if spectralMeasures
                 select 'soundID'
                 plus 'textGridID'
@@ -654,21 +671,21 @@ for currentToken from startToken to numTokens
 				plus 'hnr25ID'
 				plus 'hnr35ID'
                 execute spectralMeasures.praat 'interval_tier' 'current_interval' 'windowPosition' 'windowLength' 'saveAsEPS' 'useBandwidthFormula' 'inputdir$' 'manualCheck' 'maxDisplayHz' 'measure' 'timepoints' 'points' 'f0min' 'f0max'
-            
+
                 ## Assign ID to output matrix
                 select Matrix IseliMeasures
                 iseliResultsID = selected("Matrix")
-            
-            endif 
+
+            endif
             ### (end of spectralMagnitude measure)
-            
+
             # Report results
             #echo <token 'currentToken' of 'numTokens'> 'results$'
-            
+
             ## Here we:
             ##  1. look for results matrices
             ##  2. Write as many lines as the matrices have rows
-            
+
             for t from 1 to timepoints
                 # Begin building results string with file and linguistic info.
                 if point_tier == 0
@@ -679,7 +696,7 @@ for currentToken from startToken to numTokens
 
                 # have we already written the ms time or do we still need to write it?
                 msflag = 0
-         
+
                 if pitchTracking
                     select 'pitchResultsID'
                     if msflag = 0
@@ -687,11 +704,11 @@ for currentToken from startToken to numTokens
                         results$ = "'results$','mspoint:3'"
                         msflag = 1
                     endif
-                    currentPitch = Get value in cell... t 2 
+                    currentPitch = Get value in cell... t 2
                     results$ = "'results$','currentPitch:3'"
                 endif
-            
-                if formantMeasures 
+
+                if formantMeasures
                     select 'formantResultsID'
                     if msflag = 0
                         mspoint = Get value in cell... t 1
@@ -706,8 +723,8 @@ for currentToken from startToken to numTokens
                         currentBandwidth = Get value in cell... t 'bandwidth'
                         results$ = "'results$','currentBandwidth:3'"
                     endfor
-                endif           
-            
+                endif
+
                 if spectralMeasures
                     select 'iseliResultsID'
                     if msflag = 0
@@ -717,12 +734,12 @@ for currentToken from startToken to numTokens
                     for measurement from 2 to 31
                         aMeasure = Get value in cell... t 'measurement'
                         results$ = "'results$','aMeasure:3'"
-                    endfor  
+                    endfor
                 endif
-            
+
                 ## FINALLY write the thing out....for this timepoint
                 fileappend 'outputfile$' 'results$''newline$'
-            endfor  
+            endfor
             ## end of writing out timepoints
 
 			## clean up
