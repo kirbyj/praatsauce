@@ -2,7 +2,10 @@
 
 include extract_snippet.praat
 
-procedure pitch: .timeStep, .f0min, .f0max, .start, .end
+procedure pitch: .timeStep, .f0min, .f0max, .start, .end, .method, .windowShape,
+  ... .maxNoCandidates, .silenceThreshold, .voicingThreshold, .octaveCost,
+  ... .octaveJumpCost, .voicedUnvoicedCost, .killOctaveJumps,
+  ... .save, .saveDir$, .read, .readDir$, .basefn$
 
 ## extract padded snippet
 ## one analysis window corresponds ROUGHLY to three pitch cycles (i.e.
@@ -14,21 +17,54 @@ soundID = selected("Sound")
 @snippet: .start, .end, ((3 * (1 / .f0min)) / 2) + (.timeStep / 2)
 snippetID = selected("Sound")
 
-## filtered ac is now the recommended method for calculating pitch. I haven't
-## really touched any of the defaults.
-## untouched arguments: max number of candidates, "very accurate" (no),
-## attenuation at ceiling, silence threshold, voicing threshold, octave cost,
-## octave-jump cost, voiced/unvoiced cost
+if .read = 0
 
-To Pitch (filtered ac): .timeStep, .f0min, .f0max, 15, 0, 0.03, 0.01, 0.5,
-  ... 0.005, 0.35, 0.14
-pitchOrgID = selected("Pitch")
+  if .method = 0
 
-## I run the Kill octave jumps function (although not sure that it's really
-## necessary when using filtered ac?)
+    ## untouched argument is the undocumented attenuation at ceiling preprocessing
 
-Kill octave jumps
-pitchFiltID = selected("Pitch")
+    To Pitch (filtered ac): .timeStep, .f0min, .f0max, .maxNoCandidates,
+      ... .windowShape, 0.03, .silenceThreshold, .voicingThreshold, .octaveCost,
+      ... .octaveJumpCost, .voicedUnvoicedCost
+
+  else
+
+    To Pitch (raw cc): .timeStep, .f0min, .f0max, .maxNoCandidates,
+      ... .windowShape, .silenceThreshold, .voicingThreshold, .octaveCost,
+      ... .octaveJumpCost, .voicedUnvoicedCost
+
+  endif
+
+  pitchOrgID = selected("Pitch")
+
+  if .save <> 0
+
+    Save as text file: .saveDir$ + .basefn$ + ".Pitch"
+
+  endif
+
+else
+
+  Read from file: .readDir$ + .basefn$ + ".Pitch"
+  pitchOrgID = selected("Pitch")
+
+endif
+
+## Kill octave jumps
+## this procedure also removes candidates from the resulting object,
+## which is why it is done before potentially saving a pitch file
+## seems nonsensical to write pitch files to disk without candidates
+
+if .killOctaveJumps <> 0
+
+  Kill octave jumps
+  pitchFiltID = selected("Pitch")
+
+else
+
+  pitchFiltID = selected("Pitch")
+
+endif
 
 ## grab all values as a vector
 

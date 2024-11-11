@@ -47,11 +47,6 @@ else
   numFile = Get number of strings
 endif
 
-#Create Strings as file list: "wavs", params.inputDir$ + "*.wav"
-#wavsListID = selected("Strings")
-#Sort
-#numFile = Get number of strings
-
 ## if using TextGrid, get list of TGs in the inputDir and sort them
 
 if params.useTextGrid <> 0
@@ -76,6 +71,11 @@ for thisFile from 1 to numFile
 	thisWav$ = Get string: thisFile
 	Read from file: params.inputDir$ + thisWav$
 	soundID = selected("Sound")
+
+	## get base file name
+
+	fnLen = length(thisWav$)
+	basefn$ = left$(thisWav$, fnLen - 4)
 
   ## resample if needed
   ## not done by default, probably something VS does because it makes STRAIGHT
@@ -137,7 +137,13 @@ for thisFile from 1 to numFile
 
 		if params.measurePitch <> 0
 			@pitch: timeStep, params.f0min, params.f0max, times.start# [int],
-				... times.end# [int]
+				... times.end# [int], params.pitchMethod,
+				... params.pitchWindowShape, params.pitchMaxNoCandidates,
+				... params.silenceThreshold, params.voicingThreshold,
+				... params.octaveCost, params.octaveJumpCost,
+				... params.voicedUnvoicedCost, params.killOctaveJumps,
+				... params.pitchSave, params.pitchSaveDir$,
+				... params.pitchRead, params.pitchReadDir$, basefn$
 			frameNums# = combine# (frameNums#, { pitch.numFrames })
 		endif
 
@@ -147,7 +153,9 @@ for thisFile from 1 to numFile
 			@fmt: params.measureBandwidths, timeStep, params.maxNumFormants,
 				... params.maxFormantHz, params.windowLength,
 				... params.preEmphFrom, times.start# [int], times.end# [int],
-				... params.f1ref, params.f2ref, params.f3ref
+				... params.f1ref, params.f2ref, params.f3ref,
+				... params.formantSave, params.formantSaveDir$,
+				... params.formantRead, params.formantReadDir$, basefn$
 			frameNums# = combine# (frameNums#, { fmt.numFrames })
 		endif
 

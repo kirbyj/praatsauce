@@ -48,6 +48,24 @@ f0minID = Search column: "variable", "f0min"
 .f0min = Get value: f0minID, "input"
 f0maxID = Search column: "variable", "f0max"
 .f0max = Get value: f0maxID, "input"
+pitchMethodID = Search column: "variable", "pitchMethod"
+.pitchMethod = Get value: pitchMethodID, "input"
+pitchWindowShapeID = Search column: "variable", "pitchWindowShape"
+.pitchWindowShape = Get value: pitchWindowShapeID, "input"
+pitchMaxNoCandidatesID = Search column: "variable", "pitchMaxNoCandidates"
+.pitchMaxNoCandidates = Get value: pitchMaxNoCandidatesID, "input"
+silenceThresholdID = Search column: "variable", "silenceThreshold"
+.silenceThreshold = Get value: silenceThresholdID, "input"
+voicingThresholdID = Search column: "variable", "voicingThreshold"
+.voicingThreshold = Get value: voicingThresholdID, "input"
+octaveCostID = Search column: "variable", "octaveCost"
+.octaveCost = Get value: octaveCostID, "input"
+octaveJumpCostID = Search column: "variable", "octaveJumpCost"
+.octaveJumpCost = Get value: octaveJumpCostID, "input"
+voicedUnvoicedCostID = Search column: "variable", "voicedUnvoicedCost"
+.voicedUnvoicedCost = Get value: voicedUnvoicedCostID, "input"
+killOctaveJumpsID = Search column: "variable", "killOctaveJumps"
+.killOctaveJumps = Get value: killOctaveJumpsID, "input"
 maxNumFormantsID = Search column: "variable", "maxNumFormants"
 .maxNumFormants = Get value: maxNumFormantsID, "input"
 preEmphFromID = Search column: "variable", "preEmphFrom"
@@ -62,6 +80,22 @@ f3refID = Search column: "variable", "f3ref"
 .f3ref = Get value: f3refID, "input"
 maxFormantHzID = Search column: "variable", "maxFormantHz"
 .maxFormantHz = Get value: maxFormantHzID, "input"
+pitchSaveID = Search column: "variable", "pitchSave"
+.pitchSave = Get value: pitchSaveID, "input"
+pitchSaveDirID = Search column: "variable", "pitchSaveDir"
+.pitchSaveDir$ = Get value: pitchSaveDirID, "input"
+pitchReadID = Search column: "variable", "pitchRead"
+.pitchRead = Get value: pitchReadID, "input"
+pitchReadDirID = Search column: "variable", "pitchReadDir"
+.pitchReadDir$ = Get value: pitchReadDirID, "input"
+formantSaveID = Search column: "variable", "formantSave"
+.formantSave = Get value: formantSaveID, "input"
+formantSaveDirID = Search column: "variable", "formantSaveDir"
+.formantSaveDir$ = Get value: formantSaveDirID, "input"
+formantReadID = Search column: "variable", "formantRead"
+.formantRead = Get value: formantReadID, "input"
+formantReadDirID = Search column: "variable", "formantReadDir"
+.formantReadDir$ = Get value: formantReadDirID, "input"
 useTextGridID = Search column: "variable", "useTextGrid"
 .useTextGrid = Get value: useTextGridID, "input"
 tgDirID = Search column: "variable", "tgDir"
@@ -81,6 +115,28 @@ Remove
 .inputDir$ = .inputDir$ + "/"
 .outputDir$ = .outputDir$ + "/"
 .tgDir$ = .tgDir$ + "/"
+.pitchSaveDir$ = .pitchSaveDir$ + "/"
+.pitchReadDir$ = .pitchReadDir$ + "/"
+.formantSaveDir$ = .formantSaveDir$ + "/"
+.formantReadDir$ = .formantReadDir$ + "/"
+
+## set voicingThreshold and octaveCost depending on pitchMethod
+
+if .voicingThreshold = 0
+  if .pitchMethod = 0
+    .voicingThreshold = 0.5
+  else
+    .voicingThreshold = 0.45
+  endif
+endif
+
+if .octaveCost = 0
+  if .pitchMethod = 0
+    .octaveCost = 0.055
+  else
+    .octaveCost = 0.01
+  endif
+endif
 
 ## some sanity checks. should probably add more, these were the first that came
 ## to mind
