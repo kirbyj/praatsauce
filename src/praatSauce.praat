@@ -181,7 +181,7 @@ for thisFile from 1 to numFile
 
 		if params.cpp <> 0
 			@cpp: timeStep, params.f0min, params.f0max, times.start# [int],
-				... times.end# [int]
+				... times.end# [int], params.cppTrendType, params.cppFast
 			frameNums# = combine# (frameNums#, { cpp.numFrames })
 		endif
 

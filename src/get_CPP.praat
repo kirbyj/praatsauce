@@ -2,7 +2,21 @@
 
 include extract_snippet.praat
 
-procedure cpp: .timeStep, .f0min, .f0max, .start, .end
+procedure cpp: .timeStep, .f0min, .f0max, .start, .end, .trendType, .fast
+
+## Get string values for trend type and fit method
+
+if .trendType <> 0
+  trend$ = "Straight"
+else
+  trend$ = "Exponential decay"
+endif
+
+if .fast <> 0
+  fitMethod$ = "Robust"
+else
+  fitMethod$ = "Robust slow"
+endif
 
 ## extract padded snippet.
 ## one analysis window corresponds ROUGHLY to six pitch cycles (i.e.
@@ -26,11 +40,11 @@ cepID = selected("PowerCepstrogram")
 ## don't need them, afaik that's just inferior pitch tracking), how many decimals
 ## to include, "tolerance" (?? documentation is silent on this matter, it's set
 ## to 0.05 following defaults), interpolation (default parabolic), quefrency
-## range (default 0.001-0.05), trend type (default exponential decay),
+## range (entire cepstrum), trend type (default exponential decay),
 ## fit method (robust -- default "robust slow" is truly slow)
 
-To Table (cepstral peak prominences): 0, 0, 6, 3, 0, 3, .f0min, .f0max, 0.05, "parabolic",
-	... 0.001, 0, "Exponential decay", "Robust"
+To Table (cepstral peak prominences): 0, 0, 6, 3, 0, 3, .f0min, .f0max, 0.05,
+  ... "parabolic", 0.001, 0, trend$, fitMethod$
 tableID = selected("Table")
 .res# = Get all numbers in column: "CPP(dB)"
 
