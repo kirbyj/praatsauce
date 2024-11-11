@@ -4,7 +4,7 @@ include correctIseli.praat
 include extract_snippet.praat
 
 procedure spec: .windowLength, .timeStep, .numFrames, .times#,
-  ... .measureSlope, .measureSlopeUncorrected,
+  ... .measureSlope, .measureSlopeUncorrected, .pitchSynchronous,
 	... .f0min, .f0max, .f0#, .f1#, .f2#, .f3#, .b1#, .b2#, .b3#, .fs, .start, .end
 
 ## extract padded snippet.
@@ -14,13 +14,6 @@ soundID = selected("Sound")
 
 @snippet: .start, .end, .windowLength + (.timeStep / 2)
 snippetID = selected("Sound")
-
-## make spectrograms. arguments include frequency ceiling (default is 5000,
-## set a bit higher to properly calculate H5K), frequency step (default 20 Hz,
-## but maybe we want higher precision?), and window shape
-
-To Spectrogram: .windowLength, 5500, .timeStep, 20, "Gaussian"
-spectrogramID = selected("Spectrogram")
 
 ## initiate empty vectors for harmonic amplitudes
 
@@ -61,23 +54,57 @@ upperba2# = .f2# + (.f2# * 0.1)
 lowerba3# = .f3# - (.f3# * 0.1)
 upperba3# = .f3# + (.f3# * 0.1)
 
+## make spectrograms. arguments include frequency ceiling (default is 5000,
+## set a bit higher to properly calculate H5K), frequency step (default 20 Hz,
+## but maybe we want higher precision?), and window shape
+
+if .pitchSynchronous = 0
+
+  To Spectrogram: .windowLength, 5500, .timeStep, 20, "Gaussian"
+  spectrogramID = selected("Spectrogram")
+
+endif
+
 ## can't think of a way to vectorize this, so it's loops all the way down :-(
 
 for frame from 1 to .numFrames
-	select spectrogramID
-
-	## grab spectral slice and convert that to long-term average spectrum.
-	## the LTAS object has the exact same information as the spectral slice!
-	## this is only done because the different data structures can be queried
-	## in different ways
-
-	To Spectrum (slice): .times# [frame]
-	spectrumID = selected("Spectrum")
-	To Ltas (1-to-1)
-	ltasID = selected("Ltas")
 
 	if (.f0# [frame] <> undefined & .f0# [frame] <> 0)
+
 	  ## ... only proceed for frames where we have an f0 measure ...
+
+    if .pitchSynchronous = 0
+
+    	select spectrogramID
+
+    	## grab spectral slice and convert that to long-term average spectrum.
+    	## the LTAS object has the exact same information as the spectral slice!
+    	## this is only done because the different data structures can be queried
+    	## in different ways
+
+    	To Spectrum (slice): .times# [frame]
+    	spectrumID = selected("Spectrum")
+    	To Ltas (1-to-1)
+    	ltasID = selected("Ltas")
+
+  	else
+
+  	  select snippetID
+  	  halfWinSize = (1 / .f0# [frame]) * 1.5
+  	  Extract part: times# [frame] - halfWinSize, times# [frame] + halfWinSize,
+  	    ... "Gaussian1", 1, 0
+  	  pitchWindowID = selected("Sound")
+  	  To Spectrum: 1
+  	  spectrumID = selected("Spectrum")
+  	  To Ltas (1-to-1)
+  	  ltasID = selected("Ltas")
+
+  	  select pitchWindowID
+  	  Remove
+  	  select ltasID
+
+  	endif
+
 	  ## get the highest amplitude in the ranges we specified above
 	  ## "none" = no interpolation
 
@@ -97,13 +124,13 @@ for frame from 1 to .numFrames
 			... "none"
 		.a3u# [frame] = Get maximum: lowerba3# [frame], upperba3# [frame],
 			... "none"
+
+		## clean up
+  	select spectrumID
+  	plus ltasID
+  	Remove
+
 	endif
-
-  ## clean up
-
-	select spectrumID
-	plus ltasID
-	Remove
 
 endfor
 
@@ -165,8 +192,12 @@ endif
 
 ## clean up
 
-select spectrogramID
-plus snippetID
+if .pitchSynchronous = 0
+  select spectrogramID
+  Remove
+endif
+
+select snippetID
 Remove
 
 select soundID

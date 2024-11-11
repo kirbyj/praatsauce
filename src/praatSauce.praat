@@ -281,7 +281,7 @@ for thisFile from 1 to numFile
 		if params.spectralMeasures <> 0
 			@spec: params.windowLength, timeStep, mostFrames, times#,
 				... params.measureSlope, params.slopeUncorrected,
-				... params.f0min, params.f0max,
+				... params.pitchSynchronous, params.f0min, params.f0max,
 				... f0#, f1#, f2#, f3#, b1#, b2#, b3#, fs,
 				... times.start# [int], times.end# [int]
 		endif
