@@ -1,6 +1,7 @@
 ### Get pitch values
 
 include extract_snippet.praat
+include restrictInterval.praat
 
 procedure pitch: .timeStep, .f0min, .f0max, .start, .end, .method, .windowShape,
   ... .maxNoCandidates, .silenceThreshold, .voicingThreshold, .octaveCost,
@@ -13,6 +14,7 @@ procedure pitch: .timeStep, .f0min, .f0max, .start, .end, .method, .windowShape,
 ## arcane fashion.
 
 soundID = selected("Sound")
+dur = Get total duration
 
 @snippet: .start, .end, ((3 * (1 / .f0min)) / 2) + (.timeStep / 2)
 snippetID = selected("Sound")
@@ -66,6 +68,8 @@ else
 
 endif
 
+.meanF0 = Get mean: 0, 0, "Hertz"
+
 ## grab all values as a vector
 
 .f0# = List values in all frames: "Hertz"
@@ -74,6 +78,16 @@ endif
 
 .times# = List all frame times
 .numFrames = Get number of frames
+
+if .start > 0 | .end < dur
+
+  @restrictInterval: .times#, .f0#, .start, .end
+
+  .times# = restrictInterval.newTimes#
+  .f0# = restrictInterval.newVals#
+  .numFrames = size(restrictInterval.newTimes#)
+
+endif
 
 ## clean up
 

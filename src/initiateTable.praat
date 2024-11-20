@@ -1,8 +1,8 @@
 ### Build first line of PraatSauce results table
 
-procedure initiateTable: .pitch, .formants, .harmonicAmplitude, .harmonicAmplitudeUncorrected,
-	... .bw, .slope, .slopeUncorrected, .cpp, .hnr, .rms, .outputDir$, .outputFile$,
-	... .useTextGrid
+procedure initiateTable: .pitch, .formants, .harmonicAmplitude,
+  ... .harmonicAmplitudeUncorrected, .bw, .slope, .slopeUncorrected, .cpp, .hnr,
+  ... .rms, .soe, .outputDir$, .outputFile$, .useTextGrid
 
 ## we build a string with space-delimited column names depending on the
 ## measures that users ask for.
@@ -60,6 +60,10 @@ endif
 
 if .rms <> 0
 	firstLine$ = firstLine$ + " intensity"
+endif
+
+if .soe <> 0
+  firstLine$ = firstLine$ + " soe"
 endif
 
 ## make table with required arguments: object name, number of rows, column names

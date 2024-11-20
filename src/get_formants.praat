@@ -1,6 +1,7 @@
 ### Get formant values
 
 include extract_snippet.praat
+include restrictInterval.praat
 
 procedure fmt: .measureBandwidths, .timeStep, .maxN, .maxHz,
 	... .windowLength, .preEmphFrom, .start, .end, .f1ref, .f2ref, .f3ref,
@@ -90,12 +91,33 @@ if .measureBandwidths <> 0
 	.b3# = Get all numbers in column: "B3(Hz)"
 endif
 
+if .start > 0 | .end < dur
+
+  @restrictInterval: .times#, .f1#, .start, .end
+  .f1# = restrictInterval.newVals#
+  @restrictInterval: .times#, .f2#, .start, .end
+  .f2# = restrictInterval.newVals#
+  @restrictInterval: .times#, .f3#, .start, .end
+  .f3# = restrictInterval.newVals#
+  .times# = restrictInterval.newTimes#
+
+  if .measureBandwidths <> 0
+    @restrictInterval: .times#, .b1#, .start, .end
+    .b1# = restrictInterval.newVals#
+    @restrictInterval: .times#, .b2#, .start, .end
+    .b2# = restrictInterval.newVals#
+    @restrictInterval: .times#, .b3#, .start, .end
+    .b3# = restrictInterval.newVals#
+  endif
+
+  .numFrames = size(restrictInterval.newTimes#)
+
+endif
+
 ## clean up
 
 select orgFormantID
-#plus fullFormantID
 plus trackedFormantID
-#plus formantGridID
 plus tableID
 plus snippetID
 Remove

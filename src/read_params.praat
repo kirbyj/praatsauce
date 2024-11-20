@@ -40,6 +40,8 @@ hnrID = Search column: "variable", "hnr"
 .hnr = Get value: hnrID, "input"
 intensityID = Search column: "variable", "intensity"
 .intensity = Get value: intensityID, "input"
+soeID = Search column: "variable", "soe"
+.soe = Get value: soeID, "input"
 resample16kHzID = Search column: "variable", "resample16kHz"
 .resample16kHz = Get value: resample16kHzID, "input"
 windowLengthID = Search column: "variable", "windowLength"
@@ -169,7 +171,7 @@ endif
   ... .bw + .slope + .slopeUncorrected
 
 .measurePitch = .pitch + .harmonicAmplitude + .harmonicAmplitudeUncorrected +
-  ... .slope + .slopeUncorrected + .bw
+  ... .slope + .slopeUncorrected + .bw + .soe
 
 .spectralMeasures = .harmonicAmplitude + .harmonicAmplitudeUncorrected +
   ... .slope + .slopeUncorrected

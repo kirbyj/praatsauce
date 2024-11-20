@@ -1,6 +1,7 @@
 ### Calculate harmonics-to-noise ratio
 
 include extract_snippet.praat
+include restrictInterval.praat
 
 procedure hnr: .maxFreq, .timeStep, .f0min, .start, .end
 
@@ -35,6 +36,16 @@ To Matrix
 matrixID = selected("Matrix")
 .res# = Get all values in row: 1
 .numFrames = Get number of columns
+
+if .start > 0 | .end < dur
+
+  @restrictInterval: .times#, .res#, .start, .end
+
+  .times# = restrictInterval.newTimes#
+  .res# = restrictInterval.newVals#
+  .numFrames = size(restrictInterval.newTimes#)
+
+endif
 
 ## clean up
 

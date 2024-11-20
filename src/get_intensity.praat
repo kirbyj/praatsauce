@@ -1,6 +1,7 @@
 ### Get intensity (root-mean-squared amplitude) values
 
 include extract_snippet.praat
+include restrictInterval.praat
 
 procedure rms: .timeStep, .f0min, .start, .end
 
@@ -30,6 +31,16 @@ rmsID = selected("Intensity")
 Down to Matrix
 matrixID = selected("Matrix")
 .res# = Get all values in row: 1
+
+if .start > 0 | .end < dur
+
+  @restrictInterval: .times#, .res#, .start, .end
+
+  .times# = restrictInterval.newTimes#
+  .res# = restrictInterval.newVals#
+  .numFrames = size(restrictInterval.newTimes#)
+
+endif
 
 ## clean up
 

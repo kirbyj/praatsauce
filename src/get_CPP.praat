@@ -1,6 +1,7 @@
 ### Get ceptral peak prominences
 
 include extract_snippet.praat
+include restrictInterval.praat
 
 procedure cpp: .timeStep, .f0min, .f0max, .start, .end, .trendType, .fast
 
@@ -51,6 +52,16 @@ tableID = selected("Table")
 ## grab number of rows
 
 .numFrames = Get number of rows
+
+if .start > 0 | .end < dur
+
+  @restrictInterval: .times#, .res#, .start, .end
+
+  .times# = restrictInterval.newTimes#
+  .res# = restrictInterval.newVals#
+  .numFrames = size(restrictInterval.newTimes#)
+
+endif
 
 ## clean up
 
