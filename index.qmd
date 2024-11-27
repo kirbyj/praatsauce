@@ -14,17 +14,17 @@ csl: css/journal-of-linguistics.csl
 
 ## Basic workflow
 
-When you download `praatsauce`, all source code is in the `src` directory. This directory contains the files `params.csv`, `praatsauce.praat`, and a whole bunch of other files with Praat scripts that are called by `praatsauce.praat`. Unlike in previous versions of PraatSauce, you don't set parameters directly in Praat, but instead by editing the `params.csv` file. When you run `praatsauce.praat`, a form will appear asking you only for the location of your parameters file. We think this is advantageous in terms of reproducibility, as you can simply share this parameters file when sharing the code for a study.
+When you download `praatsauce`, all source code is in the `src` directory. This directory contains the files `params.csv`, `praatsauce.praat`, and a whole bunch of other files with Praat scripts that are called by `praatsauce.praat`. Unlike in previous versions of PraatSauce, you don't set parameters directly in Praat, but instead by editing the `params.csv` file, which you can do in any text editor or in a spreadsheet editor like Excel if you prefer. When you run `praatsauce.praat`, a form will appear asking you only for the location of your parameters file. We think this is advantageous in terms of reproducibility, as you can simply share this parameters file when sharing the code for a study.
 
-This simple set-up also means that calling PraatSauce from the command line is very simple:
+This set-up also means that calling PraatSauce from the command line is very simple:
 
-```
+```         
 <praat-location> <praatsauce-location> <params-location>
 ```
 
 where `<praat-location>` is the location of your `praat.exe` file, `<praatsauce-location>` is the path to `praatsauce.praat`, and `<params-location>` is the path to your parameters file. If Praat is on your `PATH` and you are running the code directly from the `src` directory, it could look like this:
 
-``` 
+```         
 praat praatsauce.praat params.csv
 ```
 
@@ -32,76 +32,111 @@ praat praatsauce.praat params.csv
 
 The provided `params.csv` file has three "columns":
 
-* `variable` the name of the parameter
-* `input` the value for this parameter
-* `comment` a brief description of the parameter
+-   `variable` the name of the parameter
+-   `input` the value for this parameter
+-   `comment` a brief description of the parameter
 
 Here, we provide a little more detail about each parameter.
 
-* `inputDir` is the directory where your sound files are located. The default value is `../audio`, i.e. a sister directory to `src` called `audio`.
-* `outputDir` is the directory where your output file should be saved. The default value is `.`, i.e. the same directory as where `praatsauce.praat` is located.
-* `outputFile` is the name of the output file. Default is `out.tsv`.
-* `channel` is the channel you want to analyze. Default is `1` the first channel. If your sound files have multiple channels, fx if the audio is stereo or you have an EGG channel, one of them is extracted and used for processing. You can input `0` if you want to use both channels of a stereo file.
-* `intervalEquidistant` If measures should be taken at equidistant intervals, how many measures should be taken? This parameter is only relevant if TextGrids are used to determine where to take measures in a sound file. Default is `0`, in which case measures are taken at fixed intervals.
-* `intervalFixed` How often should measures be taken (in seconds)? Default is `0.005`, i.e. every 5 ms. This is more coarse than the VoiceSauce default of taking measures every 1 ms. This should be set to `0` if you are taking equidistant measures; either `intervalEquidistant` or `intervalFixed` should be set to `0`, otherwise Praat will give you an error. 
-* `pitch` Should pitch measures be reported in the output file? Default is `1`, set to `0` if you are not interested in pitch. Note that pitch will typically be measured anyways, as most of the other measures rely on pitch.
-* `formant` Should formant measures be reported in the output file? Default is `1`, set to `0` if you are not interested in formants. Note that formants will often be measured anyways, as many of the other measures rely on formants.
-* `harmonicAmplitude` Should corrected harmonic amplitude measures (H1\*, H2\*, H4\*, A1\*, A2\*, A3\*, H2K, H5K) be reported in the output file? Default is `1`, set to `0` if you are not interested in corrected harmonic amplitudes. Note that corrected harmonic amplitudes are calculated anyways if you want spectral slope measures.
-* `harmonicAmplitudeUncorrected` Should uncorrected harmonic amplitude measures (H1, H2, H4, A1, A2, A3) be reported in the output file? Default is `1`, set to `0` if you are not interested in uncorrected harmonic amplitudes. Note that uncorrected harmonic amplitudes are calculated anyways if you want corrected harmonic amplitudes.
-* `bw` Should formant bandwidths be reported? Default is `1`, set to `0` if you are not interested in bandwidths. Note that bandwidths will be measured/estimated anyways if you want corrected harmonic amplitudes.
-* `bwHawksMiller` Should formant bandwidths be estimated using the Hawks-Miller formula (Hawks & Miller 1995)? Default is `1`, set to `0` if you want to use Praat's empirical bandwidth measures for harmonic amplitude corrections.
-* `slope` Should corrected spectral slope measures (H1\*-H2\*, H2\*-H4\*, H1\*-A1\*, H1\*-A2\*, H1\*-A3\*, H2K-H5K) be reported? Default is `1`, set to `0` if you are not interested in corrected spectral slope measures. 
-* `slopeUncorrected` Should corrected spectral slope measures (H1-H2, H2-H4, H1-A1, H1-A2, H1-A3) be reported? Default is `1`, set to `0` if you are not interested in uncorrected spectral slope measures. 
-* `cpp` Should ceptral peak prominence (CPP) measures be reported? Default is `1`, set to `0` if you are not interested in CPP.
-* `hnr` Should harmonics-to-noise ratio (HNR) measures be reported? Default is `1`, set to `0` if you are not interested in HNR.
-* `intensity` Should intensity (root-mean-squared amplitude) measures be reported? Default is `1`, set to `0` if you are not interested in intensity.
-* `resample16khz` Should audio be resampled to 16 kHz? Default is `0`, set to `0` if you want resampling. This option is mainly provided because it is done in VoiceSauce, it won't speed up the PraatSauce process.
-* `windowLength` Length of the analysis window for taking formant measurements and generating spectrograms in seconds. Default is `0.025`. 
-* `f0min` Pitch floor, minimum frequency to look for when estimating pitch. Default is `50`. 
-* `f0max` Pitch ceiling, maximum frequency to look for when estimating pitch. Default is `300`. 
-* `maxNumFormants` How many formants should be estimated? Default is `5`. In any case, only three formants are reported.
-* `preEmphFrom` Pre-emphasize from which frequency when estimating formants? Default is `50`.
-* `f1ref` Reference F1 value used for formant tracking. Default is `500`.
-* `f2ref` Reference F2 value used for formant tracking. Default is `1500`.
-* `f3ref` Reference F3 value used for formant tracking. Default is `2500`.
-* `maxFormantHz` Frequency ceiling when tracking formants. Default is `5000`.
-* `useTextGrid` Should TextGrids be used to determine where in a sound file to take measures? Default is `0`, i.e. measures are taken over the entire sound file. Set to `1` if you wish to take measures only from select parts of sound files based on information in TextGrids.
-* `tgDir` is the directory where your TextGrids are located (if `useTextGrid` is set to `1`).
-* `filelist` Path to a text file which specifies which sound files to analyze. Should be a plain text file where each line is a relative path to a sound file. These paths are relative to `inputDir`. By default this argument is ignored, replace `0` with a path if you want to use it.
-* `intervalTier`. If using a TextGrid, which is the interval tier of interest? Default is `1`.
-* `includeTheseLabels`. If using a TextGrid, the code will search for intervals with these labels. Should be a well-formed regex -- the default is `^()!\s*$` which refers to any interval that isn't empty.
+-   `inputDir` is the directory where your sound files are located.
+-   `outputDir` is the directory where your output file should be saved. The default value is `.`, i.e. the same directory as where `praatsauce.praat` is located.
+-   `outputFile` is the name of the output file. Default is `out.tsv`.
+-   `channel` is the channel you want to analyze. Default is `1`, i.e. the first channel. If your sound files have multiple channels, fx if the audio is stereo or you have an EGG channel, one of them is extracted and used for processing. You can input `0` if you want to use both channels of a stereo file.
+-   `intervalEquidistant` If measures should be taken at equidistant intervals, how many measures should be taken? This parameter is only relevant if TextGrids are used to determine where to take measures in a sound file. Default is `0`, in which case measures are taken at fixed intervals.
+-   `intervalFixed` How often should measures be taken (in seconds)? Default is `0.005`, i.e. every 5 ms. This is more coarse than the VoiceSauce default of taking measures every 1 ms. This should be set to `0` if you are taking equidistant measures; either `intervalEquidistant` or `intervalFixed` should be set to `0`, otherwise you will see an error message.
+-   `pitch` Should pitch measures be reported in the output file? Default is `1`, set to `0` if you are not interested in pitch. Note that pitch will typically be measured anyways, as most of the other measures rely on pitch.
+-   `formant` Should formant measures be reported in the output file? Default is `1`, set to `0` if you are not interested in formants. Note that formants will often be measured anyways, as many of the other measures rely on formants.
+-   `harmonicAmplitude` Should corrected harmonic amplitude measures (H1\*, H2\*, H4\*, A1\*, A2\*, A3\*, H2K, H5K) be reported in the output file? Default is `1`, set to `0` if you are not interested in corrected harmonic amplitudes. Note that corrected harmonic amplitudes are calculated anyways if you want spectral slope measures.
+-   `harmonicAmplitudeUncorrected` Should uncorrected harmonic amplitude measures (H1, H2, H4, A1, A2, A3) be reported in the output file? Default is `1`, set to `0` if you are not interested in uncorrected harmonic amplitudes. Note that uncorrected harmonic amplitudes are calculated anyways if you want corrected harmonic amplitudes.
+-   `bw` Should formant bandwidths be reported? Default is `1`, set to `0` if you are not interested in bandwidths. Note that bandwidths will be measured/estimated anyways if you want corrected harmonic amplitudes.
+-   `bwHawksMiller` Should formant bandwidths be estimated using the Hawks-Miller formula [@hawks1995]? Default is `1`, set to `0` if you want to use Praat's empirical bandwidth measures for harmonic amplitude corrections.
+-   `slope` Should corrected spectral slope measures (H1\*-H2\*, H2\*-H4\*, H1\*-A1\*, H1\*-A2\*, H1\*-A3\*, H2K-H5K) be reported? Default is `1`, set to `0` if you are not interested in corrected spectral slope measures.
+-   `slopeUncorrected` Should corrected spectral slope measures (H1-H2, H2-H4, H1-A1, H1-A2, H1-A3) be reported? Default is `1`, set to `0` if you are not interested in uncorrected spectral slope measures.
+-   `cpp` Should ceptral peak prominence (CPP) measures be reported? Default is `1`, set to `0` if you are not interested in CPP.
+-   `hnr` Should harmonics-to-noise ratio (HNR) measures be reported? Default is `1`, set to `0` if you are not interested in HNR.
+-   `intensity` Should intensity (root-mean-squared amplitude) measures be reported? Default is `1`, set to `0` if you are not interested in intensity.
+-   `soe` Should strength of (harmonic) excitation (SoE) measures be reported? Default is `1`, set to `0` if you are not interested in SoE.
+-   `resample16khz` Should audio be resampled to 16 kHz? Default is `0`, set to `1` if you want resampling. This option is mainly provided because it is done in VoiceSauce, it won't speed up the PraatSauce process.
+-   `windowLength` Length of the analysis window for taking formant measurements and generating spectrograms in seconds. Default is `0.025`, i.e. 25 ms.
+-   `f0min` Pitch floor, minimum frequency in Hz to look for when estimating pitch. Default is `50`. Note that the output may have some pitch measures below `f0min` if Praat's algorithm for removing octave jumps is used.
+-   `f0max` Pitch ceiling, maximum frequency in Hz. to look for when estimating pitch. Default is `300`. Note that the output may have some pitch measures above `f0max` if Praat's algorithm for removing octave jumps is used.
+-   `pitchMethod` Which algorithm should be used for measuring pitch? The default value is `0`, in which case the filtered autocorrelation method is used; the alternative is `1`, in which case the raw crosscorrelation method is used.
+-   `pitchWindowShape` Which analysis window shape should be used for pitch estimation. The default value is `0`, in which case a Hanning window is used; the alternative is `1`, in which case a Gaussian window is used. This controls the `Very accurate` setting in Praat's pitch tracking options windows; Gaussian windows are considered "very accurate", but are not used by default, as they are slower.
+-   `pitchMaxNoCandidates` How many pitch candidates should be estimated? Default is `15`.
+-   `silenceThreshold` What should be the silence threshold when measuring pitch? Default is `0.01`, frames that do not contain amplitude values above this threshold relative to the global maximum are considered silent and thus not tracked.
+-   `voicingThreshold` Fractional strength of pitch candidates in the autocorrelation or crosscorrelation function required for a frame to be considered voice. The default is `0`, in which case the value will be the Praat default for the chosen `pitchMethod`, i.e. `0.5` when filtered autocorrelation is used and `0.55` when raw crosscorrelation is used. With a higher `voicingThreshold`, more pitch candidates will be considered silent.
+-   `octaveCost` How much should high frequency pitch candidates be favored in terms of fractional strength of candidates in the autocorrelation or crosscorrelation function per octave; higher values will favor high pitch candidates more. The default is `0`, in which case the value will be the Praat default for the chosen `pitchMethod`, i.e. `0.055` when filtered autocorrelation is used and `0.01` when raw crosscorrelation is used.
+-   `octaveJumpCost` How much should sudden pitch changes be disfavored in terms of fractional strenth of candidates in the autocorrelation or crosscorrelation function. Default is `0.35`; increasing this value will reduce the number of octave jumps.
+-   `voicedUnvoicedCost` How much should transitions from voiced to voiceless frames be disfavored in terms of fractional strength of candidates in the autocorrelation or crosscorrelation function. The default is `0.14`; increasing this value will reduce the number of transitions.
+-   `killOctaveJumps` Should Praat's algorithm for removing octave jumps be applied? Default is `1`, set to `0` if you want to suppress this algorithm.
+-   `maxNumFormants` How many formants should be estimated? Default is `5`. In any case, only three formants are reported.
+-   `preEmphFrom` Pre-emphasize from which frequency when estimating formants? Default is `50`.
+-   `f1ref` Reference F1 value used for formant tracking. Default is `500`.
+-   `f2ref` Reference F2 value used for formant tracking. Default is `1500`.
+-   `f3ref` Reference F3 value used for formant tracking. Default is `2500`.
+-   `maxFormantHz` Frequency ceiling when tracking formants. Default is `5000`.
+-   `pitchSynchronous` Should spectral slope measures be taken using pitch synchronous window length, i.e. with a window length corresponding to 3 glottal pulses? Default is `0`, in which case window length is constant; set to `1` to get pitch synchronous window length. This may be more precise, and will be somewhat slower.
+-   `cppTrendType` Which type of regression model should be used to calculate CPP? Default is `0`, in which case an exponential decay model is used; change to `1` to use linear regression.
+-   `cppFast` How should the regression model used to calculate CPP be fitted? Default is `1`, which corresponds to incomplete Thiel regression; the alternative is `0`, which uses Thiel's robust line fit, which is more robust but significantly slower.
+-   `pitchSave` Should pitch files be written to disk? Default is `0`, change to `1` if you want to store the resulting pitch files.
+-   `pitchSaveDir` If pitch files are written to disk, where should they be saved?
+-   `pitchRead` Should existing pitch files be used? Default is `0`, change to `1` if you have existing pitch files which you want to use. 
+-   `pitchSaveDir` If existing pitch files should be used, where are they saved?
+-   `formantSave` Should formant files be written to disk? Default is `0`, change to `1` if you want to store the resulting formant files.
+-   `formantSaveDir` If formant files are written to disk, where should they be saved?
+-   `formantRead` Should existing formant files be used? Default is `0`, change to `1` if you have existing formant files which you want to use. 
+-   `formantSaveDir` If existing formant files should be used, where are they saved?
+-   `useTextGrid` Should TextGrids be used to determine where in a sound file to take measures? Default is `0`, i.e. measures are taken over the entire sound file. Set to `1` if you wish to take measures only from select parts of sound files based on information in TextGrids.
+-   `tgDir` is the directory where your TextGrids are located (if `useTextGrid` is set to `1`).
+-   `filelist` Path to a text file which specifies which sound files to analyze. Should be a plain text file where each line is a relative path to a sound file. These paths are relative to `inputDir`. By default this argument is ignored, replace `0` with a path if you want to use it.
+-   `intervalTier`. If using a TextGrid, which is the interval tier of interest? Default is `1`.
+-   `includeTheseLabels`. If using a TextGrid, the code will search for intervals with these labels. Should be a well-formed regex -- the default is `^()!\s*$` which refers to any interval that isn't empty.
 
 ## Output
 
 The output of PraatSauce is a tab-separated text file which maximally looks something like this:
 
-```
-file	label	t	f0	F1	F2	F3	H1c	H2c	H4c	A1c	A2c	A3c	H2Ku	H5Ku	H1u	H2u	H4u...
-1.wav	b	0.621	0	1798.185	2299.12	3370.494	0	0	0	-42.67060159300069	-37.532...
- 1.wav	b	0.626	0	1798.185	2299.12	3370.494	0	0	0	-42.67060159300069	-37.5...
+```         
+file    label   t   f0  F1  F2  F3  H1c H2c H4c A1c A2c A3c H2Ku    H5Ku    H1u H2u H4u...
+1.wav   b   0.621   0   1798.185    2299.12 3370.494    0   0   0   -42.67060159300069  -37.532...
+ 1.wav  b   0.626   0   1798.185    2299.12 3370.494    0   0   0   -42.67060159300069  -37.5...
 ```
 
 It includes a column with a file name, a column with an interval label if TextGrids are used to determine intervals to analyze, a column giving the time stamp where the measures is taken, and columns for each measure at that time.
 
 ## Details
 
-**Pitch** ($F_0$) is measured using Praat's filtered autocorrelation method, which implements @boersma1993's autocorrelation method after low-pass filtering the waveform. This is currently considered the state-of-the-art method for measuring intonation in Praat. The standard "silence threshold" of 0.09 is reduced to 0.01 for better performance near consonant boundaries and in sound files with relatively low volume, following [these recommendations](https://fon.hum.uva.nl/praat//manual/how_to_choose_a_pitch_analysis_method.html). The `Kill octave jumps` routine is run on the resulting `Pitch` object. See `get_pitch.praat`.
+**Pitch** ($F_0$) can be measured either 1) using Praat's filtered autocorrelation method, which implements @boersma1993's autocorrelation method after low-pass filtering the waveform, or 2) Praat's raw crosscorrelation which implements a similar routine based on crosscorrelating the signal without applying a low-pass filter. As discussed [here](https://www.fon.hum.uva.nl/praat/manual/how_to_choose_a_pitch_analysis_method.html){target='_blank'}, filtered autocorrelation is currently considered the state-of-the-art method for measuring intonation in Praat, while raw crosscorrelation is considered state of the art particularly for Praat's internal voice analysis tools. Praatsauce users can toggle all the usual parameters, which mostly follow the Praat defaults, except for the "silence threshold" parameter which is by default significantly reduced in Praatsauce for better performance near consonant boundaries and in sound files with relatively low volume. The `Kill octave jumps` routine is optionally run on the resulting `Pitch` object. See `get_pitch.praat`.
 
-**Formants** ($F_1$, $F_2$, $F_3$) are measured using Praat's implementation of @burg's algorithm. The `Track` routine, which implements a Viterbi algorithm explained [here](https://fon.hum.uva.nl/praat/manual/Formant__Track___.html), is run on the resulting `Formant` object. See `get_formants.praat`.
+**Formants** ($F_1$, $F_2$, $F_3$) are measured using Praat's implementation of @burg's algorithm. The `Track` routine, which implements a Viterbi algorithm explained [here](https://fon.hum.uva.nl/praat/manual/Formant__Track___.html){target='_blank'}, is run on the resulting `Formant` object with user-specified formant reference values. See `get_formants.praat`.
 
 **Formant bandwidths** ($B_1$, $B_2$, $B_3$) are either empirical bandwidths returned by the formant tracking process outlined above (see `get_formants.praat`), or bandwidths estimated from formants scaled by pitch according to the procedure outlined by @hawks1995 (see `get_bwHawksMiller.praat`).
 
-**Harmonic amplitudes** are calculated by generating long-term spectra (by default narrowband spectra from 25 ms Gaussian windows) with a frequency ceiling of 5500 Hz for each time step with a valid pitch measure. $H_1$, the amplitude of the first harmonic, is determined as the energy peak within $F_0\pm\frac{1}{10}F_0$, where $F_0$ is the fundamental frequency measure returned for any given time step; $H_2$, the amplitude of the second harmonic, is the energy peak within $2F_0\pm\frac{1}{10}F_0$; and $H_4$, the amplitude of the fourth harmonic, is the energy peak within $4F_0\pm\frac{1}{10}F_0$. $A_1$, the amplitude of the harmonic nearest $F_1$, is determined as the energy peak within $F1\pm\frac{1}{5}F1$, $A_2$ is determined as the energy peak within $F2\pm\frac{1}{10}F2$, and $A_3$ is determined as the energy peak within $F3\pm\frac{1}{10}F3$, where $F_n$ is the nth formant measure returned for any given time step. $H_{2K}$, the amplitude of the harmonic nearest 2000 Hz, is determined as the energy peak within $2000\pm F_0$, and $H_{5K}$, the amplitude of the harmonic nearest 5000 Hz, is determined as the energy peak within $5000\pm F_0$. See `get_spectralMeasures.praat`. $H_1^*$, $H_2^*$, $H_4^*$, $A_1^*$, and $A_2^*$ corrected for the influence of $F_1$ and $F_2$ following the formula given by @iseli2007, while $A_3^*$ is corrected for the influence of $F_1$, $F_2$, and $F_3$ (see `correctIseli.praat`). $H_{2K}$ and $H_{5K}$ are not corrected. 
+**Harmonic amplitudes** are calculated by generating long-term spectra (by default narrowband spectra from 25 ms Gaussian windows) with a frequency ceiling of 5500 Hz for each time step with a valid pitch measure. By default, the spectra are narrowband spectra from 25 ms Gaussian windows, but it is also possible to determine the window length pitch-synchronously to correspond to three glottal cycles. $H_1$, the amplitude of the first harmonic, is determined as the energy peak within $F_0\pm\frac{1}{10}F_0$, where $F_0$ is the fundamental frequency measure returned for any given time step; $H_2$, the amplitude of the second harmonic, is the energy peak within $2F_0\pm\frac{1}{10}F_0$; and $H_4$, the amplitude of the fourth harmonic, is the energy peak within $4F_0\pm\frac{1}{10}F_0$. $A_1$, the amplitude of the harmonic nearest $F_1$, is determined as the energy peak within $F1\pm\frac{1}{5}F1$, $A_2$ is determined as the energy peak within $F2\pm\frac{1}{10}F2$, and $A_3$ is determined as the energy peak within $F3\pm\frac{1}{10}F3$, where $F_n$ is the nth formant measure returned for any given time step. $H_{2K}$, the amplitude of the harmonic nearest 2000 Hz, is determined as the energy peak within $2000\pm F_0$, and $H_{5K}$, the amplitude of the harmonic nearest 5000 Hz, is determined as the energy peak within $5000\pm F_0$. See `get_spectralMeasures.praat`. $H_1^*$, $H_2^*$, $H_4^*$, $A_1^*$, and $A_2^*$ corrected for the influence of $F_1$ and $F_2$ following the formula given by @iseli2007, while $A_3^*$ is corrected for the influence of $F_1$, $F_2$, and $F_3$ (see `correctIseli.praat`). $H_{2K}$ and $H_{5K}$ are not corrected.
 
 **Spectral slope** measures are straightforward: $H_1^*-H_2^*$ is the difference between $H_1^*$ and $H_2^*$ etc. PraatSauce returns the standard corrected measures $H_1^*-H_2^*$, $H_2^*-H_4^*$, $H_1^*-A_1^*$, $H_1^*-A_2^*$, $H_1^*-A_3^*$, and the uncorrected measures $H_1-H_2$, $H_2-H_4$, $H_1-A_1$, $H_1-A_2$, $H_1-A_3$, and $H_{2K}-H_{5K}$. See `get_spectralMeasures.praat`.
 
-**Ceptral peak prominence** measures are calculated by generating power cepstra with a frequency ceiling of 5000 Hz for each time step, fitting exponential regression lines to each cepstrum, and determining how much the cepstral peak deviates from the regression line. This is the standard procedure of Praat's `Get peak prominence` routine, but note that @hillenbrand1994 and VoiceSauce determine the peak prominence by comparing with a *linear* regression line. The arguments for using exponential regression are laid out  [here](https://www.fon.hum.uva.nl/praat/manual/PowerCepstrum__Get_peak_prominence___.html). See `get_CPP.praat`. 
+**Ceptral peak prominence** measures are calculated by generating power cepstra with a frequency ceiling of 5000 Hz for each time step, fitting regression lines to each cepstrum (either linear or exponential), and determining how much the cepstral peak deviates from the regression line. This is the standard procedure of Praat's `Get peak prominence` routine. Note that @hillenbrand1994 and VoiceSauce [@voicesauce] determine the peak prominence by comparing with a linear regression line, but the default in Praat and Praatsauce is to fit an exponential regression; the arguments for this are laid out here [here](https://www.fon.hum.uva.nl/praat/manual/PowerCepstrum__Get_peak_prominence___.html){target='_blank'}. See `get_CPP.praat`.
 
-**Harmonics-to-noise ratio** measures are calculated using Praat's cross-correlation method (a version of @boersma1993's algorithm) which estimates the relative height of the cross-correlation peak (corresponding to the amplitude of the fundamental frequency). Harmonics-to-noise ratios are taken from different low pass filtered versions of the sound file: $HNR_{500}$, $HNR_{1500}$, $HNR_{2500}$, and $HNR_{3500}$ use low pass filters of 500, 1500, 2500, and 3500 Hz, respectively. See `get_HNR.praat`.
+**Harmonics-to-noise ratio** measures are calculated using Praat's cross-correlation method (a version of @boersma1993's algorithm) which estimates the relative height of the cross-correlation peak (theoretically corresponding to the amplitude of the fundamental frequency). Harmonics-to-noise ratios are taken from different low pass filtered versions of the sound file: $HNR_{500}$, $HNR_{1500}$, $HNR_{2500}$, and $HNR_{3500}$ use low pass filters of 500, 1500, 2500, and 3500 Hz, respectively. See `get_HNR.praat`.
 
 **Intensity** measures, corresponding to the root-mean-squared amplitude, are calculated using Praat's `To Intensity` procedure. See `get_intensity.praat`.
 
-The **time domain** looks a little goofy. In order to speed up the processing, we did our best to 'vectorize' all the operations in PraatSauce by using Praat's tabulating functions instead of e.g. querying the pitch value for each time step in a loop, as was done in the previous version of PraatSauce. However, tabulating means that the time series for each measure will differ -- the start and end point of a table will depend on the window size used for calculating the measure, which is different for each measure, and is further rounded in some esoteric fashion that is difficult to complete figure out. We solve this by taking whichever measure has the most time points as the standards, and padding other time series with zeros, see `zeroPadding.praat`. 
+**Strength of excitation** measures are calculated by downsampling the speech signal, taking the difference of this signal $x[n] = s[n] - s[n-1]$, and passing it through a cascade of two zero-frequency filters of the form
+
+$$
+y_i[n] = - \sum_{k=1}^2 a_k y_i [n-k] + x[n]
+$$
+
+At each step, we apply a trend removal procedure by subtracting the moving average of a window of size $N$ corresponding to three average pitch cycles from the filtered signal, giving the output
+
+$$
+y_2[n] = y_1[n] - \frac{1}{2N+1} \sum_{m=-N}^N y_1[n + m]
+$$
+
+We find the positive-to-negative zero crossings in the output signal using Praat's `To PointProcess (zeros)` routine, and calculate the slope in the immediate vicinity of these zero crossings. This mostly follows the procedure described by @yegnanarayana2009 and @mittal2014 and implemented in VoiceSauce [@voicesauce], although the version here is somewhat simplified, as the moving average window size $N$ used for trend removal is determined globally from the interval or sound file rather than locally based on pitch. See `get_SoE.praat`.
+
+The **time domain** of PraatSauce output looks a little goofy. In order to speed up the processing, we did our best to 'vectorize' all the operations in PraatSauce by using Praat's tabulating functions instead of e.g. querying the pitch value for each time step in a loop, as was done in the previous version of PraatSauce. However, tabulating means that the time series for each measure will differ -- the start and end point of a table will depend on the window size used for calculating the measure, which is different for each measure, and is further rounded in some esoteric fashion that is difficult to complete figure out. We solve this by taking whichever measure has the most time points as the standards, and padding other time series with zeros, see `zeroPadding.praat`.
 
 **A note on smoothing**: VoiceSauce has a smoothing parameter, and by default smooths harmonic amplitudes and $F_0$. Apparently spectral slope measures are computed using the smoothed harmonic amplitudes, and the spectral slope measures are then smoothed *again*. PraatSauce does not do any smoothing -- we leave it up to the user how or if they choose to smoothe the measures. This means that PraatSauce output will look a lot more jagged than VoiceSauce output (partially by design).
 
@@ -119,10 +154,10 @@ There is a function available, `praatsauce()`, which should generates a paramete
 
 Other functions available in `sauceshelf` are
 
-* `make_params()`, which will generate a valid parameters file to use with PraatSauce
-* `load_sauce()`, which will read PraatSauce output as a well-formatted data frame
-* `sauce2ssff()` which converts a data frame with PraatSauce output into SSFF files if you are working with the [EMU-SDMS infrastructure](https://rpuggaardrode.github.io/emuintro/).
+-   `make_params()`, which will generate a valid parameters file to use with PraatSauce
+-   `load_sauce()`, which will read PraatSauce output as a well-formatted data frame
+-   `sauce2ssff()` which converts a data frame with PraatSauce output into SSFF files if you are working with the [EMU-SDMS infrastructure](https://rpuggaardrode.github.io/emuintro/).
 
-The aim is for `sauceshelf` to eventually have fully fledged R-internal methods of calculating all the measures above, as well as other measures such as **epochs** and **strength of excitation**, which are provided by VoiceSauce but not by PraatSauce. It will then hopefully be possible to supply pitch or formant measurements from other software, and use these to estimate spectral slope in R. 
+The aim is for `sauceshelf` to eventually have fully fledged R-internal methods of calculating all the measures above, as well as other measures such as **epochs** and **strength of excitation**, which are provided by VoiceSauce but not by PraatSauce. It will then hopefully be possible to supply pitch or formant measurements from other software, and use these to estimate spectral slope in R.
 
 ## References
