@@ -168,10 +168,10 @@ endif
 ## required to compute harmonic amplitudes if the user wants those, etc
 
 .measureFormants = .formant + .harmonicAmplitude + .harmonicAmplitudeUncorrected +
-  ... .bw + .slope + .slopeUncorrected
+  ... .bw + .bwHawksMiller + .slope + .slopeUncorrected
 
 .measurePitch = .pitch + .harmonicAmplitude + .harmonicAmplitudeUncorrected +
-  ... .slope + .slopeUncorrected + .bw + .soe
+  ... .slope + .slopeUncorrected + .bw + .bwHawksMiller + .soe
 
 .spectralMeasures = .harmonicAmplitude + .harmonicAmplitudeUncorrected +
   ... .slope + .slopeUncorrected
