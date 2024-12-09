@@ -10,16 +10,15 @@ procedure rms: .timeStep, .f0min, .start, .end
 ## 6.4 * pitch floor), because for some reason this number is rounded in some
 ## arcane fashion.
 
-soundID = selected("Sound")
+snd = selected("Sound")
 
 @snippet: .start, .end, ((6.4 * (1 / .f0min)) / 2) + (.timeStep / 2)
-snippetID = selected("Sound")
+snippet = selected("Sound")
 
 ## get intensity
 ## the final argument is whether to "subtract mean" (default yes)
 
-To Intensity: .f0min, .timeStep, 1
-rmsID = selected("Intensity")
+rms = To Intensity: .f0min, .timeStep, 1
 
 ## get frame times and number of frames
 
@@ -28,8 +27,7 @@ rmsID = selected("Intensity")
 
 ## some data structure tomfoolery to extract all values in one fell swoop
 
-Down to Matrix
-matrixID = selected("Matrix")
+matrix = Down to Matrix
 .res# = Get all values in row: 1
 
 if .start > 0 | .end < dur
@@ -44,11 +42,7 @@ endif
 
 ## clean up
 
-select rmsID
-plus matrixID
-plus snippetID
-Remove
-
-select soundID
+removeObject: rms, matrix, snippet
+selectObject: snd
 
 endproc

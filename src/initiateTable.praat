@@ -68,8 +68,7 @@ endif
 
 ## make table with required arguments: object name, number of rows, column names
 
-Create Table with column names: "init", 0, firstLine$
-tableID = selected("Table")
+table = Create Table with column names: "init", 0, firstLine$
 
 ## save the table as tsv
 
@@ -77,7 +76,6 @@ Save as tab-separated file: "'.outputDir$''.outputFile$'"
 
 ## clean up
 
-select tableID
-Remove
+removeObject: table
 
 endproc

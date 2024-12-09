@@ -10,17 +10,17 @@ procedure fmt: .measureBandwidths, .timeStep, .maxN, .maxHz,
 ## extract padded snippet.
 ## analysis windows are rounded in some arcane fashion, which is ignored here.
 
-soundID = selected("Sound")
+snd = selected("Sound")
 
 @snippet: .start, .end, .windowLength + (.timeStep / 2)
-snippetID = selected("Sound")
+snippet = selected("Sound")
 
 if .read = 0
 
   ## all formant calculation arguments are user-controlled
 
-  To Formant (burg): .timeStep, .maxN, .maxHz, .windowLength, .preEmphFrom
-  orgFormantID = selected("Formant")
+  orgFormant = To Formant (burg): .timeStep, .maxN, .maxHz, .windowLength,
+    ... .preEmphFrom
 
   ## convert to formantGrid and back to remove undefineds
 
@@ -44,8 +44,7 @@ if .read = 0
   ## frequency cost, bandwidth cost, transition cost (the last three are all
   ## just defaults)
 
-  Track: 3, .f1ref, .f2ref, .f3ref, 3500, 4500, 1, 1, 1
-  trackedFormantID = selected("Formant")
+  trackedFormant = Track: 3, .f1ref, .f2ref, .f3ref, 3500, 4500, 1, 1, 1
 
   if .save <> 0
 
@@ -56,8 +55,8 @@ if .read = 0
 else
 
   Read from file: .readDir$ + .basefn$ + ".Formant"
-  orgFormantID = selected("Formant")
-  trackedFormantID = selected("Formant")
+  orgFormant = selected("Formant")
+  trackedFormant = selected("Formant")
 
 endif
 
@@ -74,8 +73,7 @@ endif
 ## (depends if the user wants empirical bandwidths or wants to estimate them
 ## using the Hawks-Miller formula)
 
-Down to Table: 0, 0, 3, 0, 3, 0, 3, .measureBandwidths
-tableID = selected("Table")
+table = Down to Table: 0, 0, 3, 0, 3, 0, 3, .measureBandwidths
 
 ## grab formant values
 
@@ -116,12 +114,7 @@ endif
 
 ## clean up
 
-select orgFormantID
-plus trackedFormantID
-plus tableID
-plus snippetID
-Remove
-
-select soundID
+removeObject: orgFormant, trackedFormant, table, snippet
+selectObject: snd
 
 endproc

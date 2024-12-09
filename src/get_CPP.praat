@@ -24,16 +24,15 @@ endif
 ## 6 * pitch floor), because for some reason this number is rounded in some
 ## arcane fashion.
 
-soundID = selected("Sound")
+snd = selected("Sound")
 
 @snippet: .start, .end, ((6 * (1 / .f0min)) / 2) + (.timeStep / 2)
-snippetID = selected("Sound")
+snippet = selected("Sound")
 
 ## create cepstrogram, grab frame times
 
-To PowerCepstrogram: .f0min, .timeStep, 5000, 50
+cep = To PowerCepstrogram: .f0min, .timeStep, 5000, 50
 .times# = List all frame times
-cepID = selected("PowerCepstrogram")
 
 ## tabulate cpp values based on the cepstrogram
 ## arguments are: should frame numbers and times be included in the table
@@ -44,9 +43,8 @@ cepID = selected("PowerCepstrogram")
 ## range (entire cepstrum), trend type (default exponential decay),
 ## fit method (robust -- default "robust slow" is truly slow)
 
-To Table (cepstral peak prominences): 0, 0, 6, 3, 0, 3, .f0min, .f0max, 0.05,
-  ... "parabolic", 0.001, 0, trend$, fitMethod$
-tableID = selected("Table")
+table = To Table (cepstral peak prominences): 0, 0, 6, 3, 0, 3, .f0min, .f0max,
+  ... 0.05, "parabolic", 0.001, 0, trend$, fitMethod$
 .res# = Get all numbers in column: "CPP(dB)"
 
 ## grab number of rows
@@ -65,11 +63,7 @@ endif
 
 ## clean up
 
-select cepID
-plus tableID
-plus snippetID
-Remove
-
-select soundID
+removeObject: cep, table, snippet
+selectObject: snd
 
 endproc

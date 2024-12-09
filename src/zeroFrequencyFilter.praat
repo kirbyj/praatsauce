@@ -1,6 +1,6 @@
 procedure zeroFrequencyFilter: .dur, .fs, .windSamp, .start
 
-inputSoundID = selected("Sound")
+inputSound = selected("Sound")
 
 ## apply zero frequency filter
 
@@ -9,15 +9,13 @@ Formula: "self + self[col] - (-2*0.999) * self[col-1] + " +
 
 ## extract numbers
 
-Down to Matrix
-filtMatID = selected("Matrix")
+filtMat = Down to Matrix
 filtVals# = Get all values in row: 1
 
 ## create empty sound to populate using filter
 
-Create Sound from formula: "x", 1, 0, .dur, .fs, "0"
+filt = Create Sound from formula: "x", 1, 0, .dur, .fs, "0"
 Shift times to: "start time", .start
-filtID = selected("Sound")
 
 ## get moving average smooth of signal
 
@@ -40,26 +38,17 @@ Formula: "self[col + " + string$(.windSamp / 2) + "]"
 
 ## trend removal and generating sound from matrix
 
-Down to Matrix
-movingAverageID = selected("Matrix")
+movingAverage = Down to Matrix
 movingAverageVals# = Get all values in row: 1
 
 trendRem# = filtVals# - movingAverageVals#
-Create simple Matrix from values: "x", { trendRem# }
-trendRemID = selected("Matrix")
-To Sound
+trendRem = Create simple Matrix from values: "x", { trendRem# }
+outputSound = To Sound
 Override sampling frequency: .fs
-outputSoundID = selected("Sound")
 
 ## clean up
 
-select inputSoundID
-plus filtMatID
-plus filtID
-plus movingAverageID
-plus trendRemID
-Remove
-
-select outputSoundID
+removeObject: inputSound, filtMat, filt, movingAverage, trendRem
+selectObject: outputSound
 
 endproc

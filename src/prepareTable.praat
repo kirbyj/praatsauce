@@ -5,13 +5,10 @@ procedure prepareTable: .fileName$, .outputDir$, .outputFile$, .useTextGrid, .la
 ## data structure tomfoolery -- convert matrix to long format, then to
 ## TableOfReal, and then to Table
 
-finalMatrixID = selected("Matrix")
-Transpose
-tmatrixID = selected("Matrix")
-To TableOfReal
-torID = selected("TableOfReal")
-To Table: "x"
-tableID = selected("Table")
+finalMatrix = selected("Matrix")
+tMatrix = Transpose
+tor = To TableOfReal
+table = To Table: "x"
 
 ## loop through table and add file name
 ## doesn't seem like there's a vectorized way to add strings to tables!
@@ -34,11 +31,9 @@ endif
 ## to avoid adding column names to the results file again and again & again
 
 results$ = List: 0
-Create Strings from tokens: "results", results$, "'newline$'"
-stringsID = selected("Strings")
+strings = Create Strings from tokens: "results", results$, "'newline$'"
 Remove string: 1
-Replace all: "$", "\n", 0, "regular expressions"
-stringsRepID = selected("Strings")
+stringsRep = Replace all: "$", "\n", 0, "regular expressions"
 results$# = List all strings
 
 ## add results to file
@@ -47,12 +42,6 @@ appendFile: "'.outputDir$''.outputFile$'", results$#
 
 ## clean up
 
-select stringsID
-plus stringsRepID
-plus tableID
-plus torID
-plus tmatrixID
-plus finalMatrixID
-Remove
+removeObject: strings, stringsRep, table, tor, tMatrix, finalMatrix
 
 endproc

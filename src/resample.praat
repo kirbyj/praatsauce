@@ -2,17 +2,16 @@
 
 procedure resample
 
-soundID = selected("Sound")
+snd = selected("Sound")
 
 ## second argument is "interpolation precision" -- a bit beyond my pay grade
 Resample: 16000, 50
 
 ## clean up, keep only the resampled sound
 
-resampledID = selected("Sound")
-select soundID
-Remove
-select resampledID
-soundID = selected("Sound")
+resamp = selected("Sound")
+removeObject: snd
+selectObject: resamp
+snd = selected("Sound")
 
 endproc

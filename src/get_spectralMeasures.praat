@@ -10,10 +10,10 @@ procedure spec: .windowLength, .timeStep, .numFrames, .times#,
 ## extract padded snippet.
 ## analysis windows are rounded in some arcane fashion, which is ignored here.
 
-soundID = selected("Sound")
+snd = selected("Sound")
 
 @snippet: .start, .end, .windowLength + (.timeStep / 2)
-snippetID = selected("Sound")
+snippet = selected("Sound")
 
 ## initiate empty vectors for harmonic amplitudes
 
@@ -60,8 +60,7 @@ upperba3# = .f3# + (.f3# * 0.1)
 
 if .pitchSynchronous = 0
 
-  To Spectrogram: .windowLength, 5500, .timeStep, 20, "Gaussian"
-  spectrogramID = selected("Spectrogram")
+  spec = To Spectrogram: .windowLength, 5500, .timeStep, 20, "Gaussian"
 
 endif
 
@@ -75,33 +74,27 @@ for frame from 1 to .numFrames
 
     if .pitchSynchronous = 0
 
-    	select spectrogramID
+    	selectObject: spec
 
     	## grab spectral slice and convert that to long-term average spectrum.
     	## the LTAS object has the exact same information as the spectral slice!
     	## this is only done because the different data structures can be queried
     	## in different ways
 
-    	To Spectrum (slice): .times# [frame]
-    	spectrumID = selected("Spectrum")
-    	To Ltas (1-to-1)
-    	ltasID = selected("Ltas")
+    	slice = To Spectrum (slice): .times# [frame]
+    	ltas = To Ltas (1-to-1)
 
   	else
 
-  	  select snippetID
+  	  selectObject: snippet
   	  halfWinSize = (1 / .f0# [frame]) * 1.5
-  	  Extract part: times# [frame] - halfWinSize, times# [frame] + halfWinSize,
-  	    ... "Gaussian1", 1, 0
-  	  pitchWindowID = selected("Sound")
-  	  To Spectrum: 1
-  	  spectrumID = selected("Spectrum")
-  	  To Ltas (1-to-1)
-  	  ltasID = selected("Ltas")
+  	  pitchWindow = Extract part: times# [frame] - halfWinSize,
+  	    ... times# [frame] + halfWinSize, "Gaussian1", 1, 0
+  	  slice = To Spectrum: 1
+  	  ltas = To Ltas (1-to-1)
 
-  	  select pitchWindowID
-  	  Remove
-  	  select ltasID
+      removeObject: pitchWindow
+      selectObject: ltas
 
   	endif
 
@@ -126,9 +119,8 @@ for frame from 1 to .numFrames
 			... "none"
 
 		## clean up
-  	select spectrumID
-  	plus ltasID
-  	Remove
+
+		removeObject: slice, ltas
 
 	endif
 
@@ -193,13 +185,10 @@ endif
 ## clean up
 
 if .pitchSynchronous = 0
-  select spectrogramID
-  Remove
+  removeObject: spec
 endif
 
-select snippetID
-Remove
-
-select soundID
+removeObject: snippet
+selectObject: snd
 
 endproc

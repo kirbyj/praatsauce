@@ -39,12 +39,10 @@ endform
   ## with emuR
 
 if params.filelist$ <> "0"
-  Read Strings from raw text file: params.filelist$
-  wavsListID = selected("Strings")
+  wavsList = Read Strings from raw text file: params.filelist$
   numFile = Get number of strings
 else
-  Create Strings as file list: "wavs", params.inputDir$ + "*.wav"
-  wavsListID = selected("Strings")
+  wavsList = Create Strings as file list: "wavs", params.inputDir$ + "*.wav"
   Sort
   numFile = Get number of strings
 endif
@@ -52,8 +50,7 @@ endif
 ## if using TextGrid, get list of TGs in the inputDir and sort them
 
 if params.useTextGrid <> 0
-	Create Strings as file list: "grids", params.inputDir$ + "*.TextGrid"
-	tgListID = selected("Strings")
+	tgList = Create Strings as file list: "grids", params.inputDir$ + "*.TextGrid"
 	Sort
 	numTG = Get number of strings
 
@@ -69,10 +66,9 @@ for thisFile from 1 to numFile
 
   ## read sound file
 
-	select wavsListID
+	selectObject: wavsList
 	thisWav$ = Get string: thisFile
-	Read from file: params.inputDir$ + thisWav$
-	soundID = selected("Sound")
+	snd = Read from file: params.inputDir$ + thisWav$
 
 	## get base file name
 
@@ -112,7 +108,7 @@ for thisFile from 1 to numFile
 
 	  ## make sure sound is selected at the beginning of this loop
 
-		select soundID
+		selectObject: snd
 
     ## if grabbing measures at equidistant points, set time step accordingly.
 
@@ -347,8 +343,7 @@ for thisFile from 1 to numFile
 
 	endfor
 
-	select soundID
-	Remove
+	removeObject: snd
 
 ## end loop through sound files
 
@@ -356,8 +351,7 @@ endfor
 
 ## clean up
 
-select wavsListID
+removeObject: wavsList
 if params.useTextGrid = 1
-	plus tgListID
+	removeObject: tgList
 endif
-Remove

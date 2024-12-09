@@ -2,25 +2,20 @@
 
 procedure combineMatrices: .add##
 
-orgMatrixID = selected("Matrix")
+orgMatrix = selected("Matrix")
 
 ## make matrix appear in the objects list
 
-Create simple Matrix from values: "results", .add##
+newMatrix = Create simple Matrix from values: "results", .add##
 
 ## select both matrices to be combined and merge them
 
-newMatrixID = selected("Matrix")
-plus orgMatrixID
-Merge (append rows)
-combinedMatrixID = selected("Matrix")
+selectObject: newMatrix, orgMatrix
+combinedMatrix = Merge (append rows)
 
 ## clean up
 
-select orgMatrixID
-plus newMatrixID
-Remove
-
-select combinedMatrixID
+removeObject: orgMatrix, newMatrix
+selectObject: combinedMatrix
 
 endproc

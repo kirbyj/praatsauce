@@ -2,8 +2,6 @@
 
 procedure zeroPadding: .res#, .numFrames, .mostFrames
 
-
-
 if .numFrames < mostFrames
   ## ... if there are vectors with more frames than the present one ...
 
