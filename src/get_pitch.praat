@@ -29,11 +29,17 @@ if .read = 0
       ... .maxNoCandidates, .windowShape, 0.03, .silenceThreshold,
       ... .voicingThreshold, .octaveCost, .octaveJumpCost, .voicedUnvoicedCost
 
-  else
+  elsif .method = 1
 
     pitchOrg = To Pitch (raw cc): .timeStep, .f0min, .f0max, .maxNoCandidates,
       ... .windowShape, .silenceThreshold, .voicingThreshold, .octaveCost,
       ... .octaveJumpCost, .voicedUnvoicedCost
+
+  else
+
+    pitchOrg = To Pitch (raw ac): .timeStep, .f0min, .f0max,
+    ... .maxNoCandidates, .windowShape, .silenceThreshold, .voicingThreshold,
+    ... .octaveCost, .octaveJumpCost, .voicedUnvoicedCost
 
   endif
 
