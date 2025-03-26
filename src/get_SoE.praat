@@ -17,13 +17,13 @@ dur = Get total duration
 
 if .fs > 16000
   Resample: 16000, 50
-  fs = 16000
+  newFS = 16000
 else
   Copy: "x"
-  fs = .fs
+  newFS = .fs
 endif
 
-meanPitchSamp = fs / .meanF0
+meanPitchSamp = newFS / .meanF0
 windSamp = round (2 * (meanPitchSamp / 1.5) + 1)
 
 ## get differenced signal
@@ -34,8 +34,8 @@ Reverse
 
 ## cascade of zero frequency filters
 
-@zeroFrequencyFilter: dur, fs, windSamp, start
-@zeroFrequencyFilter: dur, fs, windSamp, start
+@zeroFrequencyFilter: dur, newFS, windSamp, start
+@zeroFrequencyFilter: dur, newFS, windSamp, start
 
 filter = selected("Sound")
 
@@ -93,7 +93,7 @@ for i from 1 to .numFrames
 		numer = 0
 		denom = 0
 		for theta from 1 to 5
-		  if samp + theta < size(z#)
+		  if samp + theta < size(z#) & samp - theta > 0
   			numer = numer + theta * (z#[samp+theta] - z#[samp-theta])
   			denom = denom + 2 * theta^2
   		else
