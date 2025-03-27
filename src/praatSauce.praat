@@ -423,7 +423,7 @@ for currentToken from startToken to numTokens
     # In order to avoid horrible crashes, we don't
     lingVars$ = ""
     @splitstring: basename$, separator$
-    if splitstring.strLen => strLen
+    if splitstring.strLen >= strLen
       for i from 1 to strLen
             lingVars$ = lingVars$ + splitstring.array$[i] + ","
       endfor
