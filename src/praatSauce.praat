@@ -130,6 +130,8 @@ for thisFile from 1 to numFile
     ## the same length.
 
 		frameNums# = { 0 }
+		firstFrame# = { 1e9 }
+		lastFrame# = { 0 }
 
     ## get pitch values
 
@@ -143,6 +145,8 @@ for thisFile from 1 to numFile
 				... params.pitchSave, params.pitchSaveDir$,
 				... params.pitchRead, params.pitchReadDir$, basefn$
 			frameNums# = combine# (frameNums#, { pitch.numFrames })
+			firstFrame# = combine# (firstFrame#, { min(pitch.times#) })
+			lastFrame# = combine# (lastFrame#, { max(pitch.times#) })
 		endif
 
     ## get formant values
@@ -155,6 +159,8 @@ for thisFile from 1 to numFile
 				... params.formantSave, params.formantSaveDir$,
 				... params.formantRead, params.formantReadDir$, basefn$
 			frameNums# = combine# (frameNums#, { fmt.numFrames })
+			firstFrame# = combine# (firstFrame#, { min(fmt.times#) })
+			lastFrame# = combine# (lastFrame#, { max(fmt.times#) })
 		endif
 
 		## get hnr values
@@ -173,6 +179,8 @@ for thisFile from 1 to numFile
 				... times.end# [int]
 			hnr35# = hnr.res#
 			frameNums# = combine# (frameNums#, { hnr.numFrames })
+			firstFrame# = combine# (firstFrame#, { min(hnr.times#) })
+			lastFrame# = combine# (lastFrame#, { max(hnr.times#) })
 		endif
 
 		## get cpp
@@ -181,6 +189,8 @@ for thisFile from 1 to numFile
 			@cpp: timeStep, params.f0min, params.f0max, times.start# [int],
 				... times.end# [int], params.cppTrendType, params.cppFast
 			frameNums# = combine# (frameNums#, { cpp.numFrames })
+			firstFrame# = combine# (firstFrame#, { min(cpp.times#) })
+			lastFrame# = combine# (lastFrame#, { max(cpp.times#) })
 		endif
 
     ## get intensity
@@ -188,18 +198,23 @@ for thisFile from 1 to numFile
 		if params.intensity <> 0
 			@rms: timeStep, params.f0min, times.start# [int], times.end# [int]
 			frameNums# = combine# (frameNums#, { rms.numFrames })
+			firstFrame# = combine# (firstFrame#, { min(rms.times#) })
+			lastFrame# = combine# (lastFrame#, { max(rms.times#) })
 		endif
 
     ## which of the derived signals has the most frames?
 
 		mostFrames = max(frameNums#)
+		firstFrame = min(firstFrame#)
+		lastFrame = max(lastFrame#)
 
     ## go through each of the signals, and pad them with zeros if they are
     ## NOT the signal with the most frames. base times vector on the signal
     ## with the most frames.
 
 		if params.measurePitch <> 0
-			@zeroPadding: pitch.f0#, pitch.numFrames, mostFrames
+			@zeroPadding: pitch.f0#, pitch.numFrames, mostFrames, pitch.times#,
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
 			f0# = zeroPadding.res#
 			if pitch.numFrames = mostFrames
 				times# = pitch.times#
@@ -207,11 +222,14 @@ for thisFile from 1 to numFile
 		endif
 
 		if params.measureFormants <> 0
-			@zeroPadding: fmt.f1#, fmt.numFrames, mostFrames
+			@zeroPadding: fmt.f1#, fmt.numFrames, mostFrames, fmt.times#,
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
 			f1# = zeroPadding.res#
-			@zeroPadding: fmt.f2#, fmt.numFrames, mostFrames
+			@zeroPadding: fmt.f2#, fmt.numFrames, mostFrames, fmt.times#,
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
 			f2# = zeroPadding.res#
-			@zeroPadding: fmt.f3#, fmt.numFrames, mostFrames
+			@zeroPadding: fmt.f3#, fmt.numFrames, mostFrames, fmt.times#,
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
 			f3# = zeroPadding.res#
 			if fmt.numFrames = mostFrames
 				times# = fmt.times#
@@ -219,13 +237,17 @@ for thisFile from 1 to numFile
 		endif
 
 		if params.hnr <> 0
-			@zeroPadding: hnr05#, hnr.numFrames, mostFrames
+			@zeroPadding: hnr05#, hnr.numFrames, mostFrames, hnr.times#,
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
 			hnr05# = zeroPadding.res#
-			@zeroPadding: hnr15#, hnr.numFrames, mostFrames
+			@zeroPadding: hnr15#, hnr.numFrames, mostFrames, hnr.times#,
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
 			hnr15# = zeroPadding.res#
-			@zeroPadding: hnr25#, hnr.numFrames, mostFrames
+			@zeroPadding: hnr25#, hnr.numFrames, mostFrames, hnr.times#,
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
 			hnr25# = zeroPadding.res#
-			@zeroPadding: hnr35#, hnr.numFrames, mostFrames
+			@zeroPadding: hnr35#, hnr.numFrames, mostFrames, hnr.times#,
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
 			hnr35# = zeroPadding.res#
 			if hnr.numFrames = mostFrames
 				times# = hnr.times#
@@ -233,7 +255,8 @@ for thisFile from 1 to numFile
 		endif
 
 		if params.cpp <> 0
-			@zeroPadding: cpp.res#, cpp.numFrames, mostFrames
+			@zeroPadding: cpp.res#, cpp.numFrames, mostFrames, cpp.times#,
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
 			cpp# = zeroPadding.res#
 			if cpp.numFrames = mostFrames
 				times# = cpp.times#
@@ -241,7 +264,8 @@ for thisFile from 1 to numFile
 		endif
 
 		if params.intensity <> 0
-			@zeroPadding: rms.res#, rms.numFrames, mostFrames
+			@zeroPadding: rms.res#, rms.numFrames, mostFrames, rms.times#,
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
 			rms# = zeroPadding.res#
 			if rms.numFrames = mostFrames
 				times# = rms.times#
@@ -258,11 +282,14 @@ for thisFile from 1 to numFile
 
 		if params.requireBandwidths <> 0
 			if params.bwHawksMiller = 0
-				@zeroPadding: fmt.b1#, fmt.numFrames, mostFrames
+				@zeroPadding: fmt.b1#, fmt.numFrames, mostFrames, fmt.times#,
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
 				b1# = zeroPadding.res#
-				@zeroPadding: fmt.b2#, fmt.numFrames, mostFrames
+				@zeroPadding: fmt.b2#, fmt.numFrames, mostFrames, fmt.times#,
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
 				b2# = zeroPadding.res#
-				@zeroPadding: fmt.b3#, fmt.numFrames, mostFrames
+				@zeroPadding: fmt.b3#, fmt.numFrames, mostFrames, fmt.times#,
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
 				b3# = zeroPadding.res#
 			else
 				@bwHawksMiller: f0#, f1#, mostFrames

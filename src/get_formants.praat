@@ -8,11 +8,16 @@ procedure fmt: .measureBandwidths, .timeStep, .maxN, .maxHz,
 	... .save, .saveDir$, .read, .readDir$, .basefn$
 
 ## extract padded snippet.
-## analysis windows are rounded in some arcane fashion, which is ignored here.
 
 snd = selected("Sound")
 
-@snippet: .start, .end, .windowLength + (.timeStep / 2)
+## the added 0.2 ms are due to some arcane rounding and solves a bug where
+## otherwise there were too few measures in formants when using equidistant
+## intervals. it does mean that formant measures can be skewed to one side
+## by a few ms compared to other measures, which isn't perfect but probably
+## not a major issue either.
+
+@snippet: .start, .end, .windowLength + (.timeStep / 2) + 0.00018
 snippet = selected("Sound")
 
 if .read = 0

@@ -1,27 +1,28 @@
 ### Pad derived signal vectors with zeros to ensure that they are equal length
 
-procedure zeroPadding: .res#, .numFrames, .mostFrames
+procedure zeroPadding: .res#, .numFrames, .mostFrames, .times#, .firstFrame,
+  ... .lastFrame, .timeStep, .equidistant
 
-if .numFrames < mostFrames
-  ## ... if there are vectors with more frames than the present one ...
-
-  ## how many zeros should be added?
-	diffFrames = .mostFrames - .numFrames
-
-	## if uneven number, add one more zero to the start than the end
-	padStart = ceiling(diffFrames / 2)
-	padEnd = floor(diffFrames / 2)
-	padStart# = zero# (padStart)
-	.res# = combine# (padStart#, .res#)
-	if padEnd <> 0
-		padEnd# = zero# (padEnd)
-		.res# = combine# (.res#, padEnd#)
-	endif
+if .equidistant <> 0
+  .res# = .res#
 else
-  ## ... if there are no vectors with more frames than the present one,
-  ## return results unchanged ...
+  if min(.times#) > .firstFrame & .numFrames < .mostFrames
+    diffFrames = (min(.times#) - .firstFrame) / .timeStep
+    padStart# = zero#( round(diffFrames) )
+    .res# = combine# (padStart#, .res#)
+    .numFrames = size(.res#)
+  else
+    .res# = .res#
+  endif
 
-	.res# = .res#
+  if max(.times#) < .lastFrame & .numFrames < .mostFrames
+    diffFrames = (.lastFrame - max(.times#)) / .timeStep
+    padEnd# = zero#( round(diffFrames) )
+    .res# = combine# (padEnd#, .res#)
+  else
+    .res# = .res#
+  endif
 endif
+
 
 endproc

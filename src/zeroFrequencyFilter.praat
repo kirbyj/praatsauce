@@ -41,6 +41,10 @@ Formula: "self[col + " + string$(.windSamp / 2) + "]"
 movingAverage = Down to Matrix
 movingAverageVals# = Get all values in row: 1
 
+if size(filtVals#) <> size(movingAverageVals#)
+  movingAverageVals# = combine#(movingAverageVals#, {0})
+endif
+
 trendRem# = filtVals# - movingAverageVals#
 trendRem = Create simple Matrix from values: "x", { trendRem# }
 outputSound = To Sound
