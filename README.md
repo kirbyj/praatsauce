@@ -2,6 +2,12 @@
 
 This set of Praat scripts is designed to facilitate the extraction of spectral measures such as H1-H2, H1-A3, cepstral peak prominence, etc. from acoustic data. 
 
+## 🚨 Archived Branch: `v0`
+
+This branch represents an older version of the Praatsauce codebase. It is no longer actively maintained, and development has moved to the `master` branch.
+
+Please do not use this branch unless you are applying critical fixes to the legacy version.
+
 ## Background and acknowledgments
 
 As the name suggests, these scripts owe a debt to the [VoiceSauce](http://www.phonetics.ucla.edu/voicesauce/) suite of Matlab scripts developed by Shue et al. (2011). PraatSauce is not as full-featured as VoiceSauce, but has what some might regard as the advantage of not requiring/being reliant on a Matlab license. Also, thanks to Praat's general Unicode compliance, it permits the use of non-ASCII elements in filenames and in TextGrids. 
