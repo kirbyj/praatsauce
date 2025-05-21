@@ -82,7 +82,9 @@ new feature of Praat.
 
 * For calculating harmonic amplitudes and spectral slopes, we first generate a 
 spectrogram and then extract slices from that spectrogram. This seems more 
-efficient making spectral slices one by one.
+efficient making spectral slices one by one. An alternative option is
+to calculate harmonic amplitudes using spectra with pitch-dependent window
+length, which wasn't possible before.
 
 * The upper and lower limits of where to look for H2K and H5K are now just based 
 on the pitch measures, where in previous versions it was based on the cepstral
