@@ -35,6 +35,8 @@ This version of PraatSauce is a fully rewritten version of the previous code bas
 by James Kirby which is available as the 
 [`praatsauce 0.2.7` release](https://github.com/kirbyj/praatsauce/tree/0.2.7). 
 Results should be very similar, but the workflow is quite different. 
+An overview of changes can be found 
+[here](https://github.com/kirbyj/praatsauce/blob/master/NEWS.md).
 
 ## Requirements
 
