@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Rasmus Puggaard-Rode &amp; James Kirby">
-<meta name="dcterms.date" content="2025-05-13">
+<meta name="dcterms.date" content="2025-05-21">
 
 <title>PraatSauce workflow and parameters</title>
 <style>
@@ -107,6 +107,7 @@ div.csl-indent {
   <li><a href="#output" id="toc-output" class="nav-link" data-scroll-target="#output">Output</a></li>
   <li><a href="#details" id="toc-details" class="nav-link" data-scroll-target="#details">Details</a></li>
   <li><a href="#workflow-in-r" id="toc-workflow-in-r" class="nav-link" data-scroll-target="#workflow-in-r">Workflow in R</a></li>
+  <li><a href="#citation-information" id="toc-citation-information" class="nav-link" data-scroll-target="#citation-information">Citation information</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
@@ -134,7 +135,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 13, 2025</p>
+      <p class="date">May 21, 2025</p>
     </div>
   </div>
   
@@ -261,6 +262,11 @@ y_2[n] = y_1[n] - \frac{1}{2N+1} \sum_{m=-N}^N y_1[n + m]
 <li><code>sauce2ssff()</code> which converts a data frame with PraatSauce output into SSFF files if you are working with the <a href="https://rpuggaardrode.github.io/emuintro/">EMU-SDMS infrastructure</a>.</li>
 </ul>
 <p><code>sauceshelf</code> also provides various R-internal ways to estimate the measures returned by Praatsauce, and a framework for mixing and matching different sources, i.e.&nbsp;to estimate pitch and formants using Praat, and harmonic amplitudes and spectral slope using R based on the results from Praat. One method which we’ve tentatively found to work well and to speed up processing is to estimate harmonic amplitudes, spectral slope, and SoE in R and all other measures in Praat.</p>
+</section>
+<section id="citation-information" class="level2">
+<h2 class="anchored" data-anchor-id="citation-information">Citation information</h2>
+<p>If you use PraatSauce in your research, you can cite the current version as follows:</p>
+<p>Kirby, James &amp; Rasmus Puggaard-Rode (2025) <em>PraatSauce. Praat-based tools for spectral processing.</em> Version 1.0.0. Available from GitHub: <a href="https://kirbyj.github.io/praatsauce">kirbyj.github.io/praatsauce</a></p>
 </section>
 <section id="references" class="level2 unnumbered">
 

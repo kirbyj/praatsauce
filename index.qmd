@@ -160,4 +160,13 @@ Other functions available in `sauceshelf` are
 
 `sauceshelf` also provides various R-internal ways to estimate the measures returned by Praatsauce, and a framework for mixing and matching different sources, i.e. to estimate pitch and formants using Praat, and harmonic amplitudes and spectral slope using R based on the results from Praat. One method which we've tentatively found to work well and to speed up processing is to estimate harmonic amplitudes, spectral slope, and SoE in R and all other measures in Praat. 
 
+## Citation information
+
+If you use PraatSauce in your research, you can cite the current version as 
+follows:
+
+Kirby, James & Rasmus Puggaard-Rode (2025) *PraatSauce. Praat-based tools for
+spectral processing.* Version 1.0.0. Available from GitHub: 
+[kirbyj.github.io/praatsauce](https://kirbyj.github.io/praatsauce)
+
 ## References
