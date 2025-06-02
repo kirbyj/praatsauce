@@ -1,8 +1,8 @@
 ## Version 1.0.2
 
-* More checks added to ensure that signal vectors are always of the same size to ensure error-free handling of vectorized processes.
-* Column with interval ID added when processing using TextGrids
-* `verbose` option added to parameters file, which will print progress messages. By default set to `1`. 
+* More checks added to ensure that signal vectors are always of the same size to ensure error-free handling of vectorized processes. This hopefully fixes [https://github.com/kirbyj/praatsauce/issues/12]
+* Column with interval ID added when processing using TextGrids as suggested in [https://github.com/kirbyj/praatsauce/issues/14]
+* `verbose` option added to parameters file, which will print progress messages. By default set to `1`. Related to suggestion in [https://github.com/kirbyj/praatsauce/issues/14].
 
 ## Version 1.0.1
 
