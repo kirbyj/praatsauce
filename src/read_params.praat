@@ -114,6 +114,8 @@ intervalTierID = Search column: "variable", "intervalTier"
 .intervalTier = Get value: intervalTierID, "input"
 includeTheseLabelsID = Search column: "variable", "includeTheseLabels"
 .includeTheseLabels$ = Get value: includeTheseLabelsID, "input"
+verboseID = Search column: "variable", "verbose"
+.verbose = Get value: verboseID, "input"
 
 Remove
 

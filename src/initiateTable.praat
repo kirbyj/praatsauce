@@ -13,7 +13,7 @@ firstLine$ = "file"
 ## add label column only if users are using TextGrids
 
 if .useTextGrid <> 0
-	firstLine$ = firstLine$ + " label"
+	firstLine$ = firstLine$ + " label intervaldID"
 endif
 
 ## always need a column with times

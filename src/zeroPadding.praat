@@ -9,8 +9,11 @@ if .equidistant <> 0 & .start > 0
 else
   if min(.times#) > .firstFrame & .numFrames < .mostFrames
     diffFrames = (min(.times#) - .firstFrame) / .timeStep
-    #padStart# = zero#( round(diffFrames) )
-    padStart# = zero#( ceiling(diffFrames) )
+    if round(diffFrames) + size(.res#) > .mostFrames
+      discrepancy = (round(diffFrames) + size(.res#)) - .mostFrames
+      diffFrames = diffFrames - discrepancy
+    endif
+    padStart# = zero#( round(diffFrames) )
     .res# = combine# (padStart#, .res#)
     .numFrames = size(.res#)
   else
@@ -19,22 +22,21 @@ else
 
   if max(.times#) < .lastFrame & .numFrames < .mostFrames
     diffFrames = (.lastFrame - max(.times#)) / .timeStep
-    if floor(diffFrames) + .numFrames > .mostFrames
-      discrepancy = (floor(diffFrames) + .numFrames) - .mostFrames
+    if round(diffFrames) + size(.res#) > .mostFrames
+      discrepancy = (round(diffFrames) + size(.res#)) - .mostFrames
       diffFrames = diffFrames - discrepancy
     endif
-    #padEnd# = zero#( round(diffFrames) )
-    padEnd# = zero#( floor(diffFrames) )
+    padEnd# = zero#( round(diffFrames) )
     .res# = combine# (.res#, padEnd#)
   else
     .res# = .res#
   endif
-  
-  if size(.res#) < .mostFrames
-    discrepancy = .mostFrames - size(.res#)
-    .res# = combine# (.res#, zero#(discrepancy))
-  endif
+
 endif
 
+if size(.res#) < .mostFrames
+  discrepancy = .mostFrames - size(.res#)
+  .res# = combine# (.res#, zero#(discrepancy))
+endif
 
 endproc

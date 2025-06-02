@@ -1,6 +1,7 @@
 ### Convert matrix of PraatSauce results to a table and save to disk
 
-procedure prepareTable: .fileName$, .outputDir$, .outputFile$, .useTextGrid, .lab$
+procedure prepareTable: .fileName$, .outputDir$, .outputFile$, .useTextGrid,
+  ... .lab$, .intervalID
 
 ## data structure tomfoolery -- convert matrix to long format, then to
 ## TableOfReal, and then to Table
@@ -22,8 +23,10 @@ endfor
 
 if .useTextGrid <> 0
 	Insert column: 2, "lab"
+	Insert column: 3, "intervalID"
 	for r from 1 to nRow
 		Set string value: r, "lab", .lab$
+		Set numeric value: r, "intervalID", .intervalID
 	endfor
 endif
 

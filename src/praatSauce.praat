@@ -60,6 +60,14 @@ if params.useTextGrid <> 0
 
 endif
 
+## initiate intervalID
+
+intervalID = 0
+
+if params.verbose <> 0
+  writeInfoLine: "Setup complete"
+endif
+
 ## initiate loop through sound files
 
 for thisFile from 1 to numFile
@@ -69,6 +77,10 @@ for thisFile from 1 to numFile
 	selectObject: wavsList
 	thisWav$ = Get string: thisFile
 	snd = Read from file: params.inputDir$ + thisWav$
+
+	if params.verbose <> 0
+	  appendInfoLine: "Processing ", params.inputDir$, thisWav$
+	endif
 
 	## get base file name
 
@@ -105,6 +117,8 @@ for thisFile from 1 to numFile
   ## TextGrids, otherwise times.numIntervals always == 1)
 
 	for int from 1 to times.numIntervals
+
+	intervalID = intervalID + 1
 
 	  ## make sure sound is selected at the beginning of this loop
 
@@ -377,7 +391,7 @@ for thisFile from 1 to numFile
 	## convert matrix to table so we can add string values
 
 	@prepareTable: thisWav$, params.outputDir$, params.outputFile$, params.useTextGrid,
-		... times.labs$ [int]
+		... times.labs$ [int], intervalID
 
   ## end loop through intervals
 
@@ -394,4 +408,9 @@ endfor
 removeObject: wavsList
 if params.useTextGrid = 1
 	removeObject: tgList
+endif
+
+if params.verbose <> 0
+  appendInfoLine: "All done. Output written to ", params.outputDir$,
+    ... params.outputFile$
 endif
