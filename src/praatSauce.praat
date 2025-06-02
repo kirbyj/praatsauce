@@ -214,7 +214,8 @@ for thisFile from 1 to numFile
 
 		if params.measurePitch <> 0
 			@zeroPadding: pitch.f0#, pitch.numFrames, mostFrames, pitch.times#,
-			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant,
+			  ... times.start# [int]
 			f0# = zeroPadding.res#
 			if pitch.numFrames = mostFrames
 				times# = pitch.times#
@@ -223,13 +224,16 @@ for thisFile from 1 to numFile
 
 		if params.measureFormants <> 0
 			@zeroPadding: fmt.f1#, fmt.numFrames, mostFrames, fmt.times#,
-			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant,
+			  ... times.start# [int]
 			f1# = zeroPadding.res#
 			@zeroPadding: fmt.f2#, fmt.numFrames, mostFrames, fmt.times#,
-			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant,
+			  ... times.start# [int]
 			f2# = zeroPadding.res#
 			@zeroPadding: fmt.f3#, fmt.numFrames, mostFrames, fmt.times#,
-			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant,
+			  ... times.start# [int]
 			f3# = zeroPadding.res#
 			if fmt.numFrames = mostFrames
 				times# = fmt.times#
@@ -238,16 +242,20 @@ for thisFile from 1 to numFile
 
 		if params.hnr <> 0
 			@zeroPadding: hnr05#, hnr.numFrames, mostFrames, hnr.times#,
-			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant,
+			  ... times.start# [int]
 			hnr05# = zeroPadding.res#
 			@zeroPadding: hnr15#, hnr.numFrames, mostFrames, hnr.times#,
-			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant,
+			  ... times.start# [int]
 			hnr15# = zeroPadding.res#
 			@zeroPadding: hnr25#, hnr.numFrames, mostFrames, hnr.times#,
-			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant,
+			  ... times.start# [int]
 			hnr25# = zeroPadding.res#
 			@zeroPadding: hnr35#, hnr.numFrames, mostFrames, hnr.times#,
-			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant,
+			  ... times.start# [int]
 			hnr35# = zeroPadding.res#
 			if hnr.numFrames = mostFrames
 				times# = hnr.times#
@@ -256,7 +264,8 @@ for thisFile from 1 to numFile
 
 		if params.cpp <> 0
 			@zeroPadding: cpp.res#, cpp.numFrames, mostFrames, cpp.times#,
-			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant,
+			  ... times.start# [int]
 			cpp# = zeroPadding.res#
 			if cpp.numFrames = mostFrames
 				times# = cpp.times#
@@ -265,7 +274,8 @@ for thisFile from 1 to numFile
 
 		if params.intensity <> 0
 			@zeroPadding: rms.res#, rms.numFrames, mostFrames, rms.times#,
-			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant,
+			  ... times.start# [int]
 			rms# = zeroPadding.res#
 			if rms.numFrames = mostFrames
 				times# = rms.times#
@@ -283,13 +293,16 @@ for thisFile from 1 to numFile
 		if params.requireBandwidths <> 0
 			if params.bwHawksMiller = 0
 				@zeroPadding: fmt.b1#, fmt.numFrames, mostFrames, fmt.times#,
-			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant,
+			  ... times.start# [int]
 				b1# = zeroPadding.res#
 				@zeroPadding: fmt.b2#, fmt.numFrames, mostFrames, fmt.times#,
-			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant,
+			  ... times.start# [int]
 				b2# = zeroPadding.res#
 				@zeroPadding: fmt.b3#, fmt.numFrames, mostFrames, fmt.times#,
-			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant
+			  ... firstFrame, lastFrame, timeStep, params.intervalEquidistant,
+			  ... times.start# [int]
 				b3# = zeroPadding.res#
 			else
 				@bwHawksMiller: f0#, f1#, mostFrames
