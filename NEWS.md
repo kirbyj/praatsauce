@@ -1,3 +1,8 @@
+## Version 1.0.1
+
+* Hopefully fixes bug whereby signal vectors ended up being different sizes, causing downstream errors for vectorized processes (estimating Hawks--Miller bandwidths, etc). See [https://github.com/kirbyj/praatsauce/issues/12].
+* When an analyzed interval has no measurable pitch, some reasonable pitch mean is now assumed so that strength of excitation measurement doesn't error out.
+
 ## Differences between 1.0.0 and the previous version of PraatSauce
 
 * All parameters are passed in a csv file so we're getting rid of the 
