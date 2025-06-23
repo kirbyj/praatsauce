@@ -33,14 +33,6 @@ if .read = 0
   #### Will add formant duplicates to any part of the sound file that isn't
   #### tracked because of the windowing
 
-  #### This could be a more serious problem, because the tracking algo below
-  #### will shoot an error if there --undefined--s in F3
-
-  #Down to FormantGrid
-  #formantGridID = selected("FormantGrid")
-  #To Formant: .timeStep, 0.1
-  #fullFormantID = selected("Formant")
-
   ##
 
   ## use tracking algo to clean these up a bit.
@@ -48,8 +40,22 @@ if .read = 0
   ## (F1-F5 have to be specified, but untracked formants are ignored),
   ## frequency cost, bandwidth cost, transition cost (the last three are all
   ## just defaults)
+  
+  ## Viterbi tracking has to be ignored if there are any frames where only
+  ## 2 formants are tracked
+  
+  minFormants = Get minimum number of formants
+  
+  if minFormants < 3
+  
+    Copy: "x"
+    trackedFormant = selected("Formant")
+    
+  else
 
-  trackedFormant = Track: 3, .f1ref, .f2ref, .f3ref, 3500, 4500, 1, 1, 1
+    trackedFormant = Track: 3, .f1ref, .f2ref, .f3ref, 3500, 4500, 1, 1, 1
+    
+  endif
 
   if .save <> 0
 
@@ -79,6 +85,11 @@ endif
 ## using the Hawks-Miller formula)
 
 table = Down to Table: 0, 0, 3, 0, 3, 0, 3, .measureBandwidths
+
+## ensure that there are no --undefined--s in f3 column
+
+Formula (column range): "F3(Hz)", "F3(Hz)", 
+  ... "if self = undefined then " + string$(.f3ref) + " else self fi"
 
 ## grab formant values
 

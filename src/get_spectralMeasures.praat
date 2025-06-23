@@ -15,6 +15,11 @@ snd = selected("Sound")
 @snippet: .start, .end, .windowLength + (.timeStep / 2)
 snippet = selected("Sound")
 
+snippetDur = Get total duration
+if snippetDur < .windowLength * 2
+  .windowLength = (snippetDur / 2)
+endif
+
 ## initiate empty vectors for harmonic amplitudes
 
 .h1u# = zero# (.numFrames)

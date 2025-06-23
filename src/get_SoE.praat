@@ -84,35 +84,40 @@ for i from 1 to .numFrames
   ## get the zero crossing nearest to the current times
 
 	nearest = Get nearest index: .times#[i]
-	zc = Get time from index: nearest
-
-	## return 0 if zero crossing is further away than the .timeStep
-	## or if no zero crossing is found
-
-	if zc - .times#[i] > .timeStep | zc - .times#[i] < -.timeStep | zc = undefined
-		.soe#[i] = 0
+	if nearest = 0
+	  .soe#[i] = 0
 	else
-
-	## otherwise calculate slope around the zero crossings
-
-		selectObject: filter
-		samp = Get sample number from time: zc
-		samp = round(samp)
-		numer = 0
-		denom = 0
-		for theta from 1 to 5
-		  if samp + theta < size(z#) & samp - theta > 0
-  			numer = numer + theta * (z#[samp+theta] - z#[samp-theta])
-  			denom = denom + 2 * theta^2
-  		else
-  		  numer = 0
-  		  denom = 0
-  		endif
-		endfor
-		.soe#[i] = numer / denom
-		.soe#[i] = -.soe#[i]
-		selectObject: pp
-	endif
+	
+  	zc = Get time from index: nearest
+  
+  	## return 0 if zero crossing is further away than the .timeStep
+  	## or if no zero crossing is found
+  
+  	if zc - .times#[i] > .timeStep | zc - .times#[i] < -.timeStep | zc = undefined
+  		.soe#[i] = 0
+  	else
+  
+  	## otherwise calculate slope around the zero crossings
+  
+  		selectObject: filter
+  		samp = Get sample number from time: zc
+  		samp = round(samp)
+  		numer = 0
+  		denom = 0
+  		for theta from 1 to 5
+  		  if samp + theta < size(z#) & samp - theta > 0
+    			numer = numer + theta * (z#[samp+theta] - z#[samp-theta])
+    			denom = denom + 2 * theta^2
+    		else
+    		  numer = 0
+    		  denom = 0
+    		endif
+  		endfor
+  		.soe#[i] = numer / denom
+  		.soe#[i] = -.soe#[i]
+  		selectObject: pp
+  	endif
+  endif
 endfor
 
 ## clean up

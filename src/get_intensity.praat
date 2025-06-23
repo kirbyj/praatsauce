@@ -15,6 +15,12 @@ snd = selected("Sound")
 @snippet: .start, .end, ((6.4 * (1 / .f0min)) / 2) + (.timeStep / 2)
 snippet = selected("Sound")
 
+snippetDur = Get total duration
+if snippetDur < (1 / .f0min) * 6.4
+  .f0min = ((1 / snippetDur) * 6.4) + 1
+endif
+
+
 ## get intensity
 ## the final argument is whether to "subtract mean" (default yes)
 

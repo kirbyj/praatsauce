@@ -29,6 +29,12 @@ snd = selected("Sound")
 @snippet: .start, .end, ((6 * (1 / .f0min)) / 2) + (.timeStep / 2)
 snippet = selected("Sound")
 
+snippetDur = Get total duration
+if snippetDur < (1 / .f0min) * 6
+  .f0min = ((1 / snippetDur) * 6) + 1
+endif
+
+
 ## create cepstrogram, grab frame times
 
 cep = To PowerCepstrogram: .f0min, .timeStep, 5000, 50

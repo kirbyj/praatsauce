@@ -24,6 +24,11 @@ filter = Filter (pass Hann band): 0, .maxFreq, 100
 ## threshold (which is set very low here), and cycles per window.
 ## (this probably allows users to control the window size)
 
+snippetDur = Get total duration
+if snippetDur < (1 / .f0min) * 2
+  .f0min = ((1 / snippetDur) * 2) + 1
+endif
+
 hnr = To Harmonicity (cc): .timeStep, .f0min, 0.00001, 1
 
 ## some data structure tomfoolery that allows us to grab all values in one

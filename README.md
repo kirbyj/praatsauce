@@ -12,7 +12,7 @@ If you use PraatSauce in your research, you can cite the current version as
 follows:
 
 Kirby, James & Rasmus Puggaard-Rode (2025) *PraatSauce. Praat-based tools for
-spectral processing.* Version 1.0.2. GitHub: [kirbyj/praatsauce](https://github.com/kirbyj/praatsauce).
+spectral processing.* Version 1.0.3. GitHub: [kirbyj/praatsauce](https://github.com/kirbyj/praatsauce).
 
 ## Getting started
 

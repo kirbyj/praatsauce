@@ -1,3 +1,22 @@
+## Version 1.0.3
+
+* Fixed error whereby the longer analysis windows required for pitch tracking
+with Gaussian windows wasn't accounted for when using TextGrid-delimited
+processing. Fixes [https://github.com/kirbyj/praatsauce/issues/15].
+
+Added a number of work-arounds to avoid unclean crashes:
+
+* Window lengths for estimating pitch, intensity, CPP, HNR, and spectra are 
+adjusted for sound files and intervals that are otherwise too short to analyze.
+
+* SoE is set to zero for sound files or intervals where no pitch pulses are 
+found.
+
+* Viterbi tracking is not done for sound files or intervals where any frames
+have less than 3 tracked formants. It would be more optimal to simply add a
+dummy third formant in these cases, but as far as I can tell this is not
+possible with Formant objects.
+
 ## Version 1.0.2
 
 * More checks added to ensure that signal vectors are always of the same size to ensure error-free handling of vectorized processes. This hopefully fixes [https://github.com/kirbyj/praatsauce/issues/12]

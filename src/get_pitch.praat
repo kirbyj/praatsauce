@@ -16,10 +16,21 @@ procedure pitch: .timeStep, .f0min, .f0max, .start, .end, .method, .windowShape,
 snd = selected("Sound")
 dur = Get total duration
 
-@snippet: .start, .end, ((3 * (1 / .f0min)) / 2) + (.timeStep / 2)
+if .windowShape = 0
+  cyclesPerWindow = 3
+else
+  cyclesPerWindow = 6
+endif
+
+@snippet: .start, .end, ((cyclesPerWindow * (1 / .f0min)) / 2) + (.timeStep / 2)
 snippet = selected("Sound")
 
 if .read = 0
+
+  snippetDur = Get total duration
+  if snippetDur < (1 / .f0min) * cyclesPerWindow
+    .f0min = ((1 / snippetDur) * cyclesPerWindow) + 1
+  endif
 
   if .method = 0
 
