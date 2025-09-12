@@ -1,6 +1,7 @@
-procedure zeroFrequencyFilter: .dur, .fs, .windSamp, .start
+procedure zeroFrequencyFilter: .fs, .windSamp, .start
 
 inputSound = selected("Sound")
+nSamp = Get number of samples
 
 ## apply zero frequency filter
 
@@ -13,8 +14,10 @@ filtMat = Down to Matrix
 filtVals# = Get all values in row: 1
 
 ## create empty sound to populate using filter
+## have to calculate the duration of the empty sound from the
+## number of samples in the original to avoid rounding errors
 
-filt = Create Sound from formula: "x", 1, 0, .dur, .fs, "0"
+filt = Create Sound from formula: "x", 1, 0, nSamp / .fs, .fs, "0"
 Shift times to: "start time", .start
 
 ## get moving average smooth of signal

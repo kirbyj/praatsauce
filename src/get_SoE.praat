@@ -41,8 +41,8 @@ Reverse
 
 ## cascade of zero frequency filters
 
-@zeroFrequencyFilter: dur, newFS, windSamp, start
-@zeroFrequencyFilter: dur, newFS, windSamp, start
+@zeroFrequencyFilter: newFS, windSamp, start
+@zeroFrequencyFilter: newFS, windSamp, start
 
 filter = selected("Sound")
 
@@ -87,18 +87,18 @@ for i from 1 to .numFrames
 	if nearest = 0
 	  .soe#[i] = 0
 	else
-	
+
   	zc = Get time from index: nearest
-  
+
   	## return 0 if zero crossing is further away than the .timeStep
   	## or if no zero crossing is found
-  
+
   	if zc - .times#[i] > .timeStep | zc - .times#[i] < -.timeStep | zc = undefined
   		.soe#[i] = 0
   	else
-  
+
   	## otherwise calculate slope around the zero crossings
-  
+
   		selectObject: filter
   		samp = Get sample number from time: zc
   		samp = round(samp)

@@ -1,3 +1,9 @@
+## Version 1.0.4
+
+* Fixed occasional crashing bug due to rounding errors in the time domain when creating empty sound copies for zero frequency filtering.
+
+* Added license info directly to the `praatSauce.praat` script.
+
 ## Version 1.0.3
 
 * Fixed error whereby the longer analysis windows required for pitch tracking
