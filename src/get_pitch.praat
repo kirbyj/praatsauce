@@ -1,8 +1,5 @@
 ### Get pitch values
 
-include extract_snippet.praat
-include restrictInterval.praat
-
 procedure pitch: .timeStep, .f0min, .f0max, .start, .end, .method, .windowShape,
   ... .maxNoCandidates, .silenceThreshold, .voicingThreshold, .octaveCost,
   ... .octaveJumpCost, .voicedUnvoicedCost, .killOctaveJumps,
@@ -36,19 +33,19 @@ if .read = 0
 
     ## untouched argument is the undocumented attenuation at ceiling preprocessing
 
-    pitchOrg = To Pitch (filtered ac): .timeStep, .f0min, .f0max,
+    pitchOrg = noprogress To Pitch (filtered ac): .timeStep, .f0min, .f0max,
       ... .maxNoCandidates, .windowShape, 0.03, .silenceThreshold,
       ... .voicingThreshold, .octaveCost, .octaveJumpCost, .voicedUnvoicedCost
 
   elsif .method = 1
 
-    pitchOrg = To Pitch (raw cc): .timeStep, .f0min, .f0max, .maxNoCandidates,
-      ... .windowShape, .silenceThreshold, .voicingThreshold, .octaveCost,
-      ... .octaveJumpCost, .voicedUnvoicedCost
+    pitchOrg = noprogress To Pitch (raw cc): .timeStep, .f0min, .f0max,
+      ... .maxNoCandidates, .windowShape, .silenceThreshold, .voicingThreshold,
+      ... .octaveCost, .octaveJumpCost, .voicedUnvoicedCost
 
   else
 
-    pitchOrg = To Pitch (raw ac): .timeStep, .f0min, .f0max,
+    pitchOrg = noprogress To Pitch (raw ac): .timeStep, .f0min, .f0max,
     ... .maxNoCandidates, .windowShape, .silenceThreshold, .voicingThreshold,
     ... .octaveCost, .octaveJumpCost, .voicedUnvoicedCost
 
@@ -73,7 +70,7 @@ endif
 
 if .killOctaveJumps <> 0
 
-  pitchFilt = Kill octave jumps
+  pitchFilt = noprogress Kill octave jumps
 
 endif
 

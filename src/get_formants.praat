@@ -1,8 +1,5 @@
 ### Get formant values
 
-include extract_snippet.praat
-include restrictInterval.praat
-
 procedure fmt: .measureBandwidths, .timeStep, .maxN, .maxHz,
 	... .windowLength, .preEmphFrom, .start, .end, .f1ref, .f2ref, .f3ref,
 	... .save, .saveDir$, .read, .readDir$, .basefn$
@@ -24,8 +21,8 @@ if .read = 0
 
   ## all formant calculation arguments are user-controlled
 
-  orgFormant = To Formant (burg): .timeStep, .maxN, .maxHz, .windowLength,
-    ... .preEmphFrom
+  orgFormant = noprogress To Formant (burg): .timeStep, .maxN, .maxHz,
+    ... .windowLength, .preEmphFrom
 
   ## convert to formantGrid and back to remove undefineds
 
@@ -40,21 +37,22 @@ if .read = 0
   ## (F1-F5 have to be specified, but untracked formants are ignored),
   ## frequency cost, bandwidth cost, transition cost (the last three are all
   ## just defaults)
-  
+
   ## Viterbi tracking has to be ignored if there are any frames where only
   ## 2 formants are tracked
-  
+
   minFormants = Get minimum number of formants
-  
+
   if minFormants < 3
-  
+
     Copy: "x"
     trackedFormant = selected("Formant")
-    
+
   else
 
-    trackedFormant = Track: 3, .f1ref, .f2ref, .f3ref, 3500, 4500, 1, 1, 1
-    
+    trackedFormant = noprogress Track: 3, .f1ref, .f2ref, .f3ref, 3500, 4500, 1,
+      ... 1, 1
+
   endif
 
   if .save <> 0
@@ -88,7 +86,7 @@ table = Down to Table: 0, 0, 3, 0, 3, 0, 3, .measureBandwidths
 
 ## ensure that there are no --undefined--s in f3 column
 
-Formula (column range): "F3(Hz)", "F3(Hz)", 
+Formula (column range): "F3(Hz)", "F3(Hz)",
   ... "if self = undefined then " + string$(.f3ref) + " else self fi"
 
 ## grab formant values

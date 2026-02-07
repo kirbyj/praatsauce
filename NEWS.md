@@ -1,3 +1,8 @@
+## Version 1.0.5
+
+* Removed duplicate procedure names which caused the script to error out in Praat > 6.4.5.7. Fixes [https://github.com/kirbyj/praatsauce/issues/17].
+* Suppressed progress bar for potentially time-consuming processes.
+
 ## Version 1.0.4
 
 * Fixed occasional crashing bug due to rounding errors in the time domain when creating empty sound copies for zero frequency filtering.

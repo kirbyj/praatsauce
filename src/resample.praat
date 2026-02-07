@@ -5,7 +5,7 @@ procedure resample
 snd = selected("Sound")
 
 ## second argument is "interpolation precision" -- a bit beyond my pay grade
-Resample: 16000, 50
+noprogress Resample: 16000, 50
 
 ## clean up, keep only the resampled sound
 

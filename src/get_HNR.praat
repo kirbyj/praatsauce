@@ -1,8 +1,5 @@
 ### Calculate harmonics-to-noise ratio
 
-include extract_snippet.praat
-include restrictInterval.praat
-
 procedure hnr: .maxFreq, .timeStep, .f0min, .start, .end
 
 ## extract padded snippet.
@@ -18,7 +15,7 @@ snippet = selected("Sound")
 ## bandpass filter with 100 Hz smoothing (default)
   ## is 100 Hz smoothing perhaps a bit much when grabbing just e.g 0-500 Hz?
 
-filter = Filter (pass Hann band): 0, .maxFreq, 100
+filter = noprogress Filter (pass Hann band): 0, .maxFreq, 100
 
 ## the harmonicity arguments that aren't user controlled are the silence
 ## threshold (which is set very low here), and cycles per window.
@@ -29,7 +26,7 @@ if snippetDur < (1 / .f0min) * 2
   .f0min = ((1 / snippetDur) * 2) + 1
 endif
 
-hnr = To Harmonicity (cc): .timeStep, .f0min, 0.00001, 1
+hnr = noprogress To Harmonicity (cc): .timeStep, .f0min, 0.00001, 1
 
 ## some data structure tomfoolery that allows us to grab all values in one
 ## fell swoop. also grab frames times and number of frames

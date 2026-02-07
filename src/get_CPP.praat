@@ -1,8 +1,5 @@
 ### Get ceptral peak prominences
 
-include extract_snippet.praat
-include restrictInterval.praat
-
 procedure cpp: .timeStep, .f0min, .f0max, .start, .end, .trendType, .fast
 
 ## Get string values for trend type and fit method
@@ -37,7 +34,7 @@ endif
 
 ## create cepstrogram, grab frame times
 
-cep = To PowerCepstrogram: .f0min, .timeStep, 5000, 50
+cep = noprogress To PowerCepstrogram: .f0min, .timeStep, 5000, 50
 .times# = List all frame times
 
 ## tabulate cpp values based on the cepstrogram

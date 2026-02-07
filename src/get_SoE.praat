@@ -16,7 +16,7 @@ dur = Get total duration
 ## make a copy of the sound before filtering
 
 if .fs > 16000
-  Resample: 16000, 50
+  noprogress Resample: 16000, 50
   newFS = 16000
 else
   Copy: "x"
@@ -71,7 +71,7 @@ z# = Get all values in row: 1
 ## corresponding to glottal closure instants
 
 selectObject: filter
-pp = To PointProcess (zeroes): 1, 0, 1
+pp = noprogress To PointProcess (zeroes): 1, 0, 1
 
 ## initialize object for SOE values
 

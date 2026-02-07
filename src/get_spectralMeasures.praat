@@ -1,7 +1,6 @@
 ### Get harmonic amplitudes and spectral measures
 
 include correctIseli.praat
-include extract_snippet.praat
 
 procedure spec: .windowLength, .timeStep, .numFrames, .times#,
   ... .measureSlope, .measureSlopeUncorrected, .pitchSynchronous,
@@ -65,7 +64,8 @@ upperba3# = .f3# + (.f3# * 0.1)
 
 if .pitchSynchronous = 0
 
-  spec = To Spectrogram: .windowLength, 5500, .timeStep, 20, "Gaussian"
+  spec = noprogress To Spectrogram: .windowLength, 5500, .timeStep, 20,
+    ... "Gaussian"
 
 endif
 

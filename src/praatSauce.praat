@@ -1,7 +1,7 @@
 ################################
-### PraatSauce version 1.0.4 ###
+### PraatSauce version 1.0.5 ###
 ################################
-# Copyright (c) 2025 James Kirby & Rasmus Puggaard-Rode
+# Copyright (c) 2026 James Kirby & Rasmus Puggaard-Rode
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation
@@ -25,6 +25,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 
+
 ## import all the procedures that the script relies on
 
 include read_params.praat
@@ -40,6 +41,7 @@ include get_SoE.praat
 include combineMatrices.praat
 include resample.praat
 include extract_channel.praat
+include extract_snippet.praat
 include zeroPadding.praat
 include initiateTable.praat
 include prepareTable.praat

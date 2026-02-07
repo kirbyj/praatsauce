@@ -1,8 +1,5 @@
 ### Get intensity (root-mean-squared amplitude) values
 
-include extract_snippet.praat
-include restrictInterval.praat
-
 procedure rms: .timeStep, .f0min, .start, .end
 
 ## extract padded snippet.
@@ -24,7 +21,7 @@ endif
 ## get intensity
 ## the final argument is whether to "subtract mean" (default yes)
 
-rms = To Intensity: .f0min, .timeStep, 1
+rms = noprogress To Intensity: .f0min, .timeStep, 1
 
 ## get frame times and number of frames
 
