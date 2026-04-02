@@ -1,5 +1,5 @@
 ################################
-### PraatSauce version 1.0.5 ###
+### PraatSauce version 1.0.6 ###
 ################################
 # Copyright (c) 2026 James Kirby & Rasmus Puggaard-Rode
 #
@@ -136,7 +136,7 @@ for thisFile from 1 to numFile
 
   ## find out which portion(s) of the sound file to analyze
 
-	@times: thisWav$, params.inputDir$, params.includeTheseLabels$,
+	@times: thisWav$, params.tgDir$, params.includeTheseLabels$,
 		... params.useTextGrid, params.intervalTier, params.windowLength
 
 		## should probably have a check here so following for loop only happens when

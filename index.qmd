@@ -22,7 +22,7 @@ This set-up also means that calling PraatSauce from the command line is very sim
 <praat-location> <praatsauce-location> <params-location>
 ```
 
-where `<praat-location>` is the location of your Praat executable, `<praatsauce-location>` is the path to `praatsauce.praat`, and `<params-location>` is the path to your parameters file. If Praat is on your `PATH` and you are running the code directly from the `src` directory, it could look like this:
+where `<praat-location>` is the location of your Praat executable, `<praatsauce-location>` is the path to `praatsauce.praat`, and `<params-location>` is the path to your parameters file. If Praat is on your `PATH` and you are running the code directly from the `src` directory, it could look like this:s
 
 ```         
 praat praatsauce.praat params.csv
@@ -58,8 +58,8 @@ Here, we provide a little more detail about each parameter.
 -   `soe` Should strength of (harmonic) excitation (SoE) measures be reported? Default is `1`, set to `0` if you are not interested in SoE.
 -   `resample16khz` Should audio be resampled to 16 kHz? Default is `0`, set to `1` if you want resampling. This may speed up the processing of some measures, and is otherwise unlikely to influence the results much.
 -   `windowLength` Length of the analysis window for taking formant measurements and generating spectrograms in seconds. Default is `0.025`, i.e. 25 ms.
--   `f0min` Pitch floor, minimum frequency in Hz to look for when estimating pitch. Default is `50`. Note that the output may have some pitch measures below `f0min` if Praat's algorithm for removing octave jumps is used. 
--   `f0max` Pitch ceiling, maximum frequency in Hz. to look for when estimating pitch. Default is `300`. Note that the output may have some pitch measures above `f0max` if Praat's algorithm for removing octave jumps is used. 
+-   `f0min` Pitch floor, minimum frequency in Hz to look for when estimating pitch. Default is `50`. Note that the output may have some pitch measures below `f0min` if Praat's algorithm for removing octave jumps is used.
+-   `f0max` Pitch ceiling, maximum frequency in Hz. to look for when estimating pitch. Default is `300`. Note that the output may have some pitch measures above `f0max` if Praat's algorithm for removing octave jumps is used.
 -   `pitchMethod` Which algorithm should be used for measuring pitch? The default value is `0`, in which case the filtered autocorrelation method is used; alternatives are `1` for raw crosscorrelation and `2` for raw autocorrelation.
 -   `pitchWindowShape` Which analysis window shape should be used for pitch estimation. The default value is `0`, in which case a Hanning window is used; the alternative is `1`, in which case a Gaussian window is used. This controls the `Very accurate` setting in Praat's pitch tracking options windows; Gaussian windows are considered "very accurate", but are not used by default, as they are slower. In practice, the difference between the two settings appears to be marginal.
 -   `pitchMaxNoCandidates` How many pitch candidates should be estimated? Default is `15`.
@@ -158,15 +158,12 @@ Other functions available in `sauceshelf` are
 -   `load_sauce()`, which will read PraatSauce output as a well-formatted data frame
 -   `sauce2ssff()` which converts a data frame with PraatSauce output into SSFF files if you are working with the [EMU-SDMS infrastructure](https://rpuggaardrode.github.io/emuintro/).
 
-`sauceshelf` also provides various R-internal ways to estimate the measures returned by Praatsauce, and a framework for mixing and matching different sources, i.e. to estimate pitch and formants using Praat, and harmonic amplitudes and spectral slope using R based on the results from Praat. One method which we've tentatively found to work well and to speed up processing is to estimate harmonic amplitudes, spectral slope, and SoE in R and all other measures in Praat. 
+`sauceshelf` also provides various R-internal ways to estimate the measures returned by Praatsauce, and a framework for mixing and matching different sources, i.e. to estimate pitch and formants using Praat, and harmonic amplitudes and spectral slope using R based on the results from Praat. One method which we've tentatively found to work well and to speed up processing is to estimate harmonic amplitudes, spectral slope, and SoE in R and all other measures in Praat.
 
 ## Citation information
 
-If you use PraatSauce in your research, you can cite the current version as 
-follows:
+If you use PraatSauce in your research, you can cite the current version as follows:
 
-Kirby, James & Rasmus Puggaard-Rode (2025) *PraatSauce. Praat-based tools for
-spectral processing.* Version 1.0.0. Available from GitHub: 
-[kirbyj.github.io/praatsauce](https://kirbyj.github.io/praatsauce)
+Kirby, James & Rasmus Puggaard-Rode (2026) *PraatSauce. Praat-based tools for spectral processing.* Version 1.0.6. Available from GitHub: [kirbyj.github.io/praatsauce](https://kirbyj.github.io/praatsauce)
 
 ## References

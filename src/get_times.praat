@@ -1,6 +1,6 @@
 ### Get time stamps to determine which parts of sound file to process in PraatSauce
 
-procedure times: .fileName$, .inputDir$, .includeTheseLabels$, .useTextGrid,
+procedure times: .fileName$, .tgDir$, .includeTheseLabels$, .useTextGrid,
   ... .intervalTier, .windowLength
 
 snd = selected("Sound")
@@ -14,7 +14,7 @@ if .useTextGrid = 1
   ## ... when TextGrid is used ...
   ## read TG file
 
-	tg = Read from file: .inputDir$ + baseName$ + ".TextGrid"
+	tg = Read from file: .tgDir$ + baseName$ + ".TextGrid"
 
 	## get the number of intervals that user asked for
 

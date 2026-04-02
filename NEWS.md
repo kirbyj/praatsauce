@@ -1,3 +1,7 @@
+## Version 1.0.6
+
+* Fixed bug that required TextGrids and audio files to be in the same directory for TextGrid-delimited processing.
+
 ## Version 1.0.5
 
 * Removed duplicate procedure names which caused the script to error out in Praat > 6.4.5.7. Fixes [https://github.com/kirbyj/praatsauce/issues/17].
