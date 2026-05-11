@@ -1,5 +1,5 @@
 ################################
-### PraatSauce version 1.0.6 ###
+### PraatSauce version 1.0.7 ###
 ################################
 # Copyright (c) 2026 James Kirby & Rasmus Puggaard-Rode
 #
@@ -71,15 +71,16 @@ if params.filelist$ <> "0"
   wavsList = Read Strings from raw text file: params.filelist$
   numFile = Get number of strings
 else
-  wavsList = Create Strings as file list: "wavs", params.inputDir$ + "*.wav"
+  wavsList = Create Strings as file list: "wavs", params.inputDir$ + "*." +
+  ... params.soundExt$
   Sort
   numFile = Get number of strings
 endif
 
-## if using TextGrid, get list of TGs in the inputDir and sort them
+## if using TextGrid, get list of TGs in the tgDir and sort them
 
 if params.useTextGrid <> 0
-	tgList = Create Strings as file list: "grids", params.inputDir$ + "*.TextGrid"
+	tgList = Create Strings as file list: "grids", params.tgDir$ + "*.TextGrid"
 	Sort
 	numTG = Get number of strings
 

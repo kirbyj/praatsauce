@@ -12,6 +12,8 @@ outputDirID = Search column: "variable", "outputDir"
 .outputDir$ = Get value: outputDirID, "input"
 outputFileID = Search column: "variable", "outputFile"
 .outputFile$ = Get value: outputFileID, "input"
+soundExtID = Search column: "variable", "soundExt"
+.soundExt$ = Get value: soundExtID, "input"
 channelID = Search column: "variable", "channel"
 .channel = Get value: channelID, "input"
 intervalEquidistantID = Search column: "variable", "intervalEquidistant"
@@ -118,6 +120,12 @@ verboseID = Search column: "variable", "verbose"
 .verbose = Get value: verboseID, "input"
 
 Remove
+
+### if tgDir isn't set, should be the same as inputDir
+
+if .tgDir$ == "path/to/tg"
+  .tgDir$ = .inputDir$
+endif
 
 ## add trailing slashes to the directory names since it doesn't matter if
 ## they're doubled
