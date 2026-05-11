@@ -41,6 +41,7 @@ Here, we provide a little more detail about each parameter.
 -   `inputDir` is the directory where your sound files are located.
 -   `outputDir` is the directory where your output file should be saved. The default value is `.`, i.e. the same directory as where `praatsauce.praat` is located.
 -   `outputFile` is the name of the output file. Default is `out.tsv`.
+-   `soundExt` is the file extension of sound files. Default is `wav`.
 -   `channel` is the channel you want to analyze. Default is `1`, i.e. the first channel. If your sound files have multiple channels, fx if the audio is stereo or you have an EGG channel, one of them is extracted and used for processing. You can input `0` if you want to use both channels of a stereo file.
 -   `intervalEquidistant` If measures should be taken at equidistant intervals, how many measures should be taken? This parameter is only relevant if TextGrids are used to determine where to take measures in a sound file. Default is `0`, in which case measures are taken at fixed intervals.
 -   `intervalFixed` How often should measures be taken (in seconds)? Default is `0.005`, i.e. every 5 ms. This is more coarse than the VoiceSauce default of taking measures every 1 ms. This should be set to `0` if you are taking equidistant measures; either `intervalEquidistant` or `intervalFixed` should be set to `0`, otherwise you will see an error message.
@@ -164,6 +165,6 @@ Other functions available in `sauceshelf` are
 
 If you use PraatSauce in your research, you can cite the current version as follows:
 
-Kirby, James & Rasmus Puggaard-Rode (2026) *PraatSauce. Praat-based tools for spectral processing.* Version 1.0.6. Available from GitHub: [kirbyj.github.io/praatsauce](https://kirbyj.github.io/praatsauce)
+Kirby, James & Rasmus Puggaard-Rode (2026) *PraatSauce. Praat-based tools for spectral processing.* Version 1.0.7. Available from GitHub: [kirbyj.github.io/praatsauce](https://kirbyj.github.io/praatsauce)
 
 ## References

@@ -1,3 +1,8 @@
+## Version 1.0.7
+
+* Fixed bug with TextGrid directory referencing, and updated so that TextGrids are (once again) by default assumed to be in the same directory as audio files.
+* Added `soundExt` parameter that allow users to specify sound file extension. This removes the requirement that all sound files have the `.wav` extension.
+
 ## Version 1.0.6
 
 * Fixed bug that required TextGrids and audio files to be in the same directory for TextGrid-delimited processing.
