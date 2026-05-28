@@ -165,6 +165,6 @@ Other functions available in `sauceshelf` are
 
 If you use PraatSauce in your research, you can cite the current version as follows:
 
-Kirby, James & Rasmus Puggaard-Rode (2026) *PraatSauce. Praat-based tools for spectral processing.* Version 1.0.7. Available from GitHub: [kirbyj.github.io/praatsauce](https://kirbyj.github.io/praatsauce)
+Kirby, James & Rasmus Puggaard-Rode (2026) *PraatSauce. Praat-based tools for spectral processing.* Version 1.0.8. Available from GitHub: [kirbyj.github.io/praatsauce](https://kirbyj.github.io/praatsauce)
 
 ## References

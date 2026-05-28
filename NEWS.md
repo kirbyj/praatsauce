@@ -1,3 +1,7 @@
+## Version 1.0.8
+
+* Fixed bug that caused the script to error out when a TextGrid tier did not have any label matches. 
+
 ## Version 1.0.7
 
 * Fixed bug with TextGrid directory referencing, and updated so that TextGrids are (once again) by default assumed to be in the same directory as audio files.

@@ -21,36 +21,41 @@ if .useTextGrid = 1
 	.numIntervals = Count intervals where: .intervalTier, "matches (regex)",
 		... .includeTheseLabels$
 
-  ## do some tomfoolery to actually grab all start times in one fell swoop
+  if .numIntervals <> 0
 
-	points = Get starting points: .intervalTier, "matches (regex)",
-	  ... .includeTheseLabels$
-	matrix = To Matrix
-	.start# = Get all values in row: 1
+    ## do some tomfoolery to actually grab all start times in one fell swoop
 
-	## clean up
+  	points = Get starting points: .intervalTier, "matches (regex)",
+  	  ... .includeTheseLabels$
+  	matrix = To Matrix
+  	.start# = Get all values in row: 1
 
-  removeObject: points, matrix
-  selectObject: tg
+  	## clean up
 
-	## do some tomfoolery to actually grab all end times in one fell swoop
+    removeObject: points, matrix
+    selectObject: tg
 
-	point = Get end points: .intervalTier, "matches (regex)", .includeTheseLabels$
-	matrix = To Matrix
-	.end# = Get all values in row: 1
+  	## do some tomfoolery to actually grab all end times in one fell swoop
 
-	## clean up
+  	point = Get end points: .intervalTier, "matches (regex)", .includeTheseLabels$
+  	matrix = To Matrix
+  	.end# = Get all values in row: 1
 
-  removeObject: point, matrix
-  selectObject: tg
+  	## clean up
 
-	## create string vector with labels
-	## has to be a loop I think
+    removeObject: point, matrix
+    selectObject: tg
 
-	for int from 1 to .numIntervals
-		labID = Get interval at time: .intervalTier, .start# [int]
-		.labs$ [int] = Get label of interval: .intervalTier, labID
-	endfor
+  	## create string vector with labels
+  	## has to be a loop I think
+
+  	for int from 1 to .numIntervals
+  		labID = Get interval at time: .intervalTier, .start# [int]
+  		.labs$ [int] = Get label of interval: .intervalTier, labID
+  	endfor
+
+  endif
+
 	removeObject: tg
 else
   ## ... when TextGrid isn't used ...
