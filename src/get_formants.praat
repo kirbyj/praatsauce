@@ -65,7 +65,7 @@ else
 
   Read from file: .readDir$ + .basefn$ + ".Formant"
   orgFormant = selected("Formant")
-  trackedFormant = selected("Formant")
+  trackedFormant = Copy: "tracked"
 
 endif
 
